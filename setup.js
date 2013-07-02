@@ -1,5 +1,6 @@
 var express = require('express');
 
+var tropo_webapi = require('tropo-webapi');
 var browserify = require('browserify-middleware');
 var jadeify2 = require('jadeify2');
 var glob = require('glob');
@@ -7,8 +8,8 @@ var glob = require('glob');
 var _ = require('underscore');
 
 module.exports = function(app) {
-    app.locals.siteName = 'Student Edge: Discovery';
-    app.locals.title = 'Student Edge: Discovery';
+    app.locals.siteName = 'tropo test';
+    app.locals.title = 'tropo test';
     app.locals.secret = 'good thing this is just a demo, right?';
 
     app.set('views', __dirname + '/templates');
@@ -19,6 +20,7 @@ module.exports = function(app) {
         app.enable('trust proxy');
     });
 
+    app.use(express.bodyParser());
     app.use(express.static(__dirname + '/assets'));
 
     // Import templates
@@ -33,9 +35,9 @@ module.exports = function(app) {
     // Import vendor stuff
     var vendor = [
         'jquery-browserify', 'underscore',
-        'base64url', 'backbone',
+        'backbone',
         'backbone.marionette', 'jqueryui-browser/ui/jquery-ui.js',
-        './shared.js'
+        './shared.js', './assets/js/jquery.phono.js'
     ];
     app.get('/js/vendor.js', browserify(vendor, {ignore: ['jquery-browser']}));
     external = external.concat(vendor);

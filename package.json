@@ -19,6 +19,10 @@
     "tropo-webapi": "~1.0.16",
     "jquery-browserify": "~1.8.1",
     "jqueryui-browser": "~1.10.2-1",
-    "backbone.marionette": "~1.0.2"
+    "backbone.marionette": "~1.0.2",
+    "browserify-middleware": "~1.13.0",
+    "socket.io": "~0.9.16",
+    "request": "~2.21.0",
+    "glob": "~3.2.1"
   }
 }
