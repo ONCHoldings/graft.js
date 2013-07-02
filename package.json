@@ -1,0 +1,24 @@
+{
+  "name": "tropo",
+  "version": "0.0.0",
+  "description": "ERROR: No README.md file found!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "author": "",
+  "license": "BSD",
+  "dependencies": {
+    "backbone": "~1.0.0",
+    "jadeify2": "0.0.3",
+    "express": "~3.3.1",
+    "jade": "~0.32.0",
+    "browserify": "~2.22.0",
+    "underscore": "~1.4.4",
+    "tropo-webapi": "~1.0.16",
+    "jquery-browserify": "~1.8.1",
+    "jqueryui-browser": "~1.10.2-1",
+    "backbone.marionette": "~1.0.2"
+  }
+}

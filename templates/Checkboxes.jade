@@ -1,0 +1,7 @@
+extends Constraint
+block label
+block input
+    each option,key in getOptions()
+        label.checkbox
+          input.checkbox(name=model.field, type='checkbox', value=key)
+          = option

@@ -1,0 +1,5 @@
+extends Constraint
+block input
+  select.pull-right.input-small(name=model.field)
+    each option,key in getOptions()
+      option(value=key)= option
