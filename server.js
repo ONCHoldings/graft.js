@@ -10,7 +10,6 @@ var http         = require('http');
 var fs           = require('fs');
 var _            = require('underscore');
 
-
 // Default template engine.
 require.extensions['.jade'] = function(module, filename) {
     var content = fs.readFileSync(filename, 'utf8');
@@ -27,7 +26,6 @@ require.extensions['.jade'] = function(module, filename) {
 
 
 var $ = global.$ = require('jquery');
-
 var App = require('./shared');
 
 // This is now an express App/Marionette app hybrid.
@@ -70,17 +68,18 @@ App.addInitializer(function browserifyConfig(options) {
     });
     this.get('/js/templates.js', browserify(templates, {transform: transFn}));
     var external = _.clone(templates);
+
     // Import vendor stuff
     var vendor = [
         'jquery-browserify', 'underscore',
-        'backbone',
-        'backbone.marionette', 'jqueryui-browser/ui/jquery-ui.js',
+        'backbone', 'backbone.marionette',
+        'jqueryui-browser/ui/jquery-ui.js',
         './assets/js/jquery.phono.js'
     ];
     this.get('/js/vendor.js', browserify(vendor, {ignore: ['jquery-browser']}));
-
     external = external.concat(vendor);
 
+    // Do the other types.
     var files = ['resources', 'models', 'views', 'routers'];
     var processFn = function(memo, file) {
         var files = glob.sync('./' + file +'/*.js*'); // ugh. hack
@@ -90,7 +89,7 @@ App.addInitializer(function browserifyConfig(options) {
     };
     external = _.reduce(files, processFn, external, this);
 
-
+    // Handle shared code between server and client.
     this.get('/js/shared.js', browserify(['./templates/index.js', './shared.js'], {external: external}));
     external.push('./shared.js');
 
@@ -98,11 +97,13 @@ App.addInitializer(function browserifyConfig(options) {
     this.get('/js/client.js', browserify('./client.js', {external: external}));
 });
 
-App.addInitializer(function(options) {
+// Start the server
+App.addInitializer(function serverStart(options) {
     this.server.listen(12400);
 });
 
-App.addInitializer(function(options) {
+// Initialize the sockets
+App.addInitializer(function socketConfig(options) {
     var io = this.io = require('socket.io').listen(this.server);
 
     io.configure(function() {
@@ -114,11 +115,9 @@ App.addInitializer(function(options) {
         io.set("transports", ["websocket", "htmlfile", "xhr-polling", "jsonp-polling"]);
     });
 
-    io.set('authorization', function (handshakeData, accept) {
+    io.set('authorization', function socketAuth(handshakeData, accept) {
         if (handshakeData.headers.cookie) {
-
             handshakeData.cookie = cookie.parse(handshakeData.headers.cookie);
-
             handshakeData.sessionID = connect.utils.parseSignedCookie(
                 handshakeData.cookie['express.sid'], 'secret'
             );
@@ -126,15 +125,11 @@ App.addInitializer(function(options) {
             if (handshakeData.cookie['express.sid'] == handshakeData.sessionID) {
                 return accept('Cookie is invalid.', false);
             }
-
         } else {
             return accept('No cookie transmitted.', false);
         } 
-
         accept(null, true);
     });
-
-
 });
 
 

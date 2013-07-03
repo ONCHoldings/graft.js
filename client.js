@@ -23,11 +23,11 @@ App.addInitializer(function(options) {
         main: '#main'
     });
     this.sidebar.show(new this.views.Conferences({
-        collection: this.Conferences
+        collection: this.conferences
     }));
 
     this.main.show(new this.views.Callers({
-        collection: this.Callers
+        collection: this.callers
     }));
 
     // Start the path tracking
@@ -50,6 +50,25 @@ App.addInitializer(function(options) {
     this.socket.on('connect', function (){
         console.info('successfully established a working and authorized connection');
     });
+
+    /**
+    * Just for testing. remove.
+    */
+    this.socket.on('conferences:reset', function(models) {
+       App.conferences.reset(models, {add: true}); 
+   });
+    this.socket.on('conferences:add', function(model) {
+       App.conferences.add(model); 
+    });
+
+
+    this.socket.on('callers:reset', function(models) {
+       App.callers.reset(models, {add: true}); 
+   });
+    this.socket.on('callers:add', function(model) {
+       App.callers.add(model); 
+    });
+
 });
 
 /**
@@ -75,13 +94,13 @@ App.vent.on('phonoReady', function(evt, phone) {
     var myPhonoId = App.phono.sessionId;
     var mySocketId = App.socket.socket.sessionid;
     App.socket.emit("phonoReady", App.phono.sessionId);
-
-    this.phone.dial("app:9991484224", {
+/*
+    App.phono.phone.dial("app:9991484224", {
         headers: [
             { name: 'x-socketid', value: mySocketId },
             { name: 'x-phonoid', value: myPhonoId}
         ]
-    });
+    });*/
 });
 
 App.start();

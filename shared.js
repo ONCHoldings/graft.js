@@ -4,7 +4,7 @@ var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.$ = $;
 
-var    Marionette = require('backbone.marionette');
+var Marionette = require('backbone.marionette');
 
 var augment = function(props) {
     var obj = this.prototype;
@@ -33,15 +33,15 @@ Marionette.Layout.augment = Marionette.ItemView.augment = augment;
 App = new Marionette.Application();
 
 App.addInitializer(function(options) {
-//    this.templates = require('./templates/index.js');
-    this.models = require('./models/index.js');
-    this.views = require('./views/index.js');
-    this.routers = require('./routers/index.js');
+    this.templates = require('./templates/index.js');
+    this.models    = require('./models/index.js');
+    this.views     = require('./views/index.js');
+    this.routers   = require('./routers/index.js');
 });
 
 App.addInitializer(function(options) {
-    this.Conferences =  new App.models.Conferences();
-    this.Callers =  new App.models.Callers();
+    this.conferences = new App.models.Conferences();
+    this.callers     = new App.models.Callers();
 });
 
 module.exports = App;
