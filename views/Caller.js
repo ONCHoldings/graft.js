@@ -4,6 +4,9 @@ var Backbone = require('backbone'),
 module.exports = Backbone.Marionette.ItemView.extend({
     tagName: 'article',
     className: 'caller',
+    modelEvents: {
+        'change': 'render'
+    },
     template: require('../templates/Caller.jade'),
        serializeData: _.compose(
         function(data) {

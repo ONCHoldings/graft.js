@@ -9,9 +9,14 @@ App.get('/', function(req, res) {
 
 App.post('/session.json', function (req, res) {
     var tropo = new TropoWebAPI();
+    var headers = req.body.session.headers;
+    var caller = App.callers.get(headers['x-userid']);
 
-    tropo.say("Added to room " + conf.cid);
-    tropo.conference(conf.cid, null, "conference", null, null, null);
+    caller.set('status', 'available');
+
+    tropo.say("Welcome,  " + caller.id);
+    tropo.say("Added to room " + caller.get('conference'));
+    tropo.conference(caller.get('conference'), null, "conference", null, null, null);
 
     res.send(TropoJSON(tropo));
 });
@@ -22,27 +27,45 @@ App.addInitializer(function(options) {
     }, this);
 
     this.callers.on('add', function(model) {
-        this.io.sockets.emit('callers:add', this.callers.toJSON());
+        this.io.sockets.emit('callers:add', model.toJSON());
     }, this);
 
+    this.callers.on('change', function(model) {
+        this.io.sockets.emit('caller:change', model.id, model.changed);
+    }, this);
 
     // regardless of anything else, we always want a default conference.
     this.conferences.add({id: 'default'});
 
     function onConnect(socket) {
         socket.emit('conferences:reset', this.conferences);
+        socket.emit('callers:reset', this.callers);
 
-        this.callers.add({
-            id: ns.name()
+        function getSessionId(socket) {
+            var id = socket.id;
+            var handshake = socket.manager.handshaken[id];
+            return handshake.sessionID;
+        };
+
+        var id = getSessionId(socket);
+        var caller = this.callers.findWhere({sessionId: id});
+
+        if (!caller) {
+            this.callers.add({id: ns.name(),sessionId: id });
+            var caller = this.callers.findWhere({sessionId: id});
+        }
+
+        socket.on('phonoReady', function (data) {
+            caller.set('status', 'connected');
+            socket.emit('phoneTropo', "app:9991484224", caller.id);
         });
 
-        socket.on('phoneReady', function (data) {
-            socket.emit('tryPhone', "app:9991484224");
+        socket.on('conferences:add', function(model) {
+            this.conferences.add(model);
         });
     }
 
     this.io.sockets.on('connection', _.bind(onConnect, this));
-
 });
 
 

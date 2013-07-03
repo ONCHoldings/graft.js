@@ -30,6 +30,10 @@ App.addInitializer(function(options) {
         collection: this.callers
     }));
 
+    this.conferences.on('add', function(model) {
+        this.socket.emit('conferences:add', model);
+    }, this);
+
     // Start the path tracking
     Backbone.history.start({pushState: true, silent: false, root: "/"});
 });
@@ -60,13 +64,18 @@ App.addInitializer(function(options) {
     this.socket.on('conferences:add', function(model) {
        App.conferences.add(model); 
     });
-
+    this.socket.on('conference:change', function(id, changes) {
+        App.conferences.get(id).set(changes);
+    });
 
     this.socket.on('callers:reset', function(models) {
-       App.callers.reset(models, {add: true}); 
-   });
+        App.callers.reset(models, {add: true}); 
+    });
     this.socket.on('callers:add', function(model) {
-       App.callers.add(model); 
+        App.callers.add(model); 
+    });
+    this.socket.on('caller:change', function(id, changes) {
+        App.callers.get(id).set(changes);
     });
 
 });
@@ -94,13 +103,14 @@ App.vent.on('phonoReady', function(evt, phone) {
     var myPhonoId = App.phono.sessionId;
     var mySocketId = App.socket.socket.sessionid;
     App.socket.emit("phonoReady", App.phono.sessionId);
-/*
-    App.phono.phone.dial("app:9991484224", {
-        headers: [
+    App.socket.on("phoneTropo", function(addr, user) {
+        var headers = [
             { name: 'x-socketid', value: mySocketId },
-            { name: 'x-phonoid', value: myPhonoId}
-        ]
-    });*/
+            { name: 'x-phonoid', value: myPhonoId },
+            { name: 'x-userid', value: user }
+        ];
+        App.phono.phone.dial("app:9991484224", { headers: headers });
+    });
 });
 
 App.start();

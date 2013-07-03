@@ -2,8 +2,8 @@ var Backbone = require('backbone'),
     _ = require('underscore');
 
 module.exports = Backbone.Marionette.ItemView.extend({
-    tagName: 'article',
-    className: 'conference',
+    tagName: 'li',
+    className: 'active',
     template: require('../templates/Conference.jade'),
     serializeData: _.compose(
         function(data) {
