@@ -1,6 +1,10 @@
-var Backbone = require('backbone'),
-    Marionette = require('backbone.marionette'),
-    _ = require('underscore');
+var _ = require('underscore');
+
+
+var Backbone = require('backbone');
+Backbone.$ = $;
+
+var    Marionette = require('backbone.marionette');
 
 var augment = function(props) {
     var obj = this.prototype;
@@ -23,3 +27,21 @@ Backbone.Model.augment    = Backbone.Collection.augment =
 Backbone.Router.augment   = Backbone.View.augment       =
 Marionette.View.augment   = Marionette.Region.augment   =
 Marionette.Layout.augment = Marionette.ItemView.augment = augment;
+
+// Main application initialization
+// this is global on purpose. sucks i know.
+App = new Marionette.Application();
+
+App.addInitializer(function(options) {
+//    this.templates = require('./templates/index.js');
+    this.models = require('./models/index.js');
+    this.views = require('./views/index.js');
+    this.routers = require('./routers/index.js');
+});
+
+App.addInitializer(function(options) {
+    this.Conferences =  new App.models.Conferences();
+    this.Callers =  new App.models.Callers();
+});
+
+module.exports = App;

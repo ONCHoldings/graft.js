@@ -7,10 +7,10 @@ module.exports = Backbone.Model.extend({
     initialize: function(opts) {
         this.callers = new Callers(opts && opts.callers || []);
     },
+    /*
     toJSON: function() {
         return {
-            id: this.cid,
-            callers: this.callers.toJSON()
+            id: this.cid
         }
-    }
+    }*/
 });

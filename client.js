@@ -1,54 +1,62 @@
-var $ = require('jquery-browserify'),
-    _ = require('underscore'),
+var $ = require('jquery-browserify');
+var  _ = require('underscore'),
     Backbone = require('backbone'),
     Marionette = require('backbone.marionette'),
     ui = require('jqueryui-browser/ui/jquery-ui.js');
-    
-    
+
+//window.$ = window.jQuery = $;
+
 require('./assets/js/jquery.phono.js');
-require('./shared.js');
 
-// Main application initialization
-var App = window.App = new Marionette.Application();
+var App = window.App = require('./shared.js');
 
-App.addRegions({
-    sidebar: '#sidebar',
-    main: '#main'
-});
-
+/**
+ * Backbone.js client side initialization.
+ */
 App.addInitializer(function(options) {
-    App.models = options.models;
-    App.templates = options.models;
-    App.views = options.views;
-    App.routers = options.routers;
     // start a router
-    App.appRouter = new App.routers.App();
+    this.appRouter = new this.routers.App();
 
-    App.Conferences =  new App.models.Conferences();
-
-    App.sidebar.show(new App.views.Conferences({
-        collection: App.Conferences
+    // Manage the initial regions
+    this.addRegions({
+        sidebar: '#sidebar',
+        main: '#main'
+    });
+    this.sidebar.show(new this.views.Conferences({
+        collection: this.Conferences
     }));
 
-    App.socket = io.connect();
-    App.socket.on("queue", function(users) {
-      console.log(users);
-  });
-  App.socket.on("conferences:add", function(conf) {
-      App.Conferences.add(conf);
-  });
-  App.socket.on("conferences:reset", function(conf) {
-      App.Conferences.reset(conf, {add: true});
-  });
-    setupPhono(App);
+    this.main.show(new this.views.Callers({
+        collection: this.Callers
+    }));
 
+    // Start the path tracking
     Backbone.history.start({pushState: true, silent: false, root: "/"});
 });
 
-function setupPhono(App) {
-    var myPhonoId, mySocketId, call;
-    
-    var phono = App.phono = $.phono({
+/**
+ * Socket.io initialization
+ */
+App.addInitializer(function(options) {
+    this.socket = io.connect();
+    this.socket.on('data', function (data) {
+        console.log(data);
+    });
+
+    this.socket.on('error', function (reason){
+        console.error('Unable to connect Socket.IO', reason);
+    });
+
+    this.socket.on('connect', function (){
+        console.info('successfully established a working and authorized connection');
+    });
+});
+
+/**
+* Phono.js initialization
+*/
+App.addInitializer(function(options) {
+    this.phono = $.phono({
         apiKey: "fadd626b7b4942ef4e2d26490e331dde",
         audio: {
             type: 'auto',
@@ -58,29 +66,22 @@ function setupPhono(App) {
             }
         },
         onReady: function(evt, phone) {
-            //debugger;
-            console.log("phono ready = " + App.phono.sessionId);
-            console.log("socket = " + App.socket.socket.sessionid);
-            myPhonoId = phono.sessionId;
-            mySocketId = App.socket.socket.sessionid;
-            App.socket.emit("hello", phono.sessionId);
-
-            this.phone.dial("app:9991484224", {
-                headers: [
-                    { name: 'x-socketid', value: mySocketId },
-                    { name: 'x-phonoid', value: myPhonoId}
-                ]
-            });
+            App.vent.trigger('phonoReady', evt, phone);
         }
-
     });
-}
-
-
-
-App.start({
-    templates: require('./templates/index.js'),
-    models: require('./models/index.js'),
-    views: require('./views/index.js'),
-    routers: require('./routers/index.js')
 });
+
+App.vent.on('phonoReady', function(evt, phone) {
+    var myPhonoId = App.phono.sessionId;
+    var mySocketId = App.socket.socket.sessionid;
+    App.socket.emit("phonoReady", App.phono.sessionId);
+
+    this.phone.dial("app:9991484224", {
+        headers: [
+            { name: 'x-socketid', value: mySocketId },
+            { name: 'x-phonoid', value: myPhonoId}
+        ]
+    });
+});
+
+App.start();

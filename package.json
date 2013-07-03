@@ -23,6 +23,9 @@
     "browserify-middleware": "~1.13.0",
     "socket.io": "~0.9.16",
     "request": "~2.21.0",
-    "glob": "~3.2.1"
+    "glob": "~3.2.1",
+    "cookie": "~0.1.0",
+    "connect": "~2.8.1",
+    "jQuery": "~1.7.4"
   }
 }
