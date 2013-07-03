@@ -33,30 +33,28 @@ var app = express();
 _.extend(App, app);
 App.express = app;
 
-    App.locals.siteName = 'tropo test';
-    App.locals.title = 'tropo test';
-    App.locals.secret = 'good thing App is just a demo, right?';
-
-    App.set('views', __dirname + '/templates');
-    App.set('view engine', 'jade');
-
-    App.configure('production', function() {
-        App.enable('trust proxy');
-    });
-
-    App.use(express.bodyParser());
-    App.use(express.static(__dirname + '/assets'));
-    App.use(express.logger());
-    App.use(express.cookieParser());
-    App.use(express.session({secret: 'secret', key: 'express.sid'}));
-
-    App.server  = http.createServer(App.express);
-
 /**
  * Basic middleware setup
  */
-App.addInitializer(function middlewareConfig(options) {
+App.locals.siteName = 'tropo test';
+App.locals.title = 'tropo test';
+App.locals.secret = 'good thing App is just a demo, right?';
+
+App.set('views', __dirname + '/templates');
+App.set('view engine', 'jade');
+
+App.configure('production', function() {
+    App.enable('trust proxy');
 });
+
+App.use(express.bodyParser());
+App.use(express.static(__dirname + '/assets'));
+App.use(express.logger());
+App.use(express.cookieParser());
+App.use(express.session({secret: 'secret', key: 'express.sid'}));
+
+App.server  = http.createServer(App.express);
+
 
 /**
  * Add the browserify stuff
