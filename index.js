@@ -1,12 +1,16 @@
-var App = require('./server.js');
+var Graft = require('./server.js');
 
 var ns = new (require('Nonsense'))();
 var _ = require('underscore');
 
-App.get('/', function(req, res) {
+var browserify = require('browserify');
+
+
+
+Graft.get('/', function(req, res) {
+    debugger;
     res.render('layout', {});
 });
-
 
 /*
 App.post('/session.json', function (req, res) {

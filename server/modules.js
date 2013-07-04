@@ -44,11 +44,14 @@ require.extensions['._'] = function(module, filename) {
 
 // Load wrappers
 var wrappers = {
-    model: require('./model.wrap._'),
-    view: require('./view.wrap._')
+    model        : require('./model.wrap._'),
+    view         : require('./view.wrap._'),
+    server       : require('./server.wrap._')
 };
 
 modulePathTpl = _.template("Graft.{{kind}}.{{name}}");
+
+
 require.extensions['.graft.js'] = function(module, filename) {
     var content = fs.readFileSync(filename, 'utf8');
     var kind = _.singularize(path.basename(path.dirname(filename)));
@@ -69,7 +72,6 @@ require.extensions['.graft.js'] = function(module, filename) {
         }
     };
     content = wrappers[kind] ? wrappers[kind](opts) : content;
-
     module._compile(content, filename);
 };
 
