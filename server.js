@@ -10,20 +10,6 @@ var http         = require('http');
 var fs           = require('fs');
 var _            = require('underscore');
 
-// Default template engine.
-require.extensions['.jade'] = function(module, filename) {
-    var content = fs.readFileSync(filename, 'utf8');
-
-    try {
-        module.exports = jade.compile(content);
-    } catch (err) {
-        var lines = err.message.split('\n');
-        lines.splice(1, 0, '    in template ' + filename);
-        err.message = lines.join('\n');
-        throw err;
-    }
-};
-
 
 var $ = global.$ = require('jquery');
 var App = require('./shared');
@@ -49,7 +35,7 @@ App.configure('production', function() {
 
 App.use(express.bodyParser());
 App.use(express.static(__dirname + '/assets'));
-App.use(express.logger());
+//App.use(express.logger());
 App.use(express.cookieParser());
 App.use(express.session({secret: 'secret', key: 'express.sid'}));
 
@@ -123,9 +109,11 @@ App.addInitializer(function socketConfig(options) {
             );
 
             if (handshakeData.cookie['express.sid'] == handshakeData.sessionID) {
+                console.log('cookie is invalid');
                 return accept('Cookie is invalid.', false);
             }
         } else {
+                console.log('no cookie transmitted');
             return accept('No cookie transmitted.', false);
         } 
         accept(null, true);

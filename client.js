@@ -109,7 +109,9 @@ App.vent.on('phonoReady', function(evt, phone) {
             { name: 'x-phonoid', value: myPhonoId },
             { name: 'x-userid', value: user }
         ];
-        App.phono.phone.dial("app:9991484224", { headers: headers });
+        App.phono.phone.dial("app:9991484224", { 
+            headers: headers
+        });
     });
 });
 

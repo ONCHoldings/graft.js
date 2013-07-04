@@ -41,6 +41,8 @@ App.addInitializer(function(options) {
         socket.emit('conferences:reset', this.conferences);
         socket.emit('callers:reset', this.callers);
 
+        console.log('socket connected' , socket.id);
+
         function getSessionId(socket) {
             var id = socket.id;
             var handshake = socket.manager.handshaken[id];
@@ -56,6 +58,7 @@ App.addInitializer(function(options) {
         }
 
         socket.on('phonoReady', function (data) {
+            console.log('socket ' + socket.id + ' connected to phono');
             caller.set('status', 'connected');
             socket.emit('phoneTropo', "app:9991484224", caller.id);
         });
