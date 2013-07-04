@@ -3,15 +3,12 @@ var Graft = require('./server.js');
 var ns = new (require('Nonsense'))();
 var _ = require('underscore');
 
-var browserify = require('browserify');
-
-
 
 Graft.get('/', function(req, res) {
-    debugger;
     res.render('layout', {});
 });
 
+Graft.start();
 /*
 App.post('/session.json', function (req, res) {
     var tropo = new TropoWebAPI();
@@ -78,4 +75,3 @@ App.addInitializer(function(options) {
 });
 
 */
-App.start();

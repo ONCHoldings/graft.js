@@ -9,15 +9,25 @@ _.extend(Graft, {
     models: {},
     views: {},
     routers: {},
-    servers: {}
-});
+    servers: {},
+
+    bundles: {
+        views : [],
+        models: [],
+        routers: [],
+        templates: [],
+        vendor: []
+    }
+})
 
 // Default template engine.
 require.extensions['.jade'] = function(module, filename) {
     var content = fs.readFileSync(filename, 'utf8');
+    var name = path.basename(filename).replace(/\..+$/, '');
 
     try {
         module.exports = jade.compile(content);
+        Graft.bundles.templates.push[filename];
     } catch (err) {
         var lines = err.message.split('\n');
         lines.splice(1, 0, '    in template ' + filename);
@@ -33,6 +43,7 @@ require.extensions['._'] = function(module, filename) {
 
     try {
         module.exports = _.template(content);
+        Graft.bundles.templates.push[filename];
     } catch (err) {
         var lines = err.message.split('\n');
         lines.splice(1, 0, '    in template ' + filename);
@@ -51,8 +62,7 @@ var wrappers = {
 
 modulePathTpl = _.template("Graft.{{kind}}.{{name}}");
 
-
-require.extensions['.graft.js'] = function(module, filename) {
+function wrapJS(filename) {
     var content = fs.readFileSync(filename, 'utf8');
     var kind = _.singularize(path.basename(path.dirname(filename)));
     var name = path.basename(filename).replace(/\..+$/, '');
@@ -72,7 +82,14 @@ require.extensions['.graft.js'] = function(module, filename) {
         }
     };
     content = wrappers[kind] ? wrappers[kind](opts) : content;
-    module._compile(content, filename);
+
+    return content;
+};
+
+require.extensions['.graft.js'] = function(module, filename) {
+    var kind = _.singularize(path.basename(path.dirname(filename)));
+    Graft.bundles[kind] && Graft.bundles[kind].push(filename);
+    module._compile(wrapJS(filename), filename);
 };
 
 // Cannot only add .graft.js to known extensions because path.ext() only looks
@@ -81,5 +98,6 @@ var _requirejs = require.extensions['.js'];
 require.extensions['.js'] = function(module, filename) {
     if (/^.+\.graft\.js$/.test(filename))
         return require.extensions['.graft.js'](module,filename);
+    Graft.bundles['vendor'] && Graft.bundles['vendor'].push(filename);
     return _requirejs(module, filename);
 }

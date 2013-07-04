@@ -11,6 +11,8 @@ var http         = require('http');
 var fs           = require('fs');
 var _            = require('underscore');
 
+var _browserify = require('browserify');
+
 /**
 * Basic middleware setup
 */
@@ -46,27 +48,45 @@ this.addInitializer(function browserifyConfig(options) {
     this.get('/js/templates.js', browserify(templates, {transform: transFn}));
     var external = _.clone(templates);
 
+    var b = new _browserify();
     // Import vendor stuff
-    var vendor = [
-        'jquery-browserify', 'underscore',
-        'underscore.string', './shared/underscore.js',
-        'backbone', 'backbone.marionette',
-        'jqueryui-browser/ui/jquery-ui.js',
-        './assets/js/jquery.phono.js'
-    ];
-    this.get('/js/vendor.js', browserify(vendor, {ignore: ['jquery-browser']}));
-    external = external.concat(vendor);
+    var vendor = {
+        'jquery-browserify' : {expose: 'jquery', noParse: true},
+        './templates/index.js' : {},
+        'underscore' : {},
+        'underscore.string' : {},
+        'backbone' : {},
+        'backbone.marionette' : {},
+        'jqueryui-browser/ui/jquery-ui.js' : {expose: 'jquery.ui', noParse: true},
+        './assets/js/jquery.phono.js' : {expose: 'jquery.phono', noParse: true}
+    };
+    
+    _.each(vendor, function(v, k) {
+        b.require(k, _.defaults(v, { expose: k }));
+        external.push(v.expose || k);
+    });
+
+    this.get('/js/vendor.js', function(req, res, next) {
+        b.bundle(function(err, src) {
+            res.send(err || src);
+        });
+    });
+
+   // browserify(vendor, {ignore: ['jquery-browser']}));
+    //external = external.concat(vendor);
 
     // Do the other types.
     var files = ['resources', 'models', 'views', 'routers'];
     var processFn = function(memo, file) {
-        var files = glob.sync('./' + file +'/*.js*'); // ugh. hack
+        var files = glob.sync('./' + file +'/*.js*');
+
         this.get('/js/' + file +'.js', browserify(files, {external: memo}));
         memo = memo.concat(files);
         return memo;
     };
     external = _.reduce(files, processFn, external, this);
 
+        //{'./shared/underscore.js' : {}},
     // Handle shared code between server and client.
     this.get('/js/shared.js', browserify(['../templates/index.js', '../shared.js'], {external: external}));
     external.push('./shared.js');
