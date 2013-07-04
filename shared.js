@@ -1,5 +1,4 @@
-var _ = require('underscore');
-
+var _ = require('./shared/underscore.js');
 
 var Backbone = require('backbone');
 Backbone.$ = $;

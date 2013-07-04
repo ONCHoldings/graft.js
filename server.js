@@ -13,6 +13,9 @@ var _            = require('underscore');
 
 var $ = global.$ = require('jquery');
 var App = require('./shared');
+Graft = global.Graft = App;
+
+require('./server/modules.js');
 
 // This is now an express App/Marionette app hybrid.
 var app = express();
@@ -58,6 +61,7 @@ App.addInitializer(function browserifyConfig(options) {
     // Import vendor stuff
     var vendor = [
         'jquery-browserify', 'underscore',
+        'underscore.string', './shared/underscore.js',
         'backbone', 'backbone.marionette',
         'jqueryui-browser/ui/jquery-ui.js',
         './assets/js/jquery.phono.js'

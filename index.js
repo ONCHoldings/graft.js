@@ -1,4 +1,4 @@
-var App = require('./server');
+var App = require('./server.js');
 
 var ns = new (require('Nonsense'))();
 var _ = require('underscore');
@@ -7,6 +7,8 @@ App.get('/', function(req, res) {
     res.render('layout', {});
 });
 
+
+/*
 App.post('/session.json', function (req, res) {
     var tropo = new TropoWebAPI();
     var headers = req.body.session.headers;
@@ -71,5 +73,5 @@ App.addInitializer(function(options) {
     this.io.sockets.on('connection', _.bind(onConnect, this));
 });
 
-
+*/
 App.start();
