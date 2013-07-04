@@ -1,7 +1,4 @@
-var Backbone = require('backbone'),
-    _ = require('underscore');
-
-module.exports = Backbone.Marionette.ItemView.extend({
+this.view = Backbone.Marionette.ItemView.extend({
     tagName: 'article',
     className: 'caller',
     modelEvents: {
@@ -20,4 +17,3 @@ module.exports = Backbone.Marionette.ItemView.extend({
     ),
 
 });
-

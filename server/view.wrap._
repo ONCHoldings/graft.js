@@ -1,0 +1,7 @@
+Graft.module("{{module.path}}", function({{module.name}}, Graft, Backbone, Marionette, $, _) {
+    this.{{module.kind}} = new Backbone.{{_.capitalize(module.kind)}}();
+
+    {{content}};
+    
+    Graft.{{_.pluralize(module.kind)}}.{{module.name}} = this.{{module.kind}};
+});

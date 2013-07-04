@@ -1,3 +1,3 @@
-this.model =  Backbone.Collection.extend({
+this.model = Backbone.Collection.extend({
     model: Graft.models.Conference 
 });

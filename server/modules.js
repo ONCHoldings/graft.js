@@ -4,9 +4,14 @@ var fs = require('fs');
 var jade = require('jade');
 var _ = require('underscore');
 
+var server = require('./server.js');
 _.extend(Graft, {
-   models: {}
+    models: {},
+    views: {},
+    routers: {},
+    servers: {}
 });
+
 // Default template engine.
 require.extensions['.jade'] = function(module, filename) {
     var content = fs.readFileSync(filename, 'utf8');
@@ -39,7 +44,8 @@ require.extensions['._'] = function(module, filename) {
 
 // Load wrappers
 var wrappers = {
-    model: require('./model.wrap._')
+    model: require('./model.wrap._'),
+    view: require('./view.wrap._')
 };
 
 modulePathTpl = _.template("Graft.{{kind}}.{{name}}");
