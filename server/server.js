@@ -23,6 +23,7 @@ function Server(moduleName, app){
 
   this.triggerMethod = Marionette.triggerMethod;
 };
+
 Graft.Server = Server;
 
 // Extend the Module prototype with events / listenTo, so that the module

@@ -1,3 +1,3 @@
-this.model = Backbone.Collection.extend({
+module.exports = Backbone.Collection.extend({
     model: Graft.models.Caller
 });

@@ -2,3 +2,5 @@ Graft.module("{{module.path}}", function({{module.name}}, Graft, Backbone, Mario
     {{content}};
     Graft.{{_.pluralize(module.kind)}}.{{module.name}} = this;
 });
+
+module.exports = Graft.module("{{module.path}}");

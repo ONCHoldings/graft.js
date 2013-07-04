@@ -1,15 +1,13 @@
 var Graft = require('./server.js');
 
-var ns = new (require('Nonsense'))();
-var _ = require('underscore');
-
-
 Graft.get('/', function(req, res) {
     res.render('layout', {});
 });
 
 Graft.start();
 /*
+var _ = require('underscore');
+var ns = new (require('Nonsense'))();
 App.post('/session.json', function (req, res) {
     var tropo = new TropoWebAPI();
     var headers = req.body.session.headers;

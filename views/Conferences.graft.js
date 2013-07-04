@@ -1,4 +1,4 @@
-this.view = Backbone.Marionette.CompositeView.extend({
+module.exports = Backbone.Marionette.CompositeView.extend({
     itemView: Graft.views.Conference,
     itemViewContainer: '#conferences',
     template: require('../templates/Conferences.jade'),

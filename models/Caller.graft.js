@@ -1,4 +1,4 @@
-this.model = Backbone.Model.extend({
+module.exports = Backbone.Model.extend({
     defaults: {
         conference: 'default',
         status: 'offline'

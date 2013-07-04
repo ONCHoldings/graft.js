@@ -29,18 +29,35 @@ Marionette.Layout.augment = Marionette.ItemView.augment = augment;
 
 // Main application initialization
 // this is global on purpose. sucks i know.
-App = new Marionette.Application();
+Graft = new Marionette.Application();
 
-App.addInitializer(function(options) {
-    this.templates = require('./templates/index.js');
+_.extend(Graft, {
+    models: {},
+    views: {},
+    routers: {},
+    servers: {},
+
+    bundles: {
+        views : [],
+        models: [],
+        routers: [],
+        templates: [],
+        vendor: []
+    }
+});
+
+
+
+Graft.addInitializer(function(options) {
+    require('./templates/index.js');
     require('./models/index.js');
-    this.views     = require('./views/index.js');
-    this.routers   = require('./routers/index.js');
+    require('./views/index.js');
+    require('./routers/index.js');
 });
 
-App.addInitializer(function(options) {
-    this.conferences = new App.models.Conferences();
-    this.callers     = new App.models.Callers();
+Graft.on('start', function(options) {
+    this.conferences = new Graft.models.Conferences();
+    this.callers     = new Graft.models.Callers();
 });
 
-module.exports = App;
+module.exports = Graft;

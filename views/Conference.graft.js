@@ -1,4 +1,4 @@
-this.view = Backbone.Marionette.ItemView.extend({
+module.exports = Backbone.Marionette.ItemView.extend({
     tagName: 'li',
     className: 'active',
     template: require('../templates/Conference.jade'),

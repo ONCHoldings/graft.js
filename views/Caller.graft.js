@@ -1,4 +1,4 @@
-this.view = Backbone.Marionette.ItemView.extend({
+module.exports = Backbone.Marionette.ItemView.extend({
     tagName: 'article',
     className: 'caller',
     modelEvents: {

@@ -60,10 +60,9 @@ var wrappers = {
     server       : require('./server.wrap._')
 };
 
-modulePathTpl = _.template("Graft.{{kind}}.{{name}}");
+modulePathTpl = _.template("App.{{kind}}.{{name}}");
+function wrapJS(filename, content) {
 
-function wrapJS(filename) {
-    var content = fs.readFileSync(filename, 'utf8');
     var kind = _.singularize(path.basename(path.dirname(filename)));
     var name = path.basename(filename).replace(/\..+$/, '');
 
@@ -86,11 +85,15 @@ function wrapJS(filename) {
     return content;
 };
 
+
 require.extensions['.graft.js'] = function(module, filename) {
     var kind = _.singularize(path.basename(path.dirname(filename)));
     Graft.bundles[kind] && Graft.bundles[kind].push(filename);
-    module._compile(wrapJS(filename), filename);
+    var content = fs.readFileSync(filename, 'utf8');
+    module._compile(wrapJS(filename, content), filename);
 };
+require.extensions['.graft.js'].process = wrapJS;
+
 
 // Cannot only add .graft.js to known extensions because path.ext() only looks
 // at what is after last '.' so we override '.js' handling.
