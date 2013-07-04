@@ -4,6 +4,9 @@ var fs = require('fs');
 var jade = require('jade');
 var _ = require('underscore');
 
+_.extend(Graft, {
+   models: {}
+});
 // Default template engine.
 require.extensions['.jade'] = function(module, filename) {
     var content = fs.readFileSync(filename, 'utf8');
@@ -35,18 +38,17 @@ require.extensions['._'] = function(module, filename) {
 
 
 // Load wrappers
-var wrappers = _.map(glob.sync('./server/*.wrap._'), function(file) {
-    return require('./' + path.basename(file));
-});
-
+var wrappers = {
+    model: require('./model.wrap._')
+};
 
 modulePathTpl = _.template("Graft.{{kind}}.{{name}}");
 require.extensions['.graft.js'] = function(module, filename) {
     var content = fs.readFileSync(filename, 'utf8');
-    var kind = utils.singularize(path.basename(path.dirname(filename)));
+    var kind = _.singularize(path.basename(path.dirname(filename)));
     var name = path.basename(filename).replace(/\..+$/, '');
 
-    var path = modulePathTpl({ 
+    var _path = modulePathTpl({ 
         name: _.capitalize(name),
         kind: _.capitalize(kind)
     });
@@ -57,13 +59,19 @@ require.extensions['.graft.js'] = function(module, filename) {
         module: {
             kind: kind,
             name: name,
-            path: path
+            path: _path
         }
     };
-console.log(opts);
     content = wrappers[kind] ? wrappers[kind](opts) : content;
 
     module._compile(content, filename);
 };
 
-
+// Cannot only add .graft.js to known extensions because path.ext() only looks
+// at what is after last '.' so we override '.js' handling.
+var _requirejs = require.extensions['.js'];
+require.extensions['.js'] = function(module, filename) {
+    if (/^.+\.graft\.js$/.test(filename))
+        return require.extensions['.graft.js'](module,filename);
+    return _requirejs(module, filename);
+}

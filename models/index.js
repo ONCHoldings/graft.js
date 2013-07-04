@@ -1,6 +1,6 @@
 module.exports = {
-    Conference: require('./Conference'),
-    Conferences: require('./Conferences'),
-    Caller: require('./Caller'),
-    Callers: require('./Callers')
+    Conference: require('./Conference.graft.js'),
+    Conferences: require('./Conferences.graft.js'),
+    Caller: require('./Caller.graft.js'),
+    Callers: require('./Callers.graft.js')
 };

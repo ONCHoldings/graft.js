@@ -33,7 +33,7 @@ App = new Marionette.Application();
 
 App.addInitializer(function(options) {
     this.templates = require('./templates/index.js');
-    this.models    = require('./models/index.js');
+    require('./models/index.js');
     this.views     = require('./views/index.js');
     this.routers   = require('./routers/index.js');
 });
