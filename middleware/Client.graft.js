@@ -79,7 +79,7 @@ this.addInitializer(function(opts) {
             }
             function write() {
                 this.queue(process(file, buffer));
-                this.queue();
+                this.queue(null);
             }
             return through(read, write);
         });
@@ -108,9 +108,9 @@ this.addInitializer(function(opts) {
     bfyFn.call(this, 'routers', './routers/*.graft.js');
 
     // Handle shared code between server and client.
-    this.get('/js/shared.js', bmw(['./shared.js'], {external: this.external}));
-    this.external.push('./shared.js');
+    this.get('/js/graft.shared.js', bmw(['./graft.shared.js'], {external: this.external}));
+    this.external.push('./graft.shared.js');
 
     // Finally, the initialization code.
-    this.get('/js/client.js', bmw('../client.js', {entry: true, external: this.external}));
+    this.get('/js/graft.client.js', bmw('../graft.client.js', {external: this.external}));
 });

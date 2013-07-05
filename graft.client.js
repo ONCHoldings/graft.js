@@ -3,7 +3,7 @@ var  _ = require('underscore'),
     Backbone = require('backbone'),
     Marionette = require('backbone.marionette');
 
-var Graft = window.Graft = require('./shared.js');
+var Graft = window.Graft = require('./graft.shared.js');
 
 
 /**

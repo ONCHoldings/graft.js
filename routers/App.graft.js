@@ -1,6 +1,3 @@
-var Backbone = require('backbone');
-// probably dont even need this.
-
 module.exports = Backbone.Router.extend({
     initialize: function(opt) {
     },

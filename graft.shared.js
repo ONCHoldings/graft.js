@@ -35,7 +35,7 @@ _.extend(Graft, {
     models: {},
     views: {},
     routers: {},
-    middlewares: {},
+    middleware: {},
 
     bundles: {
         views : [],

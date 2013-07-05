@@ -1,3 +1,3 @@
 module.exports = {
-    App: require('./App.js')
+    App: require('./App.graft.js')
 };
