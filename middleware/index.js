@@ -5,7 +5,7 @@ var Marionette = require('backbone.marionette');
 var _          = require('underscore');
 
 
-function Server(moduleName, app){
+function Middleware(moduleName, app){
   this.moduleName = moduleName;
 
   // store sub-modules
@@ -24,16 +24,16 @@ function Server(moduleName, app){
   this.triggerMethod = Marionette.triggerMethod;
 };
 
-Graft.Server = Server;
+Graft.Middleware = Middleware;
 
 // Extend the Module prototype with events / listenTo, so that the module
 // can be used as an event aggregator or pub/sub.
-_.extend(Server.prototype, Marionette.Module.prototype);
+_.extend(Middleware.prototype, Marionette.Module.prototype);
 
-Server.augment = Backbone.Router.augment;
-Server.extend = Backbone.Router.extend;
-Server.toString = function() {
-    return '<Server ' + this.title + '>';
+Middleware.augment = Backbone.Router.augment;
+Middleware.extend = Backbone.Router.extend;
+Middleware.toString = function() {
+    return '<Middleware ' + this.title + '>';
 };
 
 
@@ -44,8 +44,8 @@ Marionette.Module._getModule = function(parentModule, moduleName, app, def, args
 
     if (!module){
         // Create a new module if we don't have one
-        if (parentModule.moduleName == 'Server') {
-            module = new Graft.Server(moduleName, app);
+        if (parentModule.moduleName == 'Middleware') {
+            module = new Graft.Middleware(moduleName, app);
         } else {
             module = new Marionette.Module(moduleName, app);
         }
@@ -57,5 +57,5 @@ Marionette.Module._getModule = function(parentModule, moduleName, app, def, args
     return module;
 };
 
-module.exports = Graft.Server;
+module.exports = Graft.Middleware;
 

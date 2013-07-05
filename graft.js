@@ -7,6 +7,6 @@ require('./middleware');
 require('./middleware/Server.graft.js');
 require('./middleware/Client.graft.js');
 
-_.extend(Graft, Graft.servers.Core);
+_.extend(Graft, Graft.middleware.Core);
 
 module.exports = App;

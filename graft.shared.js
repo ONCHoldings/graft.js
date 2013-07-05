@@ -1,4 +1,4 @@
-var _ = require('./shared/underscore.js');
+var _ = require('./lib/mixins.js');
 
 var Backbone = require('backbone');
 Backbone.$ = $;
@@ -35,7 +35,7 @@ _.extend(Graft, {
     models: {},
     views: {},
     routers: {},
-    servers: {},
+    middlewares: {},
 
     bundles: {
         views : [],
