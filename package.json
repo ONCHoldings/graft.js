@@ -16,7 +16,6 @@
     "jade": "~0.32.0",
     "browserify": "~2.22.0",
     "underscore": "~1.4.4",
-    "tropo-webapi": "~1.0.16",
     "jquery-browserify": "~1.8.1",
     "jqueryui-browser": "~1.10.2-1",
     "backbone.marionette": "~1.0.2",
@@ -27,7 +26,6 @@
     "cookie": "~0.1.0",
     "connect": "~2.8.1",
     "jQuery": "~1.7.4",
-    "Nonsense": "~0.1.2",
     "underscore.string": "~2.3.1"
   }
 }
