@@ -46,8 +46,6 @@ _.extend(Graft, {
     }
 });
 
-
-
 Graft.addInitializer(function(options) {
     require('./templates/index.js');
     require('./models/index.js');

@@ -5,7 +5,6 @@ var  _ = require('underscore'),
 
 var Graft = window.Graft = require('./graft.shared.js');
 
-
 /**
  * Backbone.js client side initialization.
  */
