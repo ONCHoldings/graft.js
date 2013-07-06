@@ -6,7 +6,7 @@ var path    = require('path');
 
 
 var Client = require('./Client.graft.js');
-
+var Sockets = require('./Sockets.graft.js');
 /**
 * Basic middleware setup
 */
@@ -38,4 +38,3 @@ this.addInitializer(function(opts) {
 this.addInitializer(function serverStart(options) {
     this.server.listen(12400);
 });
-

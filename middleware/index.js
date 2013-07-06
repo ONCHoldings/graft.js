@@ -4,24 +4,32 @@ var Backbone   = require('backbone');
 var Marionette = require('backbone.marionette');
 var _          = require('underscore');
 
+var slice = [].slice;
 
 function Middleware(moduleName, app){
-  this.moduleName = moduleName;
+    this.moduleName = moduleName;
+    this.submodules = {};
 
-  // store sub-modules
-  this.submodules = {};
+    this._setupInitializersAndFinalizers();
 
-  this._setupInitializersAndFinalizers();
+    this.startWithParent = true;
+    // store the configuration for this module
+    this.app     = app;
+    var _express = express();
+    this.express = _express;
+    this.server  = http.createServer(this.express);
 
-  // store the configuration for this module
-  this.app = app;
-  this.startWithParent = true;
+    this.locals = this.express.locals;
+    this.triggerMethod = Marionette.triggerMethod;
 
-  this.express = express();
-  _.extend(this, this.express);
-  this.server  = http.createServer(this.express);
+    var expressMethods = ['all', 'get', 'post', 'delete', 'use', 'set', 'configure'];
 
-  this.triggerMethod = Marionette.triggerMethod;
+    _.each(expressMethods, function(method) {
+        this[method] = function() {
+            var args = slice.call(arguments);
+            return _express[method].apply(_express, args);
+        };
+    }, this);
 };
 
 Graft.Middleware = Middleware;

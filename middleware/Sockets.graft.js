@@ -1,7 +1,11 @@
+var io = require('socket.io');
 
 // Initialize the sockets
 this.addInitializer(function socketConfig(options) {
-    var io = this.io = require('socket.io').listen(this.server);
+    console.log(arguments);
+
+
+    var io = this.io = io.listen(this.server);
 
     io.configure(function() {
         io.enable("browser client minification");
@@ -30,4 +34,3 @@ this.addInitializer(function socketConfig(options) {
         accept(null, true);
     });
 });
-
