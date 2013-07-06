@@ -8,6 +8,7 @@ Graft.server = true;
 
 require('./lib/modules');
 require('./middleware');
+
 require('./middleware/Server.graft.js');
 require('./middleware/REST.graft.js');
 require('./middleware/Data.test.graft.js');
@@ -23,5 +24,17 @@ _.each(expressMethods, function(method) {
     };
 }, this);
 
+function notImplemented() {
+    var dfr = new $.Deferred();
+    dfr.reject(403, "Not Implemented");
+    return dfr.promise();
+}
+
+// Default data handlers for models.
+Graft.reqres.setHandler('model:read', notImplemented);
+Graft.reqres.setHandler('model:update', notImplemented);
+Graft.reqres.setHandler('model:delete', notImplemented);
+Graft.reqres.setHandler('model:create', notImplemented);
+Graft.reqres.setHandler('collection:read', notImplemented);
 
 module.exports = App = Graft;

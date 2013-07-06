@@ -73,4 +73,4 @@ this.addInitializer(function(opts) {
 Graft.Middleware.on('listen', function(server) {
     debug('Mounting client to server');
     server.use(this);
-});
+}, this);

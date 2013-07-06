@@ -38,7 +38,7 @@ _.extend(this, {
 
 
 this.addInitializer(function(opts) {
-    debug("adding handler for readming models");
+    debug("adding handler for reading models");
     Graft.reqres.setHandler('model:read', this.readModel);
     Graft.reqres.setHandler('collection:read', this.readCollection);
 });
