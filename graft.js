@@ -9,7 +9,8 @@ Graft.server = true;
 require('./lib/modules');
 require('./middleware');
 require('./middleware/Server.graft.js');
-require('./middleware/Sockets.graft.js');
+require('./middleware/REST.graft.js');
+require('./middleware/Data.test.graft.js');
 
 var Server = Graft.Middleware.Server;
 
