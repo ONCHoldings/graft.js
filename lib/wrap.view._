@@ -8,4 +8,4 @@ Graft.module("{{module.path}}", function(module, Graft, Backbone, Marionette, $,
         module.exports;
 });
 
-module.exports = Graft.module("{{module.path}}");
+module.exports = Graft.module("{{module.path}}").exports;
