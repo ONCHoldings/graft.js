@@ -1,7 +1,6 @@
 /**
  * Server that generates and serves the client side app.
  */
-
 var Browserify = require('browserify');
 var bmw        = require('browserify-middleware');
 var jadeify2   = require('jadeify2');
@@ -35,6 +34,7 @@ this.addInitializer(function templates(options) {
 this.addInitializer(function vendor(options) {
     // Import vendor stuff
     var vendor = [ 
+        'debug',
         'jquery-browserify',
         './templates/index.js',
         'underscore',
@@ -69,3 +69,11 @@ this.addInitializer(function(opts) {
     // Finally, the initialization code.
     this.get('/js/graft.client.js', bmw('../graft.client.js', {external: this.external}));
 });
+
+
+this.addInitializer(function(opts) {
+    debug('Mounting client to server');
+    Graft.Middleware.Server.use(this);
+
+});
+

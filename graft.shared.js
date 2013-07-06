@@ -52,10 +52,11 @@ Graft.addInitializer(function(options) {
     require('./views/index.js');
     require('./routers/index.js');
 });
-
+/*
 Graft.on('start', function(options) {
+    console.log(Graft.models);
     this.conferences = new Graft.models.Conferences();
     this.callers     = new Graft.models.Callers();
-});
+});*/
 
 module.exports = Graft;

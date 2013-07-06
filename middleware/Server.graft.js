@@ -1,9 +1,8 @@
 /**
  * Core application server, that mounts all the others.
- */
+*/
 var express = require('express');
 var path    = require('path');
-
 
 var Client = require('./Client.graft.js');
 var Sockets = require('./Sockets.graft.js');
@@ -11,6 +10,7 @@ var Sockets = require('./Sockets.graft.js');
 * Basic middleware setup
 */
 this.addInitializer(function(opts) {
+    debug('initialize server.graft');
     this.locals.siteName = 'tropo test';
     this.locals.title    = 'tropo test';
     this.locals.secret   = 'good thing this is just a demo, right?';
@@ -26,12 +26,6 @@ this.addInitializer(function(opts) {
     this.use(express.static(__dirname + '/../assets'));
     this.use(express.cookieParser());
     this.use(express.session({secret: 'secret', key: 'express.sid'}));
-});
-
-
-this.addInitializer(function(opts) {
-    Client.start();
-    this.use(Client);
 });
 
 // Start the server

@@ -6,17 +6,17 @@ Graft = global.Graft = require('./graft.shared');
 require('./lib/modules');
 require('./middleware');
 require('./middleware/Server.graft.js');
-require('./middleware/Sockets.graft.js');
 
-var Server = Graft.module('Graft.Middleware.Server');
-var Sockets = Graft.module('Graft.Middleware.Sockets');
+var Server = Graft.Middleware.Server;
 
-Server.on('start', function() { 
-    console.log('hello');
-    Sockets.start();
-    this.use(Sockets);
-});
+var expressMethods = ['all', 'get', 'post', 'delete', 'use', 'set', 'configure'];
 
-_.extend(Graft, Graft.middleware.Server);
+_.each(expressMethods, function(method) {
+    Graft[method] = function() {
+        var args = Array.prototype.slice.call(arguments);
+        return Server[method].apply(Server, args);
+    };
+}, this);
+
 
 module.exports = App = Graft;

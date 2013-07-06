@@ -1,4 +1,5 @@
 Graft.module("{{module.path}}", function(module, Graft, Backbone, Marionette, $, _) {
+    var debug = require('debug')('graft:{{module.path.toLowerCase()}}');
     {{content}};
     Graft.{{_.pluralize(module.kind)}}.{{module.name}} = 
         this.{{module.kind}} =
@@ -6,4 +7,4 @@ Graft.module("{{module.path}}", function(module, Graft, Backbone, Marionette, $,
         module.exports;
 });
 
-module.exports = Graft.module("{{module.path}}");
+module.exports = Graft.module("{{module.path}}").exports;
