@@ -19,11 +19,11 @@ Graft.on('start', function(options) {
         main: '#main'
     });
     this.sidebar.show(new this.views.Conferences({
-        collection: this.conferences
+        collection: this.State.conferences
     }));
 
     this.main.show(new this.views.Callers({
-        collection: this.callers
+        collection: this.State.callers
     }));
 
     // Start the path tracking
