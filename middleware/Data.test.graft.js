@@ -28,18 +28,18 @@ _.extend(this, {
 
         return dfr.promise();
     },
-    readCollection: function readModel(model, id) {
+    readCollection: function readModel(col) {
+        debug('read collection ' + col);
         var dfr = new $.Deferred();
-        testData[model] ? dfr.resolve(m) : dfr.reject(404);
+        testData[col] ? dfr.resolve(testData[col]) : dfr.reject(404);
         return dfr.promise();
     }
-
 });
 
 
 this.addInitializer(function(opts) {
     debug("adding handler for readming models");
     Graft.reqres.setHandler('model:read', this.readModel);
+    Graft.reqres.setHandler('collection:read', this.readCollection);
 });
-
 

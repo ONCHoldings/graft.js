@@ -22,7 +22,7 @@ _.extend(this, {
     },
     readCollection: function(req, res, next) {
         var send = _.bind(res.send, res);
-        Graft.request('model:read', req.params.model)
+        Graft.request('collection:read', req.params.collection)
             .then(send, send);
     },
 });
