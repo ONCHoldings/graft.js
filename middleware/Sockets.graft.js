@@ -1,11 +1,9 @@
 var socketio = require('socket.io');
 
 // Initialize the sockets
-this.addInitializer(function socketConfig(options) {
+Graft.Middleware.on('listen', function socketConfig(Server) {
     debug('initialize socket.io server');
 
-    // This is just temporary, i hope.
-    var Server = Graft.Middleware.Server;
     var io = this.io = socketio.listen(Server.server);
 
     io.configure(function() {

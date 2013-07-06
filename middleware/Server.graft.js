@@ -30,5 +30,5 @@ this.addInitializer(function(opts) {
 // Start the server
 this.addInitializer(function serverStart(options) {
     this.server.listen(12400);
-    this.triggerMethod('listen');
+    Graft.Middleware.triggerMethod('listen', this);
 });

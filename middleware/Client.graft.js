@@ -70,8 +70,7 @@ this.addInitializer(function(opts) {
     this.get('/js/graft.client.js', bmw('../graft.client.js', {external: this.external}));
 });
 
-
-this.addInitializer(function(opts) {
+Graft.Middleware.on('listen', function(server) {
     debug('Mounting client to server');
-    Graft.Middleware.Server.use(this);
+    server.use(this);
 });
