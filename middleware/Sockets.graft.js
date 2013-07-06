@@ -3,7 +3,10 @@ var socketio = require('socket.io');
 // Initialize the sockets
 this.addInitializer(function socketConfig(options) {
     debug('initialize socket.io server');
-    var io = this.io = socketio.listen(this.server);
+
+    // This is just temporary, i hope.
+    var Server = Graft.Middleware.Server;
+    var io = this.io = socketio.listen(Server.server);
 
     io.configure(function() {
         io.enable("browser client minification");
@@ -33,7 +36,3 @@ this.addInitializer(function socketConfig(options) {
     });
 });
 
-this.addInitializer(function mountServer(options) {
-    debug('Mounting Sockets to Server');
-    Graft.Middleware.Server.use(this);
-});

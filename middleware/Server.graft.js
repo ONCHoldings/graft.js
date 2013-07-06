@@ -4,8 +4,7 @@
 var express = require('express');
 var path    = require('path');
 
-var Client = require('./Client.graft.js');
-var Sockets = require('./Sockets.graft.js');
+require('./Client.graft.js');
 /**
 * Basic middleware setup
 */
@@ -31,4 +30,5 @@ this.addInitializer(function(opts) {
 // Start the server
 this.addInitializer(function serverStart(options) {
     this.server.listen(12400);
+    this.triggerMethod('listen');
 });

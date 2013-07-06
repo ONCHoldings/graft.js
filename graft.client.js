@@ -1,9 +1,10 @@
-var $ = require('jquery-browserify');
+var $ = require('jquery');
 var  _ = require('underscore'),
     Backbone = require('backbone'),
     Marionette = require('backbone.marionette');
 
 var Graft = window.Graft = require('./graft.shared.js');
+require('jquery-ui');
 
 /**
  * Backbone.js client side initialization.
