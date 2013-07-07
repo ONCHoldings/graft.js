@@ -1,10 +1,5 @@
-var $ = require('jquery');
-var  _ = require('underscore'),
-    Backbone = require('backbone'),
-    Marionette = require('backbone.marionette');
-
-var Graft = window.Graft = require('./graft.shared.js');
-require('jquery-ui');
+var Backbone = require('backbone');
+var Graft  = window.Graft  = require('./graft.shared.js');
 
 /**
  * Backbone.js client side initialization.
@@ -25,6 +20,10 @@ Graft.on('start', function(options) {
     this.main.show(new this.views.Callers({
         collection: this.State.callers
     }));
+
+    // fetch some data
+    this.State.conferences.fetch();
+    this.State.callers.fetch();
 
     // Start the path tracking
     Backbone.history.start({pushState: true, silent: false, root: "/"});

@@ -1,3 +1,5 @@
+// A quick test implementation to get something happening on the screen.
+//
 var ns = new (require('Nonsense'))();
 
 var testData = {} 
@@ -8,8 +10,8 @@ testData.Conference = [
 
 function fakeCaller(i) {
     return {
-        id: '' + i,
-        status: ns.name()
+        status: 'user id ' + i,
+        id: ns.name()
     };
 };
 

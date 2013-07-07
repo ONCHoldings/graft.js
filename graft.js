@@ -1,5 +1,7 @@
+/**
+ * Main Server-side entry point for Graft.
+ */
 var _            = require('underscore');
-var $ = global.$ = require('jquery');
 
 // This is the shared code that actually create the
 // initial Graft object for us.
@@ -48,13 +50,18 @@ _.each(expressMethods, function(method) {
     };
 }, this);
 
+
+
+// Default data handlers for models.
+//
+// The custom Backbone.sync implementation on the
+// server side will call these.
 function notImplemented() {
     var dfr = new $.Deferred();
     dfr.reject(403, "Not Implemented");
     return dfr.promise();
 }
 
-// Default data handlers for models.
 Graft.reqres.setHandler('model:name', notImplemented);
 Graft.reqres.setHandler('model:read', notImplemented);
 Graft.reqres.setHandler('model:update', notImplemented);

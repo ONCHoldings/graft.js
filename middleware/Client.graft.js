@@ -41,6 +41,7 @@ this.addInitializer(function vendor(options) {
         'underscore.string',
         'backbone',
         'backbone.marionette',
+        './lib/augment.js',
         'jqueryui-browser/ui/jquery-ui.js',
         './assets/js/jquery.phono.js'
     ];
