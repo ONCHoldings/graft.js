@@ -1,4 +1,3 @@
-
 _.extend(this, {
     readModel: function(req, res, next) {
         var send = _.bind(res.send, res);
@@ -25,6 +24,16 @@ _.extend(this, {
         Graft.request('collection:read', req.params.collection)
             .then(send, send);
     },
+    modelName: function(model) {
+        debug('model:name handler');
+        var url = _.result(model, 'url') || false;
+
+        if (url) {
+            var matches = url.match(/\/api\/([^/]*)/);
+            return matches[1] || false;
+        }
+        return false;
+    }
 });
 
 this.addInitializer(function(opts) {
@@ -34,6 +43,7 @@ this.addInitializer(function(opts) {
     this.put('/api/:model/:id', this.updateModel);
     this.del('/api/:model/:id', this.deleteModel);
     this.get('/api/:collection', this.readCollection);
+    Graft.reqres.setHandler('model:name', this.modelName);
 });
 
 Graft.Middleware.on('listen', function(Server) {

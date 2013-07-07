@@ -4,7 +4,8 @@
 var express = require('express');
 var path    = require('path');
 
-require('./Client.graft.js');
+require('../lib/sync');
+
 /**
 * Basic middleware setup
 */
