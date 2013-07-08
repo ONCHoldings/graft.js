@@ -44,7 +44,3 @@ this.addInitializer(function serverStart(options) {
     Graft.Middleware.triggerMethod('listen', this);
 });
 
-this.on('stop', function serverStop(options) {
-    debug('stopping Server');
-    this.server.close();
-}, this);

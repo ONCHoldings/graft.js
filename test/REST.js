@@ -1,25 +1,53 @@
-var assert  = require('assert');
-var request = require('request');
-var Graft   = require('./fixture/index.js');
-var testUrl = 'http://localhost:8900';
+var Graft  = require('./fixture/index.js');
+var utils  = require('./utils');
+var should = require('should');
+var _      = require('underscore');
 
-describe('REST API', function() {
-    beforeEach(function() {
-      //  Graft.trigger('reset');
+
+describe('REST ROUTES', function() {
+    describe('GET /api/Account/1', function() {
+
+        before(utils.requestUrl('/api/Account/1'));
+
+        it ('should return status 200', function() {
+            this.resp.should.have.status(200);
+        });
+
+        it('response should be json', function() {
+            this.resp.should.be.json;
+        });
+
+        it ('should have a body', function() {
+            should.exist(this.body);
+        });
+
+        it('body should parse', utils.parseBody);
+
+        it('should have the correct id', function() {
+            this.body.should.have.property('id', '1');
+        });
     });
 
-    describe('GET /api/Account/1', function() {
-        it ('should succeed', function (done) {
-            request(testUrl + '/api/Account/1', function(err, resp, body) {
-                it ('should not cause an error', function() {
-                    assert.equal(err, null, 'err is not null'); 
-                });
-                it ('should return status 200', function() {
-                    console.log(resp);
-                    assert.equal(resp.statusCode, 200, 'statusCode is not 200');
-                });
-                done();
-            });
+    describe('GET /api/Account', function() {
+        before(utils.requestUrl('/api/Account'));
+
+        it ('should return status 200', function() {
+            this.resp.should.have.status(200);
         });
+
+        it('response should be json', function() {
+            this.resp.should.be.json;
+        });
+
+        it ('should have a body', function() {
+            should.exist(this.body);
+        });
+
+        it('body should parse', utils.parseBody);
+
+        it ('should have 5 models', function() {
+            this.body.should.have.length(5);
+        });
+
     });
 });

@@ -121,7 +121,7 @@ _.extend(this, {
         var collectionExists = !!Graft.models[cName];
 
         if (!collectionExists) { 
-            return res.send(403, 'Forbidden');
+            return res.send(403, 'Collection does not exist');
         }
 
         var collection   = new Graft.models[cName]();

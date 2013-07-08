@@ -4,7 +4,7 @@ var ns = new (require('Nonsense'))();
 
 this.testData = {} 
 
-function findModel(model, id) {
+this.findModel = function(model, id) {
     var dfr = new $.Deferred();
 
     if (!this.testData[model] || !id) {
@@ -20,7 +20,7 @@ function findModel(model, id) {
 _.extend(this, {
     readModel: function readModel(model, id) {
         debug('readModel :', model, id);
-        return findModel(model, id); 
+        return this.findModel(model, id); 
     },
     updateModel: function readModel(model, id, data) {
         debug('updateModel :', model, id);
@@ -32,7 +32,7 @@ _.extend(this, {
             _.extend(m, data);
             dfr.resolve(m);
         }
-        findModel(model, id).then(updateModel, dfr.reject);
+        this.findModel(model, id).then(updateModel, dfr.reject);
 
         return dfr.promise();
     },
@@ -53,7 +53,7 @@ _.extend(this, {
             dfr.resolve(data);
         }
 
-        findModel(model, data.id).then(modelExists, createModel);
+        this.findModel(model, data.id).then(modelExists, createModel);
 
         return dfr.promise();
     },
@@ -66,7 +66,7 @@ _.extend(this, {
             dfr.resolve(200);
         }
 
-        findModel(model, id).then(deleteModel, dfr.reject);
+        this.findModel(model, id).then(deleteModel, dfr.reject);
         return dfr.promise();
     },
     readCollection: function readModel(col) {
@@ -79,9 +79,9 @@ _.extend(this, {
 
 this.addInitializer(function(opts) {
     debug("adding handler for reading models");
-    Graft.reqres.setHandler('model:read', this.readModel);
-    Graft.reqres.setHandler('model:update', this.updateModel);
-    Graft.reqres.setHandler('model:create', this.createModel);
-    Graft.reqres.setHandler('model:delete', this.deleteModel);
-    Graft.reqres.setHandler('collection:read', this.readCollection);
+    Graft.reqres.setHandler('model:read', this.readModel, this);
+    Graft.reqres.setHandler('model:update', this.updateModel, this);
+    Graft.reqres.setHandler('model:create', this.createModel, this);
+    Graft.reqres.setHandler('model:delete', this.deleteModel, this);
+    Graft.reqres.setHandler('collection:read', this.readCollection, this);
 });
