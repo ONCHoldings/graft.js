@@ -36,6 +36,15 @@ this.addInitializer(function(opts) {
 
 // Start the server
 this.addInitializer(function serverStart(options) {
-    this.server.listen(12400);
+    var options = options || {};
+    var port = options.port || 12400;
+
+    this.server.listen(port);
+    console.log("Server started on port " + port);
     Graft.Middleware.triggerMethod('listen', this);
 });
+
+this.on('stop', function serverStop(options) {
+    debug('stopping Server');
+    this.server.close();
+}, this);

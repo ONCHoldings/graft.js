@@ -1,0 +1,27 @@
+[
+  {
+    "id": "0",
+    "name": "Christian Stewart",
+    "group": "default"
+  },
+  {
+    "id": "1",
+    "name": "Justin Allen",
+    "group": "default"
+  },
+  {
+    "id": "2",
+    "name": "Emily Baker",
+    "group": "default"
+  },
+  {
+    "id": "3",
+    "name": "Aubrey Lewis",
+    "group": "alternate"
+  },
+  {
+    "id": "4",
+    "name": "Elijah Jones",
+    "group": "default"
+  }
+]
