@@ -30,8 +30,11 @@
     "debug": "~0.7.2"
   },
   "browser": {
-      "jquery.phono": "./assets/js/jquery.phono.js",
-      "jquery": "jquery-browserify",
-      "jquery-ui": "jqueryui-browser/ui/jquery-ui.js"
+    "jquery.phono": "./assets/js/jquery.phono.js",
+    "jquery": "jquery-browserify",
+    "jquery-ui": "jqueryui-browser/ui/jquery-ui.js"
+  },
+  "devDependencies": {
+    "mocha": "~1.12.0"
   }
 }
