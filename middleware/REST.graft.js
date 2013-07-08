@@ -136,7 +136,7 @@ _.extend(this, {
             debug('read collection', cName);
             res.send(collection.toJSON());
         }
-        collection.fetch().then(send, send);
+        collection.fetch().then(readCollection, send);
     },
     modelName: function(model) {
         debug('model:name handler');
