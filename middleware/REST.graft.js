@@ -83,17 +83,19 @@ _.extend(this, {
         var model = new Graft.models[req.params.model](req.body);
 
         function created(attrs) {
+            debug(model.toJSON());
             res.set('Location', model.url());
             res.send(303, model.toJSON());
         }
         function createModel(attrs) {
             debug('creating model', req.params.model);
-            model.save(options).then(created, send);
+            model.save(req.body).then(created, send);
         }
 
-        model.fetch().then(saveModel, send);
+        model.fetch().then(createModel, createModel);
     },
     deleteModel: function(req, res, next) {
+        var send             = _.bind(res.send, res);
         var hasModelAndId = req.params.model && req.params.id;
         var modelExists   = !!Graft.models[req.params.model];
 
