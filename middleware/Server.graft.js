@@ -1,8 +1,14 @@
 /**
  * Core application server, that mounts all the others.
 */
-var express = require('express');
-var path    = require('path');
+var express  = require('express');
+var http     = require('http');
+var path     = require('path');
+
+var _express = express();
+this.express = _express;
+this.server  = http.createServer(this.express);
+_.extend(this, _express);
 
 require('../lib/sync');
 

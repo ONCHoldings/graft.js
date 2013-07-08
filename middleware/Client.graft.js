@@ -1,6 +1,14 @@
 /**
  * Server that generates and serves the client side app.
- */
+*/
+var express  = require('express');
+var http     = require('http');
+
+var _express = express();
+this.express = _express;
+this.server  = http.createServer(this.express);
+_.extend(this, _express);
+
 var Browserify = require('browserify');
 var bmw        = require('browserify-middleware');
 var jadeify2   = require('jadeify2');
@@ -12,11 +20,8 @@ var _          = require('underscore');
 
 var wrapTransform = require('../lib/wrap.transform');
 
-/**
- * Browserify templates
- */
+// Browserify templates
 this.addInitializer(function templates(options) {
-
     // Import templates
     var templates = glob.sync('./templates/*.jade');
     var transFn = _.wrap(jadeify2, function(fn, file, options) {

@@ -13,9 +13,6 @@ Graft.server = true;
 // Bootstrap module system.
 require('./lib/modules');
 
-// Load the middleware extensions.
-require('./middleware');
-
 // Load up the primary Server middleware. (required)
 require('./middleware/Server.graft.js');
 
