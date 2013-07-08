@@ -10,8 +10,8 @@ testData.Conference = [
 
 function fakeCaller(i) {
     return {
-        status: 'user id ' + i,
-        id: ns.name()
+       id: '' + i,
+       status: ns.name()
     };
 };
 
@@ -19,6 +19,7 @@ testData.Caller = _(_.range(0, 10)).map(fakeCaller);
 
 _.extend(this, {
     readModel: function readModel(model, id) {
+        debug('readModel :', model, id);
         var dfr = new $.Deferred();
 
         if (!testData[model]) {

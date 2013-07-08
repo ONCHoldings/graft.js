@@ -11,8 +11,18 @@ _.extend(this, _express);
 _.extend(this, {
     readModel: function(req, res, next) {
         var send = _.bind(res.send, res);
-        Graft.request('model:read', req.params.model, req.params.id)
-            .then(send, send);
+        var hasModelAndId = req.params.model && req.params.id;
+        var modelExists = !!Graft.models[req.params.model];
+
+        if (!hasModelAndId || !modelExists) { return next(404); }
+
+        var model = new Graft.models[req.params.model]({
+            id: req.params.id
+        });
+
+
+        debug('model');
+        model.fetch().then(send, send);
     },
     updateModel: function(req, res, next) {
         var send = _.bind(res.send, res);
@@ -36,15 +46,36 @@ _.extend(this, {
     },
     modelName: function(model) {
         debug('model:name handler');
-        var url = _.result(model, 'url') || false;
-
-        if (url) {
-            var matches = url.match(/\/api\/([^/]*)/);
-            return matches[1] || false;
-        }
-        return false;
+        var matches = matchUrl(model);
+        return matches ? matches.name : false;
     }
 });
+
+// Get the name and id from url.
+//
+// It uses a regex to match strings in the format
+//     /api/$module/$id
+//
+// Returns false if not found.
+function matchUrl(model) {
+    var url = _.result(model, 'url') || false;
+    debug('matchUrl: ' + url);
+
+    var regex =  /\/api\/([^/]*)\/?([^/]*)\/?/;
+
+    if (!url) { return false; }
+
+    var matches = url.match(regex);
+
+    if (!matches[1]) { return false; }
+
+    var result = {};
+    result.name = matches[1];
+    matches[2] && (result.id = matches[2]);
+
+    debug('matchUrl result:' , result);
+    return result;
+}
 
 this.addInitializer(function(opts) {
     debug('Initialize REST api');
@@ -54,6 +85,7 @@ this.addInitializer(function(opts) {
     this.del('/api/:model/:id', this.deleteModel);
     this.get('/api/:collection', this.readCollection);
     Graft.reqres.setHandler('model:name', this.modelName);
+    Graft.reqres.setHandler('model:load', this.loadModel);
 });
 
 Graft.Middleware.on('listen', function(Server) {

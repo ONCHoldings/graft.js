@@ -66,4 +66,4 @@ Graft.reqres.setHandler('model:delete', notImplemented);
 Graft.reqres.setHandler('model:create', notImplemented);
 Graft.reqres.setHandler('collection:read', notImplemented);
 
-module.exports = App = Graft;
+module.exports = Graft;
