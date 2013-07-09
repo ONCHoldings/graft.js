@@ -65,7 +65,7 @@ _.extend(this, {
         }
         function saveModel(attrs) {
             debug('saving model', req.params.model, model.id);
-            model.save(options).then(send, send);
+            model.save(options).then(saved, send);
         }
 
         model.fetch().then(saveModel, send);
@@ -83,7 +83,6 @@ _.extend(this, {
         var model = new Graft.models[req.params.model](req.body);
 
         function created(attrs) {
-            debug(model.toJSON());
             res.set('Location', model.url());
             res.send(303, model.toJSON());
         }

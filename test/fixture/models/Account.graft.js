@@ -1,7 +1,7 @@
 module.exports = Backbone.Model.extend({
     urlRoot: '/api/Account',
     defaults: {
-        conference: 'default',
+        group: 'default',
         status: 'offline'
     }
 });

@@ -27,7 +27,8 @@
     "connect": "~2.8.1",
     "jquery": "~1.7.3",
     "underscore.string": "~2.3.1",
-    "debug": "~0.7.2"
+    "debug": "~0.7.2",
+    "async": "~0.2.9"
   },
   "browser": {
     "jquery.phono": "./assets/js/jquery.phono.js",

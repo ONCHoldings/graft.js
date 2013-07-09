@@ -11,7 +11,6 @@ this.server  = http.createServer(this.express);
 _.extend(this, _express);
 
 require('../lib/sync');
-
 /**
 * Basic middleware setup
 */

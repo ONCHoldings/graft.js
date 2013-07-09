@@ -53,7 +53,7 @@ _.extend(this, {
             dfr.resolve(data);
         }
 
-        this.findModel(model, data.id).then(modelExists, createModel);
+        this.findModel(model, data.id).then(modelExists, _.bind(createModel, this));
 
         return dfr.promise();
     },
@@ -63,10 +63,11 @@ _.extend(this, {
         function deleteModel(m) {
             var ind = _(this.testData[model]).indexOf(m);
             this.testData[model].splice(ind, 1);
-            dfr.resolve(200);
+
+            dfr.resolve(204);
         }
 
-        this.findModel(model, id).then(deleteModel, dfr.reject);
+        this.findModel(model, id).then(_.bind(deleteModel, this), dfr.reject);
         return dfr.promise();
     },
     readCollection: function readModel(col) {
