@@ -7,7 +7,7 @@ var log      = _.bind(console.log,console);
 var testPort = 8900;
 
 // Initialize the Graft application object.
-var Graft    = require('../graft');
+var Graft    = require('../server');
 
 // Load up the REST api middleware. (optional)
 require('../middleware/REST.graft.js');

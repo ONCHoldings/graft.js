@@ -8,7 +8,7 @@ var log      = _.bind(console.log, console);
 var testPort = 8901;
 
 // Initialize the Graft application object.
-var Graft = require('../graft');
+var Graft = require('../server');
 
 // Small helper to make sure files are loaded in correct order.
 function fileOrder(order, file1, file2) {
