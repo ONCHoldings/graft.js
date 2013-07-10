@@ -308,4 +308,18 @@ describe('REST ROUTES', function() {
             });
         });
     });
+
+    describe('stop server', function() {
+        before(function() {
+            Graft.stop();
+        });
+        it('should be not initialized', function() {
+            Graft.Middleware.Server._isInitialized.should.eql(false);
+        });
+    });
+    after(function() {
+        require.cache = {};
+        delete Graft;
+    });
+
 });

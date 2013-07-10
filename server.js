@@ -4,19 +4,18 @@
 var _  = require('underscore');
 var $ = require('jquery');
 
-// This is the shared code that actually create the
-// initial Graft object for us.
-Graft = global.Graft = require('./shared');
+
+// Bootstrap module system.
+var Graft = require('./lib/modules');
+var Marionette = require('backbone.marionette');
 
 // Hopefully this will be unecessary one day.
 Graft.server = true;
-
-// Bootstrap module system.
-require('./lib/modules');
+global.__graftPath = __dirname + '/graft';
 
 // Include the shared code for the client too.
 Graft.bundle('shared', './lib/augment.js');
-Graft.bundle('shared', './shared.js'); 
+Graft.bundle('shared', './graft.js');
 
 // Load up the primary Server middleware. (required)
 require('./middleware/Server.graft.js');
@@ -39,6 +38,19 @@ _.each(expressMethods, function(method) {
     };
 }, this);
 
+
+// Stop this module by running its finalizers and then stop all of
+// the sub-modules for this application
+Graft.stop = function(){
+    Marionette.triggerMethod.call(this, "before:stop");
+
+    // stop the sub-modules; depth-first, to make sure the
+    // sub-modules are stopped / finalized before parents
+    _.each(this.submodules, function(mod){ mod.stop(); });
+    this._initCallbacks.reset();
+
+    Marionette.triggerMethod.call(this, "stop");
+};
 
 // Default data handlers for models.
 //

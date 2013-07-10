@@ -171,7 +171,7 @@ describe('Module system', function() {
                 Graft.Middleware.Test.listening.should.eql(true);
             });
 
-            describe.skip('Have working routes', function() {
+            describe('Have working routes', function() {
                 before(utils.requestUrl(testPort, '/test/mufassa'));
 
                 it ('should return status 200', function() {
@@ -187,7 +187,19 @@ describe('Module system', function() {
                 });
             });
 
+            describe('stop server', function() {
+                before(function() {
+                    Graft.stop();
+                });
+                it('should be not initialized', function() {
+                    Graft.Middleware.Server._isInitialized.should.eql(false);
+                });
+            });
         });
+    });
+    after(function() {
+        require.cache = {};
+        delete Graft;
     });
 });
 

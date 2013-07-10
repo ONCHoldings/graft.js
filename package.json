@@ -36,7 +36,7 @@
   },
   "browser": {
       "jquery": "jquery-browserify",
-      "graftjs": "./shared.js"
+      "graftjs": "./graft.js"
   },
   "scripts": {
     "test": "mocha -R spec"

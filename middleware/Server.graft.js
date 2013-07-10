@@ -43,3 +43,7 @@ this.addInitializer(function serverStart(options) {
     Graft.Middleware.triggerMethod('listen', this);
 });
 
+this.addFinalizer(function() {
+    debug('Shut down the socket');
+    this.server.close();
+});

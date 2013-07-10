@@ -1,4 +1,7 @@
+var Graft = require('{{graftPath}}');
+
 Graft.module("{{module.path}}", function {{module.fn}}({{module.name}}, Graft, Backbone, Marionette, $, _) {
+
     var debug = require('debug')('graft:{{module.path.toLowerCase()}}');
     {{content}};
     Graft.${{_.pluralize(module.kind)}}.{{module.name}} = this;
