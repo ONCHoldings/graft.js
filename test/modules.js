@@ -1,11 +1,11 @@
-var utils  = require('./utils');
-var should = require('should');
-var path = require('path');
-var request = require('request');
-var async = require('async');
-var _      = require('underscore');
-var log = _.bind(console.log, console);
-
+var utils    = require('./utils');
+var should   = require('should');
+var path     = require('path');
+var request  = require('request');
+var async    = require('async');
+var _        = require('underscore');
+var log      = _.bind(console.log, console);
+var testPort = 8901;
 
 // Initialize the Graft application object.
 var Graft = require('../graft');
@@ -159,7 +159,7 @@ describe('Module system', function() {
 
         describe('After start', function() {
             before(function() {
-                Graft.start({ port: 8900 });
+                Graft.start({ port: testPort });
             });
             it('Should have mounted express routes', function() {
                 Graft.Middleware.Test.express.routes.should.have.property('get');
@@ -172,7 +172,7 @@ describe('Module system', function() {
             });
 
             describe('Have working routes', function() {
-                before(utils.requestUrl('/test/mufassa'));
+                before(utils.requestUrl(testPort, '/test/mufassa'));
 
                 it ('should return status 200', function() {
                     this.resp.should.have.status(200);

@@ -1,13 +1,13 @@
-var utils  = require('./utils');
-var should = require('should');
-var request = require('request');
-var async = require('async');
-var _      = require('underscore');
-var log = _.bind(console.log, console);
-
+var utils    = require('./utils');
+var should   = require('should');
+var request  = require('request');
+var async    = require('async');
+var _        = require('underscore');
+var log      = _.bind(console.log,console);
+var testPort = 8900;
 
 // Initialize the Graft application object.
-var Graft = require('../graft');
+var Graft    = require('../graft');
 
 // Load up the REST api middleware. (optional)
 require('../middleware/REST.graft.js');
@@ -26,14 +26,14 @@ Mock.on('before:start', function() {
     Graft.trigger('reset:data');
 });
 
-Graft.start({ port: 8900 });
+Graft.start({ port: testPort });
 
 describe('REST ROUTES', function() {
     before(function() {
     });
 
     describe('GET /api/Account/1', function() {
-        before(utils.requestUrl('/api/Account/1'));
+        before(utils.requestUrl(testPort, '/api/Account/1'));
 
         it ('should return status 200', function() {
             this.resp.should.have.status(200);
@@ -57,7 +57,7 @@ describe('REST ROUTES', function() {
     });
 
     describe('GET /api/Group', function() {
-        before(utils.requestUrl('/api/Group'));
+        before(utils.requestUrl(testPort, '/api/Group'));
 
         it ('should return status 200', function() {
             this.resp.should.have.status(200);
@@ -86,7 +86,7 @@ describe('REST ROUTES', function() {
             "name": "Emily Mortimer", // was "Emily Baker"
             "favColor": "magenta" // new field
         }
-        before(utils.requestUrl('/api/Account/2', 'PUT', data));
+        before(utils.requestUrl(testPort, '/api/Account/2', 'PUT', data));
 
         it ('should return status 201', function() {
             this.resp.should.have.status(201);
@@ -113,7 +113,7 @@ describe('REST ROUTES', function() {
         });
 
         describe('GET /api/Account/2', function() {
-            before(utils.requestUrl('/api/Account/2'));
+            before(utils.requestUrl(testPort, '/api/Account/2'));
             it ('should return status 200', function() {
                 this.resp.should.have.status(200);
             });
@@ -139,7 +139,7 @@ describe('REST ROUTES', function() {
             });
         });
         describe('GET /api/Account', function() {
-            before(utils.requestUrl('/api/Account'));
+            before(utils.requestUrl(testPort, '/api/Account'));
             it ('should return status 200', function() {
                 this.resp.should.have.status(200);
             });
@@ -173,7 +173,7 @@ describe('REST ROUTES', function() {
             "name": "Ronald McDonald", // was "Emily Baker"
             "favColor": "yello" // new field
         }
-        before(utils.requestUrl('/api/Account', 'POST', data));
+        before(utils.requestUrl(testPort, '/api/Account', 'POST', data));
 
         // This is for the new location the server told us to go.
         var newLocation = '';
@@ -270,20 +270,20 @@ describe('REST ROUTES', function() {
 
     describe('DELETE /api/Account/1', function() {
 
-        before(utils.requestUrl('/api/Account/1', 'DELETE'));
+        before(utils.requestUrl(testPort, '/api/Account/1', 'DELETE'));
 
         it ('should return status 204', function() {
             this.resp.should.have.status(204);
         });
 
         describe('GET /api/Account/1', function() {
-            before(utils.requestUrl('/api/Account/1'));
+            before(utils.requestUrl(testPort, '/api/Account/1'));
             it ('should return status 404', function() {
                 this.resp.should.have.status(404);
             });
         });
         describe('GET /api/Account', function() {
-            before(utils.requestUrl('/api/Account'));
+            before(utils.requestUrl(testPort, '/api/Account'));
             it ('should return status 200', function() {
                 this.resp.should.have.status(200);
             });

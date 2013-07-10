@@ -8,7 +8,7 @@ var should  = require('should');
 var url     = require('url');
 var request = require('request');
 
-var testUrl = 'http://localhost:8900';
+var testUrl = 'http://localhost:';
 function parseBody() {
     try {
         this.body = JSON.parse(this.body);
@@ -17,7 +17,7 @@ function parseBody() {
     }
 }
 
-function requestUrl(pathname, method, body) {
+function requestUrl(port, pathname, method, body) {
     return function(done) {
         var self = this;
         var opts = {};
@@ -25,7 +25,7 @@ function requestUrl(pathname, method, body) {
 
         opts.json = body || true;
 
-        request(testUrl + pathname, opts, function(err, resp, body) {
+        request(testUrl + port + pathname, opts, function(err, resp, body) {
             self.resp = resp;
             self.body = body;
             done(err);
