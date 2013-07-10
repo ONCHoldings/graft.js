@@ -1,48 +1,49 @@
 {
-    "name": "graftjs",
-    "version": "0.0.1",
-    "description": "yet another javascript framework",
-    "main": "index.js",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/ONCHoldings/graft.js.git"
-    },
-    "author": "Adrian Rossouw",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/ONCHoldings/graft.js/issues"
-    },
-    "dependencies": {
-        "backbone": "~1.0.0",
-        "jadeify2": "0.0.3",
-        "express": "~3.3.1",
-        "jade": "~0.32.0",
-        "browserify": "~2.22.0",
-        "underscore": "~1.4.4",
-        "jquery-browserify": "~1.8.1",
-        "jqueryui-browser": "~1.10.2-1",
-        "backbone.marionette": "~1.0.2",
-        "browserify-middleware": "~1.13.0",
-        "socket.io": "~0.9.16",
-        "request": "~2.21.0",
-        "glob": "~3.2.1",
-        "cookie": "~0.1.0",
-        "connect": "~2.8.1",
-        "jquery": "~1.7.3",
-        "underscore.string": "~2.3.1",
-        "debug": "~0.7.2",
-        "async": "~0.2.9"
-    },
-    "browser": {
-        "jquery": "jquery-browserify"
-    },
-    "scripts": {
-        "test": "mocha -R spec"
-    },
-    "devDependencies": {
-        "mocha": "~1.12.0",
-        "Nonsense": "~0.1.2",
-        "should": "~1.2.2",
-        "graft-mockdb": "git://github.com/ONCHoldings/graft-mockdb.git"
-    }
+  "name": "graftjs",
+  "version": "0.0.1",
+  "description": "yet another javascript framework",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ONCHoldings/graft.js.git"
+  },
+  "author": "Adrian Rossouw",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ONCHoldings/graft.js/issues"
+  },
+  "dependencies": {
+    "backbone": "~1.0.0",
+    "jadeify2": "0.0.3",
+    "express": "~3.3.1",
+    "jade": "~0.32.0",
+    "browserify": "~2.22.0",
+    "underscore": "~1.4.4",
+    "jquery-browserify": "~1.8.1",
+    "jqueryui-browser": "~1.10.2-1",
+    "backbone.marionette": "~1.0.2",
+    "browserify-middleware": "~1.13.0",
+    "socket.io": "~0.9.16",
+    "request": "~2.21.0",
+    "glob": "~3.2.1",
+    "cookie": "~0.1.0",
+    "connect": "~2.8.1",
+    "jquery": "~1.7.3",
+    "underscore.string": "~2.3.1",
+    "debug": "~0.7.2",
+    "async": "~0.2.9",
+    "through": "~2.3.4"
+  },
+  "browser": {
+    "jquery": "jquery-browserify"
+  },
+  "scripts": {
+    "test": "mocha -R spec"
+  },
+  "devDependencies": {
+    "mocha": "~1.12.0",
+    "Nonsense": "~0.1.2",
+    "should": "~1.2.2",
+    "graft-mockdb": "git+ssh://git@github.com:ONCHoldings/graft-mockdb.git#master"
+  }
 }
