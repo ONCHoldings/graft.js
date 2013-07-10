@@ -1,16 +1,32 @@
-var Graft  = require('./fixture/index.js');
 var utils  = require('./utils');
 var should = require('should');
 var request = require('request');
 var async = require('async');
 var _      = require('underscore');
-
 var log = _.bind(console.log, console);
 
 
+// Initialize the Graft application object.
+var Graft = require('../graft');
+
+// A simple test data adaptor to debug the REST api.
+var Mock = require('graft-mockdb');
+
+require('./fixture/models/index.js');
+
+Graft.on('reset:data', function() {
+    Mock.testData.Account = require('./fixture/resources/Account.json');
+    Mock.testData.Group = require('./fixture/resources/Group.json');
+}, Mock);
+
+Mock.on('before:start', function() {
+    Graft.trigger('reset:data');
+});
+
+
 describe('REST ROUTES', function() {
-    afterEach(function() {
-        Graft.trigger('reset:data');
+    before(function() {
+        Graft.start({ port: 8900 });
     });
 
     describe('GET /api/Account/1', function() {
