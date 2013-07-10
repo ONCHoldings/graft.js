@@ -46,14 +46,14 @@ this.addInitializer(function vendor(options) {
         'underscore.string',
         'backbone',
         'backbone.marionette',
-        'graftjs/lib/augment.js'
+        './lib/augment.js'
     ];
     this.get('/js/vendor.js', bmw(vendor, {external: this.external}));
     this.external = this.external.concat(vendor);
 });
 
 function makeRelative(p) {
-    return path.relative(process.cwd(),  p);
+    return path.relative(process.cwd(), path.resolve(__dirname + '../',  p);
 }
 this.addInitializer(function(opts) {
     function bfyFn(type) {
