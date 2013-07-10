@@ -34,7 +34,10 @@
         "async": "~0.2.9"
     },
     "browser": {
-        "jquery": "jquery-browserify",
+        "jquery": "jquery-browserify"
+    },
+    "scripts": {
+        "test": "mocha -R spec"
     },
     "devDependencies": {
         "mocha": "~1.12.0",
