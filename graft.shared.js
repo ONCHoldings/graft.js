@@ -16,10 +16,10 @@ require('./lib/augment.js');
 Graft = new Marionette.Application();
 
 _.extend(Graft, {
-    models: {},
-    views: {},
-    routers: {},
-    middleware: {},
+    '$models': {},
+    '$views': {},
+    '$routers': {},
+    '$middleware': {},
 
     bundles: {
         views : [],
@@ -30,17 +30,8 @@ _.extend(Graft, {
     }
 });
 
-/*
 Graft.addInitializer(function(options) {
-    require('./templates/index.js');
-    require('./models/index.js');
-    require('./views/index.js');
-    require('./routers/index.js');
+    this.$state = {};
 });
-Graft.addInitializer(function(options) {
-    this.State = {};
-    this.State.conferences = new Graft.models.Conferences();
-    this.State.callers     = new Graft.models.Callers();
-});
-*/
+
 module.exports = Graft;

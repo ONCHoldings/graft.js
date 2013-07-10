@@ -34,11 +34,11 @@ _.extend(this, {
     readModel: function(req, res, next) {
         var send = _.bind(res.send, res);
         var hasModelAndId = req.params.model && req.params.id;
-        var modelExists = !!Graft.models[req.params.model];
+        var modelExists = !!Graft.$models[req.params.model];
 
         if (!hasModelAndId || !modelExists) { return next(404); }
 
-        var model = new Graft.models[req.params.model]({
+        var model = new Graft.$models[req.params.model]({
             id: req.params.id
         });
 
@@ -51,12 +51,12 @@ _.extend(this, {
     updateModel: function(req, res, next) {
         var send          = _.bind(res.send, res);
         var hasModelAndId = req.params.model && req.params.id;
-        var modelExists   = !!Graft.models[req.params.model];
+        var modelExists   = !!Graft.$models[req.params.model];
         var options       = req.body;
 
         if (!hasModelAndId || !modelExists) { return next(404); }
 
-        var model = new Graft.models[req.params.model]({
+        var model = new Graft.$models[req.params.model]({
             id: req.params.id
         });
 
@@ -73,14 +73,14 @@ _.extend(this, {
     createModel: function(req, res, next) {
         var hasBody     = req.body;
         var hasModel    = req.params.model;
-        var modelExists = !!Graft.models[req.params.model];
+        var modelExists = !!Graft.$models[req.params.model];
 
         if (!hasBody || !hasModel || !modelExists) { 
             return next(403, 'Forbidden');
         }
 
         var send  = _.bind(res.send, res);
-        var model = new Graft.models[req.params.model](req.body);
+        var model = new Graft.$models[req.params.model](req.body);
 
         function created(attrs) {
             res.set('Location', model.url());
@@ -96,11 +96,11 @@ _.extend(this, {
     deleteModel: function(req, res, next) {
         var send             = _.bind(res.send, res);
         var hasModelAndId = req.params.model && req.params.id;
-        var modelExists   = !!Graft.models[req.params.model];
+        var modelExists   = !!Graft.$models[req.params.model];
 
         if (!hasModelAndId || !modelExists) { return next(405); }
 
-        var model = new Graft.models[req.params.model]({
+        var model = new Graft.$models[req.params.model]({
             id: req.params.id
         });
 
@@ -117,13 +117,13 @@ _.extend(this, {
     readCollection: function(req, res, next) {
         var send             = _.bind(res.send, res);
         var cName            = _.pluralize(req.params.collection);
-        var collectionExists = !!Graft.models[cName];
+        var collectionExists = !!Graft.$models[cName];
 
         if (!collectionExists) { 
             return res.send(403, 'Collection does not exist');
         }
 
-        var collection   = new Graft.models[cName]();
+        var collection   = new Graft.$models[cName]();
         var isCollection = collection instanceof Backbone.Collection;
 
         if (!isCollection) {
