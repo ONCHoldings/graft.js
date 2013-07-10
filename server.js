@@ -1,21 +1,25 @@
 /**
  * Main Server-side entry point for Graft.
  */
-var _  = require('underscore');
-var $ = require('jquery');
-
-
-// Bootstrap module system.
-var Graft = require('./lib/modules');
-var Marionette = require('backbone.marionette');
-
-// Hopefully this will be unecessary one day.
-Graft.server = true;
+var _              = require('underscore');
+var $              = require('jquery');
+var Marionette     = require('backbone.marionette');
+var Graft          = require('./lib/modules'); // Bootstrap module system.
+Graft.server       = true; // Hopefully this will be unecessary one day.
 global.__graftPath = __dirname + '/graft';
 
 // Include the shared code for the client too.
-Graft.bundle('shared', './lib/augment.js');
-Graft.bundle('shared', './graft.js');
+Graft.bundle('shared', './graft.js', __dirname);
+Graft.bundle('shared', './lib/augment.js', __dirname);
+
+Graft.bundle('vendor', 'jquery', 'jquery-browserify');
+Graft.bundle('vendor', 'debug');
+Graft.bundle('vendor', 'async');
+Graft.bundle('vendor', 'underscore');
+Graft.bundle('vendor', 'underscore.string');
+Graft.bundle('vendor', 'backbone');
+Graft.bundle('vendor', 'backbone.marionette');
+
 
 // Load up the primary Server middleware. (required)
 require('./middleware/Server.graft.js');
@@ -51,6 +55,15 @@ Graft.stop = function(){
 
     Marionette.triggerMethod.call(this, "stop");
 };
+
+Graft.reset = function() {
+    this.$models = {};
+    this.$views = {};
+    this.$routers = {};
+    this.$middleware = {};
+
+    this.resetBundles();
+}
 
 // Default data handlers for models.
 //

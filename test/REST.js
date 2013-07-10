@@ -9,27 +9,27 @@ var testPort = 8900;
 // Initialize the Graft application object.
 var Graft    = require('../server');
 
-// Load up the REST api middleware. (optional)
-require('../middleware/REST.graft.js');
-
-// A simple test data adaptor to debug the REST api.
-var Mock = require('graft-mockdb');
-
-Graft.load(__dirname + '/fixture');
-
-Graft.on('reset:data', function() {
-    Mock.testData.Account = require('./fixture/resources/Account.json');
-    Mock.testData.Group = require('./fixture/resources/Group.json');
-}, Mock);
-
-Mock.on('before:start', function() {
-    Graft.trigger('reset:data');
-});
-
-Graft.start({ port: testPort });
 
 describe('REST ROUTES', function() {
     before(function() {
+        // Load up the REST api middleware. (optional)
+        require('../middleware/REST.graft.js');
+
+        // A simple test data adaptor to debug the REST api.
+        var Mock = require('graft-mockdb');
+
+        Graft.load(__dirname + '/fixture');
+
+        Graft.on('reset:data', function() {
+            Mock.testData.Account = require('./fixture/resources/Account.json');
+            Mock.testData.Group = require('./fixture/resources/Group.json');
+        }, Mock);
+
+        Mock.on('before:start', function() {
+            Graft.trigger('reset:data');
+        });
+
+        Graft.start({ port: testPort });
     });
 
     describe('GET /api/Account/1', function() {
@@ -317,9 +317,4 @@ describe('REST ROUTES', function() {
             Graft.Middleware.Server._isInitialized.should.eql(false);
         });
     });
-    after(function() {
-        require.cache = {};
-        delete Graft;
-    });
-
 });

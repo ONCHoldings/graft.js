@@ -37,23 +37,12 @@ this.addInitializer(function templates(options) {
  * Browserify vendor includes
  */
 this.addInitializer(function vendor(options) {
-    // Import vendor stuff
-    var vendor = [ 
-        'debug',
-        'jquery-browserify',
-        './templates/index.js',
-        'underscore',
-        'underscore.string',
-        'backbone',
-        'backbone.marionette',
-        './lib/augment.js'
-    ];
-    this.get('/js/vendor.js', bmw(vendor, {external: this.external}));
-    this.external = this.external.concat(vendor);
+    this.get('/js/vendor.js', bmw(Graft.bundles.vendor, {external: this.external}));
+    this.external = this.external.concat(_.keys(Graft.bundles.vendor));
 });
 
 function makeRelative(p) {
-    return path.relative(process.cwd(), path.resolve(__dirname + '../',  p);
+    return path.relative(process.cwd(), path.resolve(__dirname + '../'),  p);
 }
 this.addInitializer(function(opts) {
     function bfyFn(type) {

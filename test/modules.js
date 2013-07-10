@@ -197,9 +197,6 @@ describe('Module system', function() {
             });
         });
     });
-    after(function() {
-        require.cache = {};
-        delete Graft;
-    });
+
 });
 
