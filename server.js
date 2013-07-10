@@ -1,18 +1,22 @@
 /**
  * Main Server-side entry point for Graft.
  */
-var _            = require('underscore');
+var _  = require('underscore');
 var $ = require('jquery');
 
 // This is the shared code that actually create the
 // initial Graft object for us.
-Graft = global.Graft = require('./graft.shared');
+Graft = global.Graft = require('./shared');
 
 // Hopefully this will be unecessary one day.
 Graft.server = true;
 
 // Bootstrap module system.
 require('./lib/modules');
+
+// Include the shared code for the client too.
+Graft.bundle('shared', './lib/augment.js');
+Graft.bundle('shared', './shared.js'); 
 
 // Load up the primary Server middleware. (required)
 require('./middleware/Server.graft.js');
@@ -34,7 +38,6 @@ _.each(expressMethods, function(method) {
         return Server[method].apply(Server, args);
     };
 }, this);
-
 
 
 // Default data handlers for models.

@@ -26,7 +26,9 @@ _.extend(Graft, {
         models: [],
         routers: [],
         templates: [],
-        vendor: []
+        vendor: [],
+        shared: [],
+        client: []
     }
 });
 

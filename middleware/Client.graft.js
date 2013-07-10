@@ -46,17 +46,19 @@ this.addInitializer(function vendor(options) {
         'underscore.string',
         'backbone',
         'backbone.marionette',
-        './lib/augment.js',
-        'jqueryui-browser/ui/jquery-ui.js',
-        './assets/js/jquery.phono.js'
+        'graftjs/lib/augment.js'
     ];
     this.get('/js/vendor.js', bmw(vendor, {external: this.external}));
     this.external = this.external.concat(vendor);
 });
 
+function makeRelative(p) {
+    return path.relative(process.cwd(),  p);
+}
 this.addInitializer(function(opts) {
-    function bfyFn(type, matchStr) {
-        var files = glob.sync(matchStr);
+    function bfyFn(type) {
+        var files = _(Graft.bundles[type]).map(makeRelative);
+        
         this.get('/js/' + type +'.js', bmw(files, {
             external: this.external,
             transform: wrapTransform.through
@@ -64,16 +66,18 @@ this.addInitializer(function(opts) {
         this.external = this.external.concat(files);
     }
 
-    bfyFn.call(this, 'models', './models/*.graft.js');
-    bfyFn.call(this, 'views', './views/*.graft.js');
-    bfyFn.call(this, 'routers', './routers/*.graft.js');
+    bfyFn.call(this, 'models');
+    bfyFn.call(this, 'views');
+    bfyFn.call(this, 'routers');
+    bfyFn.call(this, 'shared');
+    bfyFn.call(this, 'client');
 
     // Handle shared code between server and client.
-    this.get('/js/graft.shared.js', bmw(['./graft.shared.js'], {external: this.external}));
-    this.external.push('./graft.shared.js');
+//    this.get('/js/graft.shared.js', bmw(['./graft.shared.js'], {external: this.external}));
+ //   this.external.push('./graft.shared.js');
 
     // Finally, the initialization code.
-    this.get('/js/graft.client.js', bmw('../graft.client.js', {external: this.external}));
+   // this.get('/js/graft.client.js', bmw('../graft.client.js', {external: this.external}));
 });
 
 Graft.Middleware.on('listen', function(server) {

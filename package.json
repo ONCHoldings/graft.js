@@ -2,7 +2,7 @@
   "name": "graftjs",
   "version": "0.0.1",
   "description": "yet another javascript framework",
-  "main": "graft.js",
+  "main": "server.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/ONCHoldings/graft.js.git"
@@ -36,7 +36,7 @@
   },
   "browser": {
       "jquery": "jquery-browserify",
-      "graftjs": "./graft.shared.js"
+      "graftjs": "./shared.js"
   },
   "scripts": {
     "test": "mocha -R spec"

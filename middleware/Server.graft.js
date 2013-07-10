@@ -20,7 +20,7 @@ this.addInitializer(function(opts) {
     this.locals.title    = 'tropo test';
     this.locals.secret   = 'good thing this is just a demo, right?';
 
-    this.set('views', path.resolve(__dirname + '/../templates'));
+    this.set('views', path.resolve(process.cwd() + '/templates'));
     this.set('view engine', 'jade');
 
     this.configure('production', _.bind(function() {
