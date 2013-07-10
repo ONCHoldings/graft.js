@@ -155,6 +155,10 @@ describe('Module system', function() {
                     '/fixture/models/Accounts.graft.js'
                 );
             });
+
+            it('Should have included the client.js into the client bundle', function() {
+                Graft.bundles.client.should.have.property('client');
+            });
         });
 
         describe('After start', function() {

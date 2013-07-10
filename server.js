@@ -8,6 +8,9 @@ var Graft          = require('./lib/modules'); // Bootstrap module system.
 Graft.server       = true; // Hopefully this will be unecessary one day.
 global.__graftPath = __dirname + '/graft';
 
+// Load up the primary Server middleware. (required)
+require('./middleware/Server.graft.js');
+
 // Include the shared code for the client too.
 Graft.bundle('shared', './graft.js', __dirname);
 Graft.bundle('shared', './lib/augment.js', __dirname);
@@ -19,10 +22,6 @@ Graft.bundle('vendor', 'underscore');
 Graft.bundle('vendor', 'underscore.string');
 Graft.bundle('vendor', 'backbone');
 Graft.bundle('vendor', 'backbone.marionette');
-
-
-// Load up the primary Server middleware. (required)
-require('./middleware/Server.graft.js');
 
 // Bind the Server middleware's express route handlers to the
 // Application Object.
