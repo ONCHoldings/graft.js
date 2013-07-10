@@ -171,7 +171,7 @@ describe('Module system', function() {
                 Graft.Middleware.Test.listening.should.eql(true);
             });
 
-            describe('Have working routes', function() {
+            describe.skip('Have working routes', function() {
                 before(utils.requestUrl(testPort, '/test/mufassa'));
 
                 it ('should return status 200', function() {

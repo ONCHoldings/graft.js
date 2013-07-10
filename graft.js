@@ -2,6 +2,7 @@
  * Main Server-side entry point for Graft.
  */
 var _            = require('underscore');
+var $ = require('jquery');
 
 // This is the shared code that actually create the
 // initial Graft object for us.
