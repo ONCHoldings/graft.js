@@ -1,7 +1,7 @@
-Graft.module("{{module.path}}", function({{module.name}}, Graft, Backbone, Marionette, $, _) {
+Graft.module("{{module.path}}", function {{module.fn}}({{module.name}}, Graft, Backbone, Marionette, $, _) {
     var debug = require('debug')('graft:{{module.path.toLowerCase()}}');
     {{content}};
-    Graft.{{_.pluralize(module.kind)}}.{{module.name}} = this;
+    Graft.${{_.pluralize(module.kind)}}.{{module.name}} = this;
 });
 
 module.exports = Graft.module("{{module.path}}");

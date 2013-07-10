@@ -2,7 +2,7 @@ Graft.module("{{module.path}}", function(module, Graft, Backbone, Marionette, $,
 
     {{content}};
     
-    Graft.{{_.pluralize(module.kind)}}.{{module.name}} = 
+    Graft.${{_.pluralize(module.kind)}}.{{module.name}} = 
         this.{{module.kind}} =
         this.exports =
         module.exports;

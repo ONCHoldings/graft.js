@@ -9,10 +9,13 @@ var log = _.bind(console.log, console);
 // Initialize the Graft application object.
 var Graft = require('../graft');
 
+// Load up the REST api middleware. (optional)
+require('../middleware/REST.graft.js');
+
 // A simple test data adaptor to debug the REST api.
 var Mock = require('graft-mockdb');
 
-require('./fixture/models/index.js');
+Graft.load(__dirname + '/fixture');
 
 Graft.on('reset:data', function() {
     Mock.testData.Account = require('./fixture/resources/Account.json');
@@ -23,10 +26,10 @@ Mock.on('before:start', function() {
     Graft.trigger('reset:data');
 });
 
+Graft.start({ port: 8900 });
 
 describe('REST ROUTES', function() {
     before(function() {
-        Graft.start({ port: 8900 });
     });
 
     describe('GET /api/Account/1', function() {

@@ -16,19 +16,6 @@ require('./lib/modules');
 // Load up the primary Server middleware. (required)
 require('./middleware/Server.graft.js');
 
-// Load up the REST api middleware. (optional)
-// 
-// Provides /api/$modelName/$id routes for all
-// registered model types, and CRUD.
-require('./middleware/REST.graft.js');
-
-// Load up the Client middleware (optional)
-//
-// Provides the functionality that bundles up the
-// code base and distributes it to the client.
-require('./middleware/Client.graft.js');
-
-
 // Bind the Server middleware's express route handlers to the
 // Application Object.
 //

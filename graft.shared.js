@@ -30,17 +30,17 @@ _.extend(Graft, {
     }
 });
 
+/*
 Graft.addInitializer(function(options) {
     require('./templates/index.js');
     require('./models/index.js');
     require('./views/index.js');
     require('./routers/index.js');
 });
-
 Graft.addInitializer(function(options) {
     this.State = {};
     this.State.conferences = new Graft.models.Conferences();
     this.State.callers     = new Graft.models.Callers();
 });
-
+*/
 module.exports = Graft;
