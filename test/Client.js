@@ -49,7 +49,7 @@ describe('Testing Bundled Routes', function() {
     });
 
 
-    describe.skip('GET /js/models.js', function() {
+    describe('GET /js/models.js', function() {
         before(utils.requestUrl(testPort, '/js/models.js'));
 
         it ('should return status 200', function() {
@@ -64,7 +64,7 @@ describe('Testing Bundled Routes', function() {
         });
     });
 
-    describe.skip('GET /js/views.js', function() {
+    describe('GET /js/views.js', function() {
         before(utils.requestUrl(testPort, '/js/views.js'));
 
         it ('should return status 200', function() {
@@ -79,7 +79,7 @@ describe('Testing Bundled Routes', function() {
         });
     });
 
-    describe.skip('GET /js/routers.js', function() {
+    describe('GET /js/routers.js', function() {
         before(utils.requestUrl(testPort, '/js/routers.js'));
 
         it ('should return status 200', function() {

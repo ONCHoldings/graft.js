@@ -60,7 +60,6 @@ describe('Module system', function() {
             Graft.$routers.should.eql({});
         });
 
-
         it('Should have started the shared/vendor bundles', function() {
             Graft.bundles.vendor
                 .should.have.property('async', 'async');

@@ -1,24 +1,25 @@
 /**
  * Server that generates and serves the client side app.
 */
-var express  = require('express');
-var http     = require('http');
+var express       = require('express');
+var http          = require('http');
+var Browserify    = require('browserify');
+var bmw           = require('browserify-middleware');
+var jadeify2      = require('jadeify2');
+var jade          = require('jade');
+var path          = require('path');
+var async         = require('async');
+var glob          = require('glob');
+var fs            = require('fs');
+var _             = require('underscore');
+var wrapTransform = require('../lib/wrap.transform');
+var _express      = express();
+this.express      = _express;
+this.server       = http.createServer(this.express);
 
-var _express = express();
-this.express = _express;
-this.server  = http.createServer(this.express);
+
 _.extend(this, _express);
 
-var Browserify = require('browserify');
-var bmw        = require('browserify-middleware');
-var jadeify2   = require('jadeify2');
-var jade       = require('jade');
-var path       = require('path');
-var glob       = require('glob');
-var fs         = require('fs');
-var _          = require('underscore');
-
-var wrapTransform = require('../lib/wrap.transform');
 
 // Browserify templates
 this.addInitializer(function templates(options) {
@@ -33,42 +34,61 @@ this.addInitializer(function templates(options) {
     this.get('/js/templates.js', bmw(templates, {transform: transFn}));
 });
 
+
+Graft.on('bundle:process', function(bundle, expose, file) {
+    this.external = this.external || [];
+    this.external.push(expose);
+
+}, this)
+
+Graft.reqres.setHandler('bundle:externals', function() {
+    return this.external || [];
+});
+
+
 /**
  * Browserify vendor includes
  */
 this.addInitializer(function vendor(options) {
     var b = new Browserify();
-    _(this.external).each(function(e) {
-        b.external(e);
-    });
 
-    _(Graft.bundles.vendor).each(function(exp, file) {
-        var arg = (exp === file) ? {expose: file} : {};
-        b.require(exp, arg );
-        this.external.push(arg.expose || exp);
-    }, this);
+    function eachExternal(e) { b.external(e); }
 
-    this.get('/js/vendor.js',function(req, res, next) {
-        b.bundle(function(err, src) {
+    function mapBundleExpose(file, expose) {
+        var arg = (expose !== file) ? {expose: expose} : {};
+        b.require(file, arg);
+        Graft.trigger('bundle:process', 'vendor', expose, file);
+    }
+
+    function buildBundle(req, res, next) {
+        function sendBundle(err, src) {
             res.setHeader('content-type', 'text/javascript');
             res.send(err || src);
-        });
-    });
+        }
+        b.bundle(sendBundle);
+    }
+
+    _(Graft.request('bundle:externals')).each(eachExternal);
+    _(Graft.bundles.vendor).each(mapBundleExpose);
+    this.get('/js/vendor.js', buildBundle);
 });
 
 function makeRelative(p) {
-    return path.relative(process.cwd(), path.resolve(__dirname + '../'),  p);
+    return path.relative(process.cwd(), path.resolve(__dirname + '/../'),  p) || p;
 }
 
 this.addInitializer(function(opts) {
     function bfyFn(type) {
-        var files = _(Graft.bundles[type]).map(makeRelative);
+        var files = _(Graft.bundles[type]).chain()
+            .map(makeRelative)
+            .flatten()
+            .value();
         
         this.get('/js/' + type +'.js', bmw(files, {
-            external: this.external,
+            external: Graft.request('bundle:externals'),
             transform: wrapTransform.through
         }));
-        this.external = this.external.concat(files);
+
     }
 
     bfyFn.call(this, 'models');

@@ -37,6 +37,9 @@
   "scripts": {
     "test": "mocha -R spec"
   },
+  "browser": {
+      "jquery": "jquery-browserify"
+  },
   "devDependencies": {
     "mocha": "~1.12.0",
     "Nonsense": "~0.1.2",
