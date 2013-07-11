@@ -42,24 +42,24 @@ this.addInitializer(function templates(options) {
 Graft.on('bundle:process', function(bundle, expose, file) {
     this.external = this.external || [];
     this.external.push(expose);
+    file && (file !== expose) && this.external.push(file);
 
 }, this)
 
 Graft.reqres.setHandler('bundle:externals', function() {
     return this.external || [];
-});
+}, this);
 
+function bundleBuilder(bundleName, options, transFn) {
+    var b = new Browserify();
 
-/**
- * Browserify vendor includes
- */
-this.addInitializer(function vendor(options) {
-    var b = new Browserify({ noParse: [
-        'jquery', 'backbone', 'underscore', 'underscore.string',
-        'backbone.marionette'
-    ] });
+    var bundle = Graft.bundles[bundleName];
 
     function eachExternal(e) { b.external(e); }
+
+    if (transFn) {
+        b.transform(transFn);
+    }
 
     function mapBundleExpose(file, expose) {
         var arg = (expose !== file) ? {expose: expose} : {};
@@ -76,24 +76,41 @@ this.addInitializer(function vendor(options) {
     }
 
     _(Graft.request('bundle:externals')).each(eachExternal);
-    _(Graft.bundles.vendor).each(mapBundleExpose);
-    this.get('/js/vendor.js', buildBundle);
+    _(bundle).each(mapBundleExpose);
+
+    return buildBundle;
+}
+
+/**
+ * Browserify vendor includes
+ */
+this.addInitializer(function vendor(options) {
+    var opts = { 
+        noParse: [
+            'jquery', 'backbone', 'underscore', 
+            'underscore.string', 'backbone.marionette'
+        ]
+    };
+
+    this.get('/js/vendor.js', bundleBuilder('vendor', opts));
 });
 
 function makeRelative(p) {
+    return p;
     return path.relative(process.cwd(), path.resolve(__dirname + '/../'),  p) || p;
 }
 
 this.addInitializer(function(opts) {
     function bfyFn(type) {
         var files = _(Graft.bundles[type]).chain()
-            .map(makeRelative)
             .flatten()
+            .map(makeRelative)
             .value();
-        
+
         this.get('/js/' + type +'.js', bmw(files, {
             external: Graft.request('bundle:externals'),
-            transform: wrapTransform.through
+            transform: wrapTransform.through,
+            debug: false
         }));
         _(files).each(function(f) {
             Graft.trigger('bundle:process', type, f);
