@@ -174,7 +174,7 @@ describe('Module system', function() {
             });
 
             it('Should have included the client.js into the client bundle', function() {
-                Graft.bundles.client.should.have.property('client');
+                Graft.bundles.client.should.have.property('./client.js');
             });
 
         });

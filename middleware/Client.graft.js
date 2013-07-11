@@ -35,7 +35,7 @@ this.addInitializer(function templates(options) {
         Graft.trigger('bundle:process', 'templates', f);
     });
 
-    this.get('/js/templates.js', bmw(templates, {transform: transFn, debug:false}));
+    this.get('/js/templates.js', bmw(templates, {transform: transFn, debug:false, cache: false}));
 });
 
 
@@ -51,9 +51,12 @@ Graft.reqres.setHandler('bundle:externals', function() {
 }, this);
 
 function bundleBuilder(bundleName, options, transFn) {
+    var options = options || {};
+
     var b = new Browserify();
 
     var bundle = Graft.bundles[bundleName];
+    debug("bundleBuilder for " + bundleName);
 
     function eachExternal(e) { b.external(e); }
 
@@ -62,16 +65,29 @@ function bundleBuilder(bundleName, options, transFn) {
     }
 
     function mapBundleExpose(file, expose) {
-        var arg = (expose !== file) ? {expose: expose} : {};
-        b.require(file, arg);
+        var arg = {
+            expose: (expose !== file) ? expose : file
+        };
+
+        if (options.entry) {
+            b.add(file);
+        } else {
+            b.require(file, arg);
+        }
         Graft.trigger('bundle:process', 'vendor', expose, file);
     }
 
     function buildBundle(req, res, next) {
         function sendBundle(err, src) {
-            res.setHeader('content-type', 'text/javascript');
-            res.send(err || src);
+            if (err) {
+                res.setHeader('Content-Type', 'application/json');
+                return res.send(500, JSON.stringify({error: err.toString()}));
+            }
+
+            res.setHeader('Content-Type', 'text/javascript');
+            res.send(src);
         }
+
         b.bundle(sendBundle);
     }
 
@@ -81,19 +97,11 @@ function bundleBuilder(bundleName, options, transFn) {
     return buildBundle;
 }
 
-/**
- * Browserify vendor includes
- */
+ // vendor
 this.addInitializer(function vendor(options) {
-    var opts = { 
-        noParse: [
-            'jquery', 'backbone', 'underscore', 
-            'underscore.string', 'backbone.marionette'
-        ]
-    };
-
-    this.get('/js/vendor.js', bundleBuilder('vendor', opts));
+    this.get('/js/vendor.js', bundleBuilder('vendor'));
 });
+
 
 function makeRelative(p) {
     return p;
@@ -118,12 +126,16 @@ this.addInitializer(function(opts) {
     }
 
     bfyFn.call(this, 'shared');
-    bfyFn.call(this, 'client');
     bfyFn.call(this, 'models');
     bfyFn.call(this, 'views');
     bfyFn.call(this, 'routers');
-
 });
+
+//  client 
+this.addInitializer(function client(options) {
+    this.get('/js/client.js', bundleBuilder('client', { entry: true}));
+});
+
 
 Graft.Middleware.on('listen', function(server) {
     debug('Mounting client to server');

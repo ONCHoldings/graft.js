@@ -29,6 +29,7 @@ describe('REST ROUTES', function() {
             Graft.trigger('reset:data');
         });
 
+        Graft.Middleware.Client.startWithParent = false;
         Graft.start({ port: testPort });
     });
 

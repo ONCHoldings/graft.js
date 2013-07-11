@@ -8,6 +8,7 @@
   },
   "author": "Adrian Rossouw",
   "license": "MIT",
+  "main": "./graft.js",
   "bugs": {
     "url": "https://github.com/ONCHoldings/graft.js/issues"
   },
