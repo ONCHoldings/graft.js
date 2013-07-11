@@ -37,13 +37,28 @@ this.addInitializer(function templates(options) {
  * Browserify vendor includes
  */
 this.addInitializer(function vendor(options) {
-    this.get('/js/vendor.js', bmw(Graft.bundles.vendor, {external: this.external}));
-    this.external = this.external.concat(_.keys(Graft.bundles.vendor));
+    var b = new Browserify();
+    _(this.external).each(function(e) {
+        b.external(e);
+    });
+
+    _(Graft.bundles.vendor).each(function(exp, file) {
+        var arg = (exp === file) ? {expose: file} : {};
+        b.require(exp, arg );
+    });
+
+    this.get('/js/vendor.js',function(req, res, next) {
+        b.bundle(function(err, src) {
+            res.setHeader('content-type', 'text/javascript');
+            res.send(err || src);
+        });
+    });
 });
 
 function makeRelative(p) {
     return path.relative(process.cwd(), path.resolve(__dirname + '../'),  p);
 }
+
 this.addInitializer(function(opts) {
     function bfyFn(type) {
         var files = _(Graft.bundles[type]).map(makeRelative);

@@ -1,3 +1,5 @@
+var Graft = require('{{graftPath}}');
+
 Graft.module("{{module.path}}", function(module, Graft, Backbone, Marionette, $, _) {
 
     {{content}};
