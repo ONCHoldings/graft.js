@@ -35,7 +35,7 @@ this.addInitializer(function templates(options) {
         Graft.trigger('bundle:process', 'templates', f);
     });
 
-    this.get('/js/templates.js', bmw(templates, {transform: transFn}));
+    this.get('/js/templates.js', bmw(templates, {transform: transFn, debug:false}));
 });
 
 
@@ -54,7 +54,10 @@ Graft.reqres.setHandler('bundle:externals', function() {
  * Browserify vendor includes
  */
 this.addInitializer(function vendor(options) {
-    var b = new Browserify();
+    var b = new Browserify({ noParse: [
+        'jquery', 'backbone', 'underscore', 'underscore.string',
+        'backbone.marionette'
+    ] });
 
     function eachExternal(e) { b.external(e); }
 
@@ -97,11 +100,11 @@ this.addInitializer(function(opts) {
         });
     }
 
+    bfyFn.call(this, 'shared');
+    bfyFn.call(this, 'client');
     bfyFn.call(this, 'models');
     bfyFn.call(this, 'views');
     bfyFn.call(this, 'routers');
-    bfyFn.call(this, 'shared');
-    bfyFn.call(this, 'client');
 
 });
 
