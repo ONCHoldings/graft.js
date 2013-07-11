@@ -6,13 +6,14 @@ var $              = require('jquery');
 var Marionette     = require('backbone.marionette');
 var Graft          = require('./lib/modules'); // Bootstrap module system.
 Graft.server       = true; // Hopefully this will be unecessary one day.
-global.__graftPath = __dirname + '/graft';
+global.__graftPath = __dirname + '/graft.js';
 
 // Load up the primary Server middleware. (required)
 require('./middleware/Server.graft.js');
 
 // Include the shared code for the client too.
-Graft.bundle('shared', './graft.js', __dirname);
+Graft.bundle('shared', 'graftjs', global.__graftPath);
+Graft.bundle('shared', './lib/mixins.js', __dirname);
 Graft.bundle('shared', './lib/augment.js', __dirname);
 
 Graft.bundle('vendor', 'jquery', 'jquery-browserify');

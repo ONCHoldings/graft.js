@@ -60,6 +60,24 @@ describe('Module system', function() {
             Graft.$routers.should.eql({});
         });
 
+
+        it('Should have started the shared/vendor bundles', function() {
+            Graft.bundles.vendor
+                .should.have.property('async', 'async');
+
+            Graft.bundles.vendor
+                .should.have.property('jquery', 'jquery-browserify');
+
+            Graft.bundles.vendor
+                .should.have.property('backbone', 'backbone');
+
+            Graft.bundles.shared
+                .should.have.property('graftjs', global.__graftPath);
+
+            Graft.bundles.shared
+                .should.have.property('./lib/mixins.js', path.resolve(__dirname + '/../lib/mixins.js'));
+        })
+
         describe('Including Test middleware', function() {
 
             before(function() {
@@ -159,6 +177,7 @@ describe('Module system', function() {
             it('Should have included the client.js into the client bundle', function() {
                 Graft.bundles.client.should.have.property('client');
             });
+
         });
 
         describe('After start', function() {
