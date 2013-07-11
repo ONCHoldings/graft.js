@@ -24,12 +24,16 @@ _.extend(this, _express);
 // Browserify templates
 this.addInitializer(function templates(options) {
     // Import templates
-    var templates = glob.sync('./templates/*.jade');
+    var templates = Graft.bundles.templates;
+
     var transFn = _.wrap(jadeify2, function(fn, file, options) {
         // dirty kludge to fix the part issue in the jadeify2 transform
         return fn(file, { client: true, filename: file, compileDebug: false });
     });
-    this.external = _.clone(templates);
+
+    _(templates).each(function(f) {
+        Graft.trigger('bundle:process', 'templates', f);
+    });
 
     this.get('/js/templates.js', bmw(templates, {transform: transFn}));
 });
@@ -88,7 +92,9 @@ this.addInitializer(function(opts) {
             external: Graft.request('bundle:externals'),
             transform: wrapTransform.through
         }));
-
+        _(files).each(function(f) {
+            Graft.trigger('bundle:process', type, f);
+        });
     }
 
     bfyFn.call(this, 'models');
@@ -97,12 +103,6 @@ this.addInitializer(function(opts) {
     bfyFn.call(this, 'shared');
     bfyFn.call(this, 'client');
 
-    // Handle shared code between server and client.
-//    this.get('/js/graft.shared.js', bmw(['./graft.shared.js'], {external: this.external}));
- //   this.external.push('./graft.shared.js');
-
-    // Finally, the initialization code.
-   // this.get('/js/graft.client.js', bmw('../graft.client.js', {external: this.external}));
 });
 
 Graft.Middleware.on('listen', function(server) {
