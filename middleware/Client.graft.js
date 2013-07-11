@@ -45,7 +45,8 @@ this.addInitializer(function vendor(options) {
     _(Graft.bundles.vendor).each(function(exp, file) {
         var arg = (exp === file) ? {expose: file} : {};
         b.require(exp, arg );
-    });
+        this.external.push(arg.expose || exp);
+    }, this);
 
     this.get('/js/vendor.js',function(req, res, next) {
         b.bundle(function(err, src) {
