@@ -32,6 +32,7 @@ Graft.Middleware.on('listen', function(Server) {
 // Implementations for each of the methods
 _.extend(this, {
     readModel: function(req, res, next) {
+        console.log('start server readModel');
         var send = _.bind(res.send, res);
         var hasModelAndId = req.params.model && req.params.id;
         var modelExists = !!Graft.$models[req.params.model];
@@ -44,9 +45,12 @@ _.extend(this, {
 
         function fetchModel(attrs) {
             debug('fetching model', req.params.model, req.params.id);
+            console.log('fetching model', req.params.model, req.params.id);
+            console.log('fetching model:', model);
             send(model.toJSON()); // it only gets the attributes;
         }
         model.fetch().then(fetchModel, send);
+        console.log('end server readModel');
     },
     updateModel: function(req, res, next) {
         var send          = _.bind(res.send, res);
@@ -81,6 +85,9 @@ _.extend(this, {
 
         var send  = _.bind(res.send, res);
         var model = new Graft.$models[req.params.model](req.body);
+        if(model.id != undefined) {
+            delete model.id;
+        }
 
         function created(attrs) {
             res.set('Location', model.url());
