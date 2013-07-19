@@ -1,10 +1,7 @@
 var utils    = require('./utils');
 var should   = require('should');
 var path     = require('path');
-var request  = require('request');
-var async    = require('async');
 var _        = require('underscore');
-var log      = _.bind(console.log, console);
 var testPort = 8901;
 
 // Initialize the Graft application object.
@@ -75,7 +72,7 @@ describe('Module system', function() {
 
             Graft.bundles.shared
                 .should.have.property('./lib/mixins.js', path.resolve(__dirname + '/../lib/mixins.js'));
-        })
+        });
 
         describe('Including Test middleware', function() {
 

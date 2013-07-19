@@ -1,0 +1,9 @@
+{
+    "globals" : { 
+        "Graft" : true
+    },
+    "expr"    : true,
+    "unused"  : "vars",
+    "node"    : true,
+    "shadow"  : true
+}

@@ -63,7 +63,7 @@ Graft.reset = function() {
     this.$middleware = {};
 
     this.resetBundles();
-}
+};
 
 // Default data handlers for models.
 //
