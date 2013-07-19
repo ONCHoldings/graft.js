@@ -34,7 +34,8 @@
     "underscore.string": "~2.3.1",
     "debug": "~0.7.2",
     "async": "~0.2.9",
-    "through": "~2.3.4"
+    "through": "~2.3.4",
+    "backbone.babysitter": "0.0.6"
   },
   "scripts": {
     "test": "mocha -R spec",
