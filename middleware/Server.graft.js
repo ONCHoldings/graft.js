@@ -15,6 +15,8 @@ require('../lib/sync');
 * Basic middleware setup
 */
 this.addInitializer(function(opts) {
+    var opts = opts || {};
+
     debug('initialize server.graft');
     this.locals.siteName = 'tropo test';
     this.locals.title    = 'tropo test';
@@ -28,7 +30,7 @@ this.addInitializer(function(opts) {
     }, this));
 
     this.use(express.bodyParser());
-    this.use(express.static(__dirname + '/../assets'));
+    this.use(express.static(process.cwd() + '/assets'));
     this.use(express.cookieParser());
     this.use(express.session({secret: 'secret', key: 'express.sid'}));
 });
