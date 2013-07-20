@@ -7,11 +7,12 @@ var Graft = require('{{graftPath}}');
 
 Graft.module("{{module.path}}", function {{module.fn}}(module, Graft, Backbone, Marionette, $, _) {
     var debug = require('debug')('graft:{{module.path.toLowerCase()}}');
-    {{content}};
-    Graft.${{_.pluralize(module.kind)}}.{{module.name}} = 
-        this.{{module.kind}} =
-        this.exports =
-        module.exports;
+
+    {{content}}
+
+    Graft.${{_.pluralize(module.kind)}}.{{module.safeName}} =
+        this.{{module.kind}} = this.$ref =
+        this.exports = module.exports;
 });
 
 module.exports = Graft.module("{{module.path}}").exports;
@@ -19,4 +20,3 @@ module.exports = Graft.module("{{module.path}}").exports;
 /**
  * End Filename: {{filename}}
  */
-
