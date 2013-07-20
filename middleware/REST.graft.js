@@ -21,6 +21,7 @@ this.addInitializer(function(opts) {
     this.get('/api/:collection', this.readCollection);
     Graft.reqres.setHandler('model:name', this.modelName);
     Graft.reqres.setHandler('model:load', this.loadModel);
+    Graft.reqres.setHandler('model:url', this.modelUrl);
 });
 
 Graft.Middleware.on('listen', function(Server) {
@@ -85,7 +86,7 @@ _.extend(this, {
         }
 
         function created(attrs) {
-            res.set('Location', model.url());
+            res.set('Location', Graft.request('model:url', model));
             res.send(303, model.toJSON());
         }
         function createModel(attrs) {
@@ -143,6 +144,9 @@ _.extend(this, {
         debug('model:name handler');
         var matches = matchUrl(model);
         return matches ? matches.name : false;
+    },
+    modelUrl: function(model) {
+        return _.result(model, 'url');
     }
 });
 
@@ -153,7 +157,7 @@ _.extend(this, {
 //
 // Returns false if not found.
 function matchUrl(model) {
-    var url = _.result(model, 'url') || false;
+    var url = Graft.request('model:url', model) || false;
     debug('matchUrl: ' + url);
 
     var regex =  /\/api\/([^/]*)\/?([^/]*)\/?/;

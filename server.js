@@ -77,12 +77,12 @@ function notImplemented() {
     return dfr.promise();
 }
 
+Graft.reqres.setHandler('model:url', notImplemented);
 Graft.reqres.setHandler('model:name', notImplemented);
 Graft.reqres.setHandler('model:read', notImplemented);
 Graft.reqres.setHandler('model:update', notImplemented);
 Graft.reqres.setHandler('model:delete', notImplemented);
 Graft.reqres.setHandler('model:create', notImplemented);
 Graft.reqres.setHandler('collection:read', notImplemented);
-
 
 module.exports = Graft;
