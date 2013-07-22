@@ -23,6 +23,8 @@ Graft.bundle('vendor', 'underscore');
 Graft.bundle('vendor', 'underscore.string');
 Graft.bundle('vendor', 'backbone');
 Graft.bundle('vendor', 'backbone.marionette');
+Graft.bundle('vendor', 'backbone.wreqr');
+Graft.bundle('vendor', 'backbone.babysitter');
 
 // Bind the Server middleware's express route handlers to the
 // Application Object.
@@ -63,7 +65,7 @@ Graft.reset = function() {
     this.$middleware = {};
 
     this.resetBundles();
-}
+};
 
 // Default data handlers for models.
 //
@@ -81,5 +83,6 @@ Graft.reqres.setHandler('model:update', notImplemented);
 Graft.reqres.setHandler('model:delete', notImplemented);
 Graft.reqres.setHandler('model:create', notImplemented);
 Graft.reqres.setHandler('collection:read', notImplemented);
+
 
 module.exports = Graft;

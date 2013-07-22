@@ -1,9 +1,5 @@
 var utils    = require('./utils');
 var should   = require('should');
-var request  = require('request');
-var async    = require('async');
-var _        = require('underscore');
-var log      = _.bind(console.log,console);
 var testPort = 8902;
 
 // Initialize the Graft application object.
@@ -14,7 +10,7 @@ describe('Testing Bundled Routes', function() {
     before(function() {
         // Load up the REST api middleware. (optional)
         require('../middleware/Client.graft.js');
-        Graft.load(__dirname + '/fixture')
+        Graft.load(__dirname + '/fixture');
         Graft.start({ port: testPort });
     });
 

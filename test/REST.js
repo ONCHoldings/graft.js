@@ -3,7 +3,6 @@ var should   = require('should');
 var request  = require('request');
 var async    = require('async');
 var _        = require('underscore');
-var log      = _.bind(console.log,console);
 var testPort = 8900;
 var dbName = 'graft_example';
 var dbConfig = {pathname: dbName};
@@ -38,6 +37,10 @@ describe('REST ROUTES', function() {
         Graft.start({ port: testPort, db: dbName });
 
         utils.install(dbConfig, done);
+        if (Graft.Middleware.Client) {
+            Graft.Middleware.Client.startWithParent = false;
+        }
+        Graft.start({ port: testPort });
     });
 
     describe('GET /api/Account/1', function() {
@@ -99,7 +102,7 @@ describe('REST ROUTES', function() {
         var data = {
             "name": "Emily Mortimer", // was "Emily Baker"
             "favColor": "magenta" // new field
-        }
+        };
         before(utils.requestUrl(testPort, '/api/Account/2', 'PUT', data));
 
         it ('should return status 201', function() {
@@ -186,22 +189,15 @@ describe('REST ROUTES', function() {
         var data = {
             "name": "Ronald McDonald", // was "Emily Baker"
             "favColor": "yello" // new field
-        }
+        };
         before(utils.requestUrl(testPort, '/api/Account', 'POST', data));
 
-        // This is for the new location the server told us to go.
-        var newLocation = '';
         it ('should have a location', function() {
             this.resp.should.have.header('Location');
         });
 
-        // This is for the new ID the server generated for us.
-        var newId = '';
         it ('should return a new id', function() {
             this.body.should.have.property('id');
-
-            var newLocation = this.resp.headers.location;
-            var newId = this.body.id;
         });
 
         it ('should return status 303', function() {
@@ -256,8 +252,7 @@ describe('REST ROUTES', function() {
                         next(err);
                     });
                 }], done);
-        }
-
+        };
 
         before(beforeFn);
 

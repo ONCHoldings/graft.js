@@ -6,11 +6,6 @@ var http          = require('http');
 var Browserify    = require('browserify');
 var bmw           = require('browserify-middleware');
 var jadeify2      = require('jadeify2');
-var jade          = require('jade');
-var path          = require('path');
-var async         = require('async');
-var glob          = require('glob');
-var fs            = require('fs');
 var _             = require('underscore');
 var wrapTransform = require('../lib/wrap.transform');
 var _express      = express();
@@ -22,7 +17,7 @@ _.extend(this, _express);
 
 
 // Browserify templates
-this.addInitializer(function templates(options) {
+this.addInitializer(function bundleTemplates(options) {
     // Import templates
     var templates = Graft.bundles.templates;
 
@@ -44,7 +39,7 @@ Graft.on('bundle:process', function(bundle, expose, file) {
     this.external.push(expose);
     file && (file !== expose) && this.external.push(file);
 
-}, this)
+}, this);
 
 Graft.reqres.setHandler('bundle:externals', function() {
     return this.external || [];
@@ -105,7 +100,7 @@ this.addInitializer(function vendor(options) {
 
 function makeRelative(p) {
     return p;
-    return path.relative(process.cwd(), path.resolve(__dirname + '/../'),  p) || p;
+    // return path.relative(process.cwd(), path.resolve(__dirname + '/../'),  p) || p;
 }
 
 this.addInitializer(function(opts) {

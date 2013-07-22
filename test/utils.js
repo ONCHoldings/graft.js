@@ -5,7 +5,6 @@
  * to understand with these abstracted out.
  */
 var should  = require('should');
-var url     = require('url');
 var request = require('request');
 var Couch = require('../node_modules/graft-couch/lib/couch.js');
 var _ = require('underscore');
@@ -33,7 +32,7 @@ function requestUrl(port, pathname, method, body) {
             self.body = body;
             done(err);
         });
-    }
+    };
 }
 
 // Set up database, populate with design documents.

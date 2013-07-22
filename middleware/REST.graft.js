@@ -1,6 +1,5 @@
 var express  = require('express');
 var http     = require('http');
-var path     = require('path');
 
 // This middleware needs to mount routes, so
 // it extends the express object.
@@ -81,7 +80,7 @@ _.extend(this, {
 
         var send  = _.bind(res.send, res);
         var model = new Graft.$models[req.params.model](req.body);
-        if(model.id != undefined) {
+        if (model.id !== undefined) {
             delete model.id;
         }
 
