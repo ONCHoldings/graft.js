@@ -32,7 +32,8 @@
     "underscore.string": "~2.3.1",
     "debug": "~0.7.2",
     "async": "~0.2.9",
-    "through": "~2.3.4"
+    "through": "~2.3.4",
+    "graft-couch": "~0.0.1"
   },
   "scripts": {
     "test": "mocha -R spec"
@@ -44,7 +45,6 @@
   "devDependencies": {
     "mocha": "~1.12.0",
     "Nonsense": "~0.1.2",
-    "should": "~1.2.2",
-    "graft-mockdb": "git+ssh://git@github.com:ONCHoldings/graft-mockdb.git#master"
+    "should": "~1.2.2"
   }
 }

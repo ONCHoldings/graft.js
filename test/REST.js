@@ -5,32 +5,39 @@ var async    = require('async');
 var _        = require('underscore');
 var log      = _.bind(console.log,console);
 var testPort = 8900;
+var dbName = 'graft_example';
+var dbConfig = {pathname: dbName};
 
 // Initialize the Graft application object.
 var Graft    = require('../server');
 
+function cleanup(done) {
+    this.dbDel(function(err) {
+        done();
+    });
+}
+
 
 describe('REST ROUTES', function() {
-    before(function() {
+    var Couch = require('../node_modules/graft-couch/lib/couch.js');
+    var db = new Couch(dbConfig);
+    before(cleanup.bind(db));
+
+    before(function(done) {
         // Load up the REST api middleware. (optional)
         require('../middleware/REST.graft.js');
 
         // A simple test data adaptor to debug the REST api.
-        var Mock = require('graft-mockdb');
+        var graftCouch = require('graft-couch');
 
         Graft.load(__dirname + '/fixture');
 
-        Graft.on('reset:data', function() {
-            Mock.testData.Account = require('./fixture/resources/Account.json');
-            Mock.testData.Group = require('./fixture/resources/Group.json');
-        }, Mock);
+        if(Graft.Middleware.Client !== undefined) {
+            Graft.Middleware.Client.startWithParent = false;
+        }
+        Graft.start({ port: testPort, db: dbName });
 
-        Mock.on('before:start', function() {
-            Graft.trigger('reset:data');
-        });
-
-        Graft.Middleware.Client.startWithParent = false;
-        Graft.start({ port: testPort });
+        utils.install(dbConfig, done);
     });
 
     describe('GET /api/Account/1', function() {
@@ -78,7 +85,13 @@ describe('REST ROUTES', function() {
         });
 
         it ('should respect the default values', function() {
-            this.body[1].should.have.property('policy', 'deny');
+            var record = false;
+            _.each(this.body, function(val) {
+                if(val.id == 'alternate') {
+                    record = val;
+                }
+            });
+            record.should.have.property('policy', 'deny');
         });
     });
 
