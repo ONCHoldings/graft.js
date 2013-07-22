@@ -35,9 +35,7 @@
     "debug": "~0.7.2",
     "async": "~0.2.9",
     "through": "~2.3.4",
-    "backbone.babysitter": "0.0.6",
-    "graft-couch": "~0.0.1",
-    "backbone.wreqr": "git://github.com/marionettejs/backbone.wreqr.git"
+    "backbone.babysitter": "0.0.6"
   },
   "scripts": {
     "test": "mocha -R spec",

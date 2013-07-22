@@ -4,39 +4,30 @@ var request  = require('request');
 var async    = require('async');
 var _        = require('underscore');
 var testPort = 8900;
-var dbName = 'graft_example';
-var dbConfig = {pathname: dbName};
 
 // Initialize the Graft application object.
 var Graft    = require('../server');
 
-function cleanup(done) {
-    this.dbDel(function(err) {
-        done();
-    });
-}
-
 
 describe('REST ROUTES', function() {
-    var Couch = require('../node_modules/graft-couch/lib/couch.js');
-    var db = new Couch(dbConfig);
-    before(cleanup.bind(db));
-
-    before(function(done) {
+    before(function() {
         // Load up the REST api middleware. (optional)
         require('../middleware/REST.graft.js');
 
         // A simple test data adaptor to debug the REST api.
-        var graftCouch = require('graft-couch');
+        var Mock = require('graft-mockdb');
 
         Graft.load(__dirname + '/fixture');
 
-        if(Graft.Middleware.Client !== undefined) {
-            Graft.Middleware.Client.startWithParent = false;
-        }
-        Graft.start({ port: testPort, db: dbName });
+        Graft.on('reset:data', function() {
+            Mock.testData.Account = require('./fixture/resources/Account.json');
+            Mock.testData.Group = require('./fixture/resources/Group.json');
+        }, Mock);
 
-        utils.install(dbConfig, done);
+        Mock.on('before:start', function() {
+            Graft.trigger('reset:data');
+        });
+
         if (Graft.Middleware.Client) {
             Graft.Middleware.Client.startWithParent = false;
         }
@@ -88,13 +79,7 @@ describe('REST ROUTES', function() {
         });
 
         it ('should respect the default values', function() {
-            var record = false;
-            _.each(this.body, function(val) {
-                if(val.id == 'alternate') {
-                    record = val;
-                }
-            });
-            record.should.have.property('policy', 'deny');
+            this.body[1].should.have.property('policy', 'deny');
         });
     });
 
