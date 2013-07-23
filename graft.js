@@ -18,7 +18,7 @@ var Graft = new Marionette.Application();
 
 // These are mapped in such a way so that modules
 // are able to integrate with other dependencies.
-Graft.BaseModel = Backbone.Model;
+Graft.BaseModel      = Backbone.Model;
 Graft.BaseCollection = Backbone.Collection;
 
 _.extend(Graft, {
