@@ -11,6 +11,9 @@ global.__graftPath = __dirname + '/graft.js';
 // Load up the primary Server middleware. (required)
 require('./middleware/Server.graft.js');
 
+// Load up the Data API
+require('./middleware/Data.graft.js');
+
 // Include the shared code for the client too.
 Graft.bundle('shared', 'graftjs', global.__graftPath);
 Graft.bundle('shared', './lib/mixins.js', __dirname);
