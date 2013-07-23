@@ -8,30 +8,34 @@ var testPort = 8900;
 // Initialize the Graft application object.
 var Graft    = require('../server');
 
+Graft.commands.setHandler('REST:setupTest', function(done) {
+    // A simple test data adaptor to debug the REST api.
+    var Mock = require('graft-mockdb');
+
+    Graft.load(__dirname + '/fixture');
+
+    Graft.on('reset:data', function() {
+        Mock.testData.Account = require('./fixture/resources/Account.json');
+        Mock.testData.Group = require('./fixture/resources/Group.json');
+    }, Mock);
+
+    Mock.on('before:start', function() {
+        Graft.trigger('reset:data');
+    });
+
+    if (Graft.Middleware.Client) {
+        Graft.Middleware.Client.startWithParent = false;
+    }
+
+    Graft.start({ port: testPort });
+    done();
+});
 
 describe('REST ROUTES', function() {
-    before(function() {
+    before(function(done) {
         // Load up the REST api middleware. (optional)
         require('../middleware/REST.graft.js');
-
-        // A simple test data adaptor to debug the REST api.
-        var Mock = require('graft-mockdb');
-
-        Graft.load(__dirname + '/fixture');
-
-        Graft.on('reset:data', function() {
-            Mock.testData.Account = require('./fixture/resources/Account.json');
-            Mock.testData.Group = require('./fixture/resources/Group.json');
-        }, Mock);
-
-        Mock.on('before:start', function() {
-            Graft.trigger('reset:data');
-        });
-
-        if (Graft.Middleware.Client) {
-            Graft.Middleware.Client.startWithParent = false;
-        }
-        Graft.start({ port: testPort });
+        Graft.execute('REST:setupTest', done);
     });
 
     describe('GET /api/Account/1', function() {

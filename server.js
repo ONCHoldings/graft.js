@@ -29,6 +29,28 @@ Graft.bundle('vendor', 'backbone.marionette');
 Graft.bundle('vendor', 'backbone.wreqr');
 Graft.bundle('vendor', 'backbone.babysitter');
 
+
+
+// Default data handlers for models.
+//
+// The custom Backbone.sync implementation on the
+// server side will call these.
+function notImplemented() {
+    var dfr = new $.Deferred();
+    dfr.reject(403, "Not Implemented");
+    return dfr.promise();
+}
+
+Graft.commands.setHandler('data:setup', notImplemented);
+Graft.reqres.setHandler('model:url', notImplemented);
+Graft.reqres.setHandler('model:name', notImplemented);
+Graft.reqres.setHandler('model:read', notImplemented);
+Graft.reqres.setHandler('model:update', notImplemented);
+Graft.reqres.setHandler('model:delete', notImplemented);
+Graft.reqres.setHandler('model:create', notImplemented);
+Graft.reqres.setHandler('collection:read', notImplemented);
+
+
 // Bind the Server middleware's express route handlers to the
 // Application Object.
 //
@@ -47,6 +69,9 @@ _.each(expressMethods, function(method) {
     };
 }, this);
 
+Graft.addInitializer(function(opts) {
+    Graft.execute('data:setup', opts);
+});
 
 // Stop this module by running its finalizers and then stop all of
 // the sub-modules for this application
@@ -69,23 +94,4 @@ Graft.reset = function() {
 
     this.resetBundles();
 };
-
-// Default data handlers for models.
-//
-// The custom Backbone.sync implementation on the
-// server side will call these.
-function notImplemented() {
-    var dfr = new $.Deferred();
-    dfr.reject(403, "Not Implemented");
-    return dfr.promise();
-}
-
-Graft.reqres.setHandler('model:url', notImplemented);
-Graft.reqres.setHandler('model:name', notImplemented);
-Graft.reqres.setHandler('model:read', notImplemented);
-Graft.reqres.setHandler('model:update', notImplemented);
-Graft.reqres.setHandler('model:delete', notImplemented);
-Graft.reqres.setHandler('model:create', notImplemented);
-Graft.reqres.setHandler('collection:read', notImplemented);
-
 module.exports = Graft;
