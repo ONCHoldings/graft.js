@@ -3,8 +3,13 @@ var should   = require('should');
 var path     = require('path');
 var _        = require('underscore');
 var $        = require('jquery');
+var Backbone = require('backbone');
 
 var testPort = 8901;
+
+var TestBaseModel = Backbone.Model.extend({
+    title: 'TestBaseModel'
+});
 
 // Initialize the Graft application object.
 var Graft = require('../server');
@@ -26,6 +31,9 @@ describe('Module system', function() {
             Graft.should.have.property('bundles');
         });
 
+        it('BaseModel should be equal to Backbone.Model', function() {
+            Graft.BaseModel.should.eql(Backbone.Model);
+        });
         it('Should have added server middleware to bundle', function() {
             Graft.bundles.middleware.should.have.property('Server');
         });
@@ -152,6 +160,52 @@ describe('Module system', function() {
             it('Graft.module("Model.Group") matches Graft.Model.Group', function() {
                 Graft.Model.Group.should.eql(Graft.module("Model.Group"));
             });
+        });
+
+        describe('Including a single model after changing BaseModel (Account)', function() {
+            before(function() {
+                Graft.BaseModel = TestBaseModel;
+                require('./fixture/models/Account.graft.js');
+                this.instance = new Graft.$models.Account({ id: 123 });
+                this.gInstance = new Graft.$models.Group({ id: 'group' });
+            });
+
+            it('BaseModel should equal TestBaseModel now', function() {
+                Graft.BaseModel.should.eql(TestBaseModel);
+            });
+
+            it('Instance should be instanceof TestBaseModel', function() {
+                this.instance.should.be.an.instanceOf(Graft.BaseModel);
+            });
+
+            it('Instance should also be an instance of Backbone.Model', function() {
+                this.instance.should.be.an.instanceOf(Backbone.Model);
+            });
+
+            it('Group Instance should not be a TestBaseModel', function() {
+                this.gInstance.should.not.be.an.instanceOf(TestBaseModel);
+            });
+
+        });
+
+        describe('Changing BaseModel does not change already included modules', function() {
+            before(function() {
+                Graft.BaseModel = Backbone.Model;
+                this.instance = new Graft.$models.Account({ id: 123 });
+            });
+            it('BaseModel should equal Backbone.Model again', function() {
+                Graft.BaseModel.should.eql(Backbone.Model);
+            });
+
+            it('Instance should be instanceof TestBaseModel', function() {
+                this.instance.should.be.an.instanceOf(Graft.BaseModel);
+            });
+
+            it('Instance should also be an instance of Backbone.Model', function() {
+                this.instance.should.be.an.instanceOf(Backbone.Model);
+            });
+
+
         });
 
         describe('Using Graft.load() to require many modules', function() {
