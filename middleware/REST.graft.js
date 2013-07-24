@@ -43,7 +43,10 @@ _.extend(this, {
             debug('fetching model', req.params.model, req.params.id);
             send(model.toJSON()); // it only gets the attributes;
         }
-        model.fetch().then(fetchModel, send);
+        function failedModel(model, resp, options) {
+            send(resp);
+        }
+        model.fetch().then(fetchModel, failedModel);
     },
     updateModel: function(req, res, next) {
         var send          = _.bind(res.send, res);

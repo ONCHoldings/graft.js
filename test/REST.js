@@ -268,6 +268,9 @@ describe('REST ROUTES', function() {
 
     describe('DELETE /api/Account/1', function() {
 
+        before(function() {
+            Graft.trigger('reset:data');
+        });
         before(utils.requestUrl(testPort, '/api/Account/1', 'DELETE'));
 
         it ('should return status 204', function() {
