@@ -1,14 +1,13 @@
 /**
 * Top level Data api module.
 */
-var $ = require('jquery');
 
 // Default data handlers for models.
 //
 // The custom Backbone.sync implementation on the
 // server side will call these.
 function notImplemented() {
-    var dfr = new $.Deferred();
+    var dfr = new _.Deferred();
     dfr.reject(403, "Not Implemented");
     return dfr.promise();
 }

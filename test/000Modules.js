@@ -2,7 +2,6 @@ var utils    = require('./utils');
 var should   = require('should');
 var path     = require('path');
 var _        = require('underscore');
-var $        = require('jquery');
 var Backbone = require('backbone');
 
 var testPort = 8901;
@@ -27,6 +26,24 @@ function fileOrder(order, file1, file2) {
 
 describe('Module system', function() {
     describe('Before Start', function() {
+        describe('Underscore mixins', function() {
+            it('_ should have Deferred', function() {
+                should.exist(_.Deferred);
+            });
+
+            it('Should have a working Deferred', function(done) {
+                var dfr = new _.Deferred();
+
+                dfr.always(done);
+                _.delay(dfr.resolve, 200);
+
+            });
+
+            it('_ should have String functions', function() {
+                should.exist(_.sprintf);
+            });
+
+        });
         it('Should have initialized bundles', function() {
             Graft.should.have.property('bundles');
         });
@@ -285,7 +302,7 @@ describe('Module system', function() {
             });
 
             Graft.reqres.setHandler('request:promise', function(success) {
-                var dfr = new $.Deferred();
+                var dfr = new _.Deferred();
 
                 _.delay(function(success) {
                     if (success) {

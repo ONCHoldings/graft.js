@@ -23,6 +23,7 @@ Graft.bundle('vendor', 'debug');
 Graft.bundle('vendor', 'async');
 Graft.bundle('vendor', 'underscore');
 Graft.bundle('vendor', 'underscore.string');
+Graft.bundle('vendor', 'underscore.deferred');
 Graft.bundle('vendor', 'f_underscore');
 Graft.bundle('vendor', 'backbone');
 Graft.bundle('vendor', 'backbone.marionette');
