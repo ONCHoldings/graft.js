@@ -1,6 +1,27 @@
 /**
 * Top level Data api module.
 */
+var $ = require('jquery');
+
+// Default data handlers for models.
+//
+// The custom Backbone.sync implementation on the
+// server side will call these.
+function notImplemented() {
+    var dfr = new $.Deferred();
+    dfr.reject(403, "Not Implemented");
+    return dfr.promise();
+}
+
+Graft.commands.setHandler('data:setup', notImplemented);
+Graft.reqres.setHandler('model:url', notImplemented);
+Graft.reqres.setHandler('model:name', notImplemented);
+Graft.reqres.setHandler('model:read', notImplemented);
+Graft.reqres.setHandler('model:update', notImplemented);
+Graft.reqres.setHandler('model:delete', notImplemented);
+Graft.reqres.setHandler('model:create', notImplemented);
+Graft.reqres.setHandler('collection:read', notImplemented);
+
 
 // Mount all the rest api routes
 this.addInitializer(function(opts) {

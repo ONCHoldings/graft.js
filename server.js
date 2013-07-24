@@ -2,7 +2,6 @@
  * Main Server-side entry point for Graft.
  */
 var _              = require('underscore');
-var $              = require('jquery');
 var Marionette     = require('backbone.marionette');
 var Graft          = require('./lib/modules'); // Bootstrap module system.
 Graft.server       = true; // Hopefully this will be unecessary one day.
@@ -29,27 +28,6 @@ Graft.bundle('vendor', 'backbone');
 Graft.bundle('vendor', 'backbone.marionette');
 Graft.bundle('vendor', 'backbone.wreqr');
 Graft.bundle('vendor', 'backbone.babysitter');
-
-
-
-// Default data handlers for models.
-//
-// The custom Backbone.sync implementation on the
-// server side will call these.
-function notImplemented() {
-    var dfr = new $.Deferred();
-    dfr.reject(403, "Not Implemented");
-    return dfr.promise();
-}
-
-Graft.commands.setHandler('data:setup', notImplemented);
-Graft.reqres.setHandler('model:url', notImplemented);
-Graft.reqres.setHandler('model:name', notImplemented);
-Graft.reqres.setHandler('model:read', notImplemented);
-Graft.reqres.setHandler('model:update', notImplemented);
-Graft.reqres.setHandler('model:delete', notImplemented);
-Graft.reqres.setHandler('model:create', notImplemented);
-Graft.reqres.setHandler('collection:read', notImplemented);
 
 
 // Bind the Server middleware's express route handlers to the
