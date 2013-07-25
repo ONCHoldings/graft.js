@@ -31,8 +31,6 @@ this.addInitializer(function(opts) {
 
     this.use(express.bodyParser());
     this.use(express.static(process.cwd() + '/assets'));
-    this.use(express.cookieParser());
-    this.use(express.session({secret: 'secret', key: 'express.sid'}));
 });
 
 // Start the server
