@@ -7,11 +7,37 @@ var Graft          = require('./lib/modules'); // Bootstrap module system.
 Graft.server       = true; // Hopefully this will be unecessary one day.
 global.__graftPath = __dirname + '/graft.js';
 
+// initialize system layout
+Graft.system('Middleware', 'middleware', {
+   bundle: 'middleware'
+});
+Graft.system('Data', 'data', {
+    kind: 'data',
+    path: 'data'
+});
+
+Graft.system('Template', 'templates', {
+    wrap: 'jade',
+    extension: '.jade'
+});
+Graft.system('Model', 'models', {
+    bundle: 'models'
+});
+Graft.system('View', 'views', {
+    bundle: 'views'
+});
+Graft.system('Router', 'routers', {
+    bundle: 'routers'
+});
+Graft.system('Client', 'client', {
+    bundle: ['vendor', 'shared', 'client'],
+});
+
 // Load up the primary Server middleware. (required)
 require('./middleware/Server.graft.js');
 
 // Load up the Data API
-require('./middleware/Data.graft.js');
+require('./Data/Data.graft.js');
 
 // Include the shared code for the client too.
 Graft.bundle('shared', 'graftjs', global.__graftPath);

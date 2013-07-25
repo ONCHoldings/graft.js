@@ -101,6 +101,31 @@ describe('Module system', function() {
                 .should.have.property('./lib/mixins.js', path.resolve(__dirname + '/../lib/mixins.js'));
         });
 
+        describe('Subsystem management', function() {
+            it('Should have an accessible system function', function() {
+                Graft.should.have.property('system');
+            });
+            it('Should have a populated systems hash', function() {
+                Graft.systems.should.have.property('Server');
+                Graft.systems.should.have.property('Data');
+                Graft.systems.should.have.property('Model');
+                Graft.systems.should.have.property('Template');
+                Graft.systems.should.have.property('View');
+                Graft.systems.should.have.property('Router');
+                Graft.systems.should.have.property('Client');
+            });
+            it('Should have registered the systems correctly', function() {
+                Graft.systems.Server.should.eql({
+                    "bundle": 'middleware',
+                    "transform": "wrap",
+                    "extension": ".graft.js",
+                    "name": "Server",
+                    "path": "servers",
+                    "instances": false
+                });
+            });
+        });
+
         describe('Including Test middleware', function() {
 
             before(function() {
