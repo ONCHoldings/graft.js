@@ -17,10 +17,14 @@ require('../lib/sync');
 this.addInitializer(function(opts) {
     var opts = opts || {};
 
+    var locals = {
+        siteName : 'graft example',
+        title    : 'graft.js'
+    };
+
+    _.extend(this.locals, locals, opts.locals || {});
+
     debug('initialize server.graft');
-    this.locals.siteName = 'tropo test';
-    this.locals.title    = 'tropo test';
-    this.locals.secret   = 'good thing this is just a demo, right?';
 
     this.set('views', path.resolve(process.cwd() + '/templates'));
     this.set('view engine', 'jade');
@@ -29,9 +33,21 @@ this.addInitializer(function(opts) {
         this.enable('trust proxy');
     }, this));
 
+    Graft.trigger('before:mount:middleware', opts);
+
     this.use(express.bodyParser());
-    this.use(express.static(process.cwd() + '/assets'));
+    Graft.trigger('mount:middleware', opts);
+    Graft.trigger('after:mount:middleware', opts);
+
+
+    Graft.trigger('before:mount:static', opts);
+    Graft.trigger('mount:static', opts);
+    Graft.trigger('after:mount:static', opts);
 });
+
+Graft.on('mount:static', function(opts) {
+    this.use(express.static(process.cwd() + '/assets'));
+}, this);
 
 // Start the server
 this.addInitializer(function serverStart(options) {
