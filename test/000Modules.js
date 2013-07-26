@@ -106,7 +106,7 @@ describe('Module system', function() {
                 Graft.should.have.property('system');
             });
             it('Should have a populated systems hash', function() {
-                Graft.systems.should.have.property('Server');
+                Graft.systems.should.have.property('Middleware');
                 Graft.systems.should.have.property('Data');
                 Graft.systems.should.have.property('Model');
                 Graft.systems.should.have.property('Template');
@@ -115,13 +115,14 @@ describe('Module system', function() {
                 Graft.systems.should.have.property('Client');
             });
             it('Should have registered the systems correctly', function() {
-                Graft.systems.Server.should.eql({
+                Graft.systems.Middleware.should.eql({
                     "bundle": 'middleware',
                     "transform": "wrap",
                     "extension": ".graft.js",
-                    "name": "Server",
-                    "path": "servers",
-                    "instances": false
+                    "name": "Middleware",
+                    "path": "middleware",
+                    "instances": false,
+                    "kind": "middleware"
                 });
             });
         });

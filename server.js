@@ -17,27 +17,34 @@ Graft.system('Data', 'data', {
 });
 
 Graft.system('Template', 'templates', {
-    wrap: 'jade',
+    bundle: 'templates',
+    transform: 'jade',
     extension: '.jade'
 });
 Graft.system('Model', 'models', {
-    bundle: 'models'
+    bundle: 'models',
+    instances: '$models'
 });
+
 Graft.system('View', 'views', {
-    bundle: 'views'
+    bundle: 'views',
+    instances: '$views'
 });
+
 Graft.system('Router', 'routers', {
-    bundle: 'routers'
+    bundle: 'routers',
+    instances: 'views'
 });
+
 Graft.system('Client', 'client', {
-    bundle: ['vendor', 'shared', 'client'],
+    bundle: ['vendor', 'shared', 'client']
 });
 
 // Load up the primary Server middleware. (required)
 require('./middleware/Server.graft.js');
 
 // Load up the Data API
-require('./Data/Data.graft.js');
+require('./data/Data.graft.js');
 
 // Include the shared code for the client too.
 Graft.bundle('shared', 'graftjs', global.__graftPath);
