@@ -118,6 +118,7 @@ describe('REST ROUTES', function() {
             this.body.should.have.property('favColor', 'magenta');
         });
 
+    });
         describe('GET /api/Account/2', function() {
             before(utils.requestUrl(testPort, '/api/Account/2'));
             it ('should return status 200', function() {
@@ -171,7 +172,6 @@ describe('REST ROUTES', function() {
                 this.body[2].should.have.property('name', 'Emily Mortimer');
             });
         });
-    });
 
     describe('POST /api/Account', function() {
 

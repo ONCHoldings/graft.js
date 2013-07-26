@@ -21,7 +21,7 @@ describe('Underscore mixins', function() {
     it('Should have a working Deferred', function(done) {
         var dfr = new _.Deferred();
         dfr.always(done);
-        _.delay(dfr.resolve, 50);
+        _.delay(dfr.resolve, 10);
     });
     it('_ should have String functions', function() {
         should.exist(_.sprintf);
