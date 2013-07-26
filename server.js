@@ -33,18 +33,12 @@ Graft.system('View', 'views', {
 
 Graft.system('Router', 'routers', {
     bundle: 'routers',
-    instances: 'views'
+    instances: '$routers'
 });
 
 Graft.system('Client', 'client', {
-    bundle: ['vendor', 'shared', 'client']
+    bundle: ['client', 'vendor', 'shared']
 });
-
-// Load up the primary Server middleware. (required)
-require('./middleware/Server.graft.js');
-
-// Load up the Data API
-require('./data/Data.graft.js');
 
 // Include the shared code for the client too.
 Graft.bundle('shared', 'graftjs', global.__graftPath);
@@ -62,6 +56,12 @@ Graft.bundle('vendor', 'backbone');
 Graft.bundle('vendor', 'backbone.marionette');
 Graft.bundle('vendor', 'backbone.wreqr');
 Graft.bundle('vendor', 'backbone.babysitter');
+
+// Load up the primary Server middleware. (required)
+require('./middleware/Server.graft.js');
+
+// Load up the Data API
+require('./data/Data.graft.js');
 
 
 // Bind the Server middleware's express route handlers to the

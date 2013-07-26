@@ -63,7 +63,7 @@ describe('Testing Bundled Routes', function() {
     describe('GET /js/views.js', function() {
         before(utils.requestUrl(testPort, '/js/views.js'));
 
-        it ('should return status 200', function() {
+        it('should return status 200', function() {
             this.resp.should.have.status(200);
         });
 

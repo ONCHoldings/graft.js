@@ -9,10 +9,14 @@ Graft.module("{{module.path}}", function {{module.fn}}(module, Graft, Backbone, 
 
     {{content}}
 
-    <% if (system.instances) { %>
-    Graft.{{system.instances}}.{{module.safeName}} = this.exports;    
-    <% } %>
 
+    this.{{module.kind}} = this.$ref =
+    this.exports = module.exports;
+
+
+    <% if (system.instances) { %>
+    Graft.{{system.instances}}.{{module.safeName}} = this.exports;
+    <% } %>
 });
 
 module.exports = Graft.module("{{module.path}}");

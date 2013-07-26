@@ -38,7 +38,6 @@ Graft.on('bundle:process', function(bundle, expose, file) {
     this.external = this.external || [];
     this.external.push(expose);
     file && (file !== expose) && this.external.push(file);
-
 }, this);
 
 Graft.reqres.setHandler('bundle:externals', function() {
@@ -97,27 +96,18 @@ this.addInitializer(function vendor(options) {
     this.get('/js/vendor.js', bundleBuilder('vendor'));
 });
 
-
-function makeRelative(p) {
-    return p;
-    // return path.relative(process.cwd(), path.resolve(__dirname + '/../'),  p) || p;
-}
-
 this.addInitializer(function(opts) {
     function bfyFn(type) {
-        var files = _(Graft.bundles[type]).chain()
-            .flatten()
-            .map(makeRelative)
-            .value();
-
-        this.get('/js/' + type +'.js', bmw(files, {
-            external: Graft.request('bundle:externals'),
+        var files = _(Graft.bundles[type]).flatten();
+        var externals = Graft.request('bundle:externals');
+        var options = {
+            external: externals,
             transform: wrapTransform.through,
             debug: false
-        }));
-        _(files).each(function(f) {
-            Graft.trigger('bundle:process', type, f);
-        });
+        };
+
+        this.get('/js/' + type +'.js', bmw(files, options));
+        _(files).each(_.partial(Graft.trigger, 'bundle:process', type));
     }
 
     bfyFn.call(this, 'shared');
