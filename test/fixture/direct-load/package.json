@@ -1,0 +1,11 @@
+{
+  "name": "direct-load",
+  "version": "0.0.0",
+  "description": "direct load test",
+  "main": "server.js",
+  "scripts": {
+    "test": "true"
+  },
+  "author": "",
+  "license": "BSD"
+}

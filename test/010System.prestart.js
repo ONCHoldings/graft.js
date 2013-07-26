@@ -1,6 +1,7 @@
 var utils    = require('./utils');
 var should   = require('should');
 var path     = require('path');
+var sinon    = require('sinon');
 var _        = require('underscore');
 var Backbone = require('backbone');
 
@@ -30,7 +31,8 @@ describe('Subsystem', function() {
             "name": "Middleware",
             "path": "middleware",
             "instances": false,
-            "kind": "middleware"
+            "kind": "middleware",
+            "directories": []
         });
     });
 
@@ -64,7 +66,8 @@ describe('Subsystem', function() {
         it('has all the required system properties', function() {
             Graft.systems.ServerOnly.should.have.keys(
                 'bundle', 'transform', 'extension',
-                'name', 'path', 'instances', 'path'
+                'name', 'path', 'instances', 'path',
+                'directories'
             );
         });
 
@@ -82,8 +85,100 @@ describe('Subsystem', function() {
         it('should not have resulted in any extra bundles being created', function() {
             Graft.bundles.should.have.keys(this.currentBundles);
         });
+
         it('should not have set up for instances', function() {
             this.currentInstances.should.eql(getInstances());
         });
+    });
+
+
+
+    describe('Stubbed Subsystem Loading', function() {
+        function getSysDirs() {
+            return _(Graft.systems).chain()
+                .toArray()
+                .pick('name', 'directories')
+                .value();
+        }
+
+        before(function() {
+            sinon.stub(Graft, "require");
+            Graft.load(__dirname + '/fixture/');
+            this.systemDirs = getSysDirs();
+        });
+
+        it('did not manipulate the actual system.directories', function() {
+            this.systemDirs.should.eql(getSysDirs());
+        });
+
+        it('called the require method for each system', function() {
+            Graft.require.callCount.should.eql(_(Graft.systems).size());
+        });
+
+        it('should not have looked for the as-of-yet unloaded client-too system', function() {
+            _(Graft.require.args).pluck(1).should.not.include('client-too');
+        });
+
+        it('should have looked for the server-only system', function() {
+            _(Graft.require.args).pluck(1).should.include('server-only');
+        });
+
+        after(function() {
+            Graft.require.restore();
+        });
+    });
+
+    describe('Actual Subsystem Loading', function() {
+        before(function() {
+            Graft.load(__dirname + '/fixture/');
+        });
+
+        it('should have initialized the ServerOnly module', function() {
+            should.exist(Graft.module('ServerOnly'));
+            should.exist(Graft.ServerOnly);
+        });
+
+        it('should consider the same named file as an extension of the main module', function() {
+            Graft.ServerOnly.description.should.eql('Server Only Code');
+            should.not.exist(Graft.ServerOnly.ServerOnly);
+        });
+
+        it('should have loaded up the submodule correctly', function() {
+            should.exist(Graft.module('ServerOnly.SubModule'));
+            should.exist(Graft.ServerOnly.SubModule);
+        });
+    });
+
+    describe('Loading a subsystem directly', function() {
+        before(function() {
+            require('./fixture/direct-load');
+        });
+        it('Should have registered the subsystem', function() {
+            Graft.systems.should.have.property('DirectLoad');
+        });
+
+        it('Should have initialized the module, from the require()', function() {
+            should.exist(Graft.module('DirectLoad'));
+            should.exist(Graft.DirectLoad);
+        });
+
+        it('should have actually loaded that file', function() {
+            Graft.DirectLoad.description.should.eql('i was loaded directly');
+        });
+
+
+    });
+    describe.skip('Client Visible system', function() {
+        before(function() {
+            Graft.system('ClientToo', 'client-too', {
+                bundle: 'clienttoo',
+                kind: 'client_too',
+                instances: '$client_too'
+            });
+
+            Graft.load(__dirname + '/fixture/');
+        });
+
+
     });
 });
