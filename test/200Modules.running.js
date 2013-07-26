@@ -44,14 +44,7 @@ describe('Modules: After Start', function() {
         });
     });
 
-    describe('stop server', function() {
-        before(function() {
-            Graft.stop();
-        });
-        it('should be not initialized', function() {
-            Graft.Middleware.Server._isInitialized.should.eql(false);
-        });
-    });
+    describe('stop server', utils.stopServer);
 });
 
 

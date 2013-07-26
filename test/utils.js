@@ -6,8 +6,9 @@
  */
 var should  = require('should');
 var request = require('request');
-
+var Graft    = require('../server');
 var testUrl = 'http://localhost:';
+
 function parseBody() {
     try {
         this.body = JSON.parse(this.body);
@@ -32,7 +33,17 @@ function requestUrl(port, pathname, method, body) {
     };
 }
 
+function stopServer(){
+    before(function() {
+        Graft.stop();
+    });
+    it('should be not initialized', function() {
+        Graft.Middleware.Server._isInitialized.should.eql(false);
+    });
+}
+
 module.exports = {
     parseBody: parseBody,
-    requestUrl: requestUrl
+    requestUrl: requestUrl,
+    stopServer: stopServer
 };

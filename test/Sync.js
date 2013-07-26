@@ -2,6 +2,7 @@
 var should   = require('should');
 var _        = require('underscore');
 var sinon    = require('sinon');
+var utils    = require('./utils');
 var Graft    = require('../server');
 var testPort = 8903;
 
@@ -67,4 +68,6 @@ describe('Backbone Sync implementation', function() {
             this.error.args[0].should.eql(this.error.args[1]);
         });
     });
+
+    describe('stop server', utils.stopServer);
 });

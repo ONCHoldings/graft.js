@@ -144,5 +144,5 @@ describe('Aliased handlers', function() {
         });
 
     });
-
 });
+
