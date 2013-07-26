@@ -34,16 +34,17 @@ this.addInitializer(function(opts) {
     }, this));
 
     Graft.trigger('before:mount:middleware', opts);
-
-    this.use(express.bodyParser());
     Graft.trigger('mount:middleware', opts);
     Graft.trigger('after:mount:middleware', opts);
-
 
     Graft.trigger('before:mount:static', opts);
     Graft.trigger('mount:static', opts);
     Graft.trigger('after:mount:static', opts);
 });
+
+Graft.on('mount:middleware', function(opts) {
+    this.use(express.bodyParser());
+}, this);
 
 Graft.on('mount:static', function(opts) {
     this.use(express.static(process.cwd() + '/assets'));
