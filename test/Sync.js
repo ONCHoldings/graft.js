@@ -1,10 +1,9 @@
 /*jshint unused:false*/
 var should   = require('should');
-var _ = require('underscore');
-var testPort = 8903;
-
-// Initialize the Graft application object.
+var _        = require('underscore');
+var sinon    = require('sinon');
 var Graft    = require('../server');
+var testPort = 8903;
 
 Graft.commands.setHandler('Sync:setupTest', function(done) {
     // A simple test data adaptor to debug the REST api.
@@ -27,33 +26,45 @@ describe('Backbone Sync implementation', function() {
     before(function(done) {
         Graft.execute('Sync:setupTest', done);
     });
-
-    describe('Loading a model', function() {
+    describe('successfully loading a model', function() {
         before(function(done) {
-            var self = this;
-
-            var next = _.after(2, done);
-
-            function optArgs() {
-                self.optArgs = _(arguments).toArray();
-                next();
-            }
-            function thenArgs() {
-                self.thenArgs = _(arguments).toArray();
-                next();
-            }
+            var next = _.after(2, function() { done(); });
+            this.success = sinon.spy(next);
+            this.error = sinon.spy(next);
 
             this.account = new Graft.$models.Account({ id: "0" });
-
-            this.account.fetch({ success: optArgs, error: optArgs })
-                .then(thenArgs, thenArgs);
-
+            this.account.fetch({ success: this.success, error: this.error })
+            .then(this.success, this.error);
         });
-        it('Should not make a difference how the args got to us', function() {
-            this.thenArgs.should.eql(this.optArgs);
+        it('should not have called the error handlers', function() {
+            this.error.callCount.should.eql(0);
         });
+        it('should have called both success handlers.', function() {
+            this.success.callCount.should.eql(2);
+        });
+        it('should have the same arguments on both sides.', function() {
+            this.success.args[0].should.eql(this.success.args[1]);
+        });
+    });
+    describe('successfully loading a model', function() {
+        before(function(done) {
+            var next = _.after(2, function() { done(); });
+            this.success = sinon.spy(next);
+            this.error = sinon.spy(next);
 
+
+            this.account = new Graft.$models.Account({ id: 'no such user exists' });
+            this.account.fetch({ success: this.success, error: this.error })
+            .then(this.success, this.error);
+        });
+        it('should have called both error handlers.', function() {
+            this.error.callCount.should.eql(2);
+        });
+        it('should not have called the success handlers', function() {
+            this.success.callCount.should.eql(0);
+        });
+        it('should have the same arguments on both sides.', function() {
+            this.error.args[0].should.eql(this.error.args[1]);
+        });
     });
 });
-
-
