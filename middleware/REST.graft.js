@@ -75,7 +75,7 @@ _.extend(this, {
         var hasModel    = req.params.model;
         var modelExists = !!Graft.$models[req.params.model];
 
-        if (!hasBody || !hasModel || !modelExists) { 
+        if (!hasBody || !hasModel || !modelExists) {
             return next(403, 'Forbidden');
         }
 
@@ -122,7 +122,7 @@ _.extend(this, {
         var cName            = _.pluralize(req.params.collection);
         var collectionExists = !!Graft.$models[cName];
 
-        if (!collectionExists) { 
+        if (!collectionExists) {
             return res.send(403, 'Collection does not exist');
         }
 

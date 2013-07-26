@@ -39,7 +39,7 @@ this.addInitializer(function serverStart(options) {
     var port = options.port || 12400;
 
     this.server.listen(port);
-    console.log("Server started on port " + port);
+    debug("Server started on port " + port);
     Graft.Middleware.triggerMethod('listen', this);
 });
 

@@ -37,8 +37,7 @@ Graft.Middleware.on('listen', function socketConfig(Server) {
         } else {
                 console.log('no cookie transmitted');
             return accept('No cookie transmitted.', false);
-        } 
+        }
         accept(null, true);
     });
 });
-

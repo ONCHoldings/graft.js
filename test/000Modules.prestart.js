@@ -26,24 +26,6 @@ function fileOrder(order, file1, file2) {
 
 describe('Module system', function() {
     describe('Before Start', function() {
-        describe('Underscore mixins', function() {
-            it('_ should have Deferred', function() {
-                should.exist(_.Deferred);
-            });
-
-            it('Should have a working Deferred', function(done) {
-                var dfr = new _.Deferred();
-
-                dfr.always(done);
-                _.delay(dfr.resolve, 200);
-
-            });
-
-            it('_ should have String functions', function() {
-                should.exist(_.sprintf);
-            });
-
-        });
         it('Should have initialized bundles', function() {
             Graft.should.have.property('bundles');
         });
@@ -86,19 +68,19 @@ describe('Module system', function() {
 
         it('Should have started the shared/vendor bundles', function() {
             Graft.bundles.vendor
-                .should.have.property('async', 'async');
+            .should.have.property('async', 'async');
 
             Graft.bundles.vendor
-                .should.have.property('jquery', 'jquery-browserify');
+            .should.have.property('jquery', 'jquery-browserify');
 
             Graft.bundles.vendor
-                .should.have.property('backbone', 'backbone');
+            .should.have.property('backbone', 'backbone');
 
             Graft.bundles.shared
-                .should.have.property('graftjs', global.__graftPath);
+            .should.have.property('graftjs', global.__graftPath);
 
             Graft.bundles.shared
-                .should.have.property('./lib/mixins.js', path.resolve(__dirname + '/../lib/mixins.js'));
+            .should.have.property('./lib/mixins.js', path.resolve(__dirname + '/../lib/mixins.js'));
         });
 
 
@@ -249,165 +231,48 @@ describe('Module system', function() {
             });
 
         });
-
-        describe('After start', function() {
-            before(function() {
-                Graft.start({ port: testPort });
-            });
-            it('Should have mounted express routes', function() {
-                Graft.Middleware.Test.express.routes.should.have.property('get');
-            });
-            it('Should have the correct initOrder for test middleware', function() {
-                Graft.Middleware.Test.initOrder.should.eql(['alpha', 'beta']);
-            });
-            it('Should have set the test middleware to listening', function() {
-                Graft.Middleware.Test.listening.should.eql(true);
-            });
-
-            describe('Have working routes', function() {
-                before(utils.requestUrl(testPort, '/test/mufassa'));
-
-                it ('should return status 200', function() {
-                    this.resp.should.have.status(200);
-                });
-
-                it ('should have a body', function() {
-                    should.exist(this.body);
-                });
-
-                it('should match the route param', function() {
-                    this.body.should.eql('Hello mufassa');
-                });
-            });
-
-            describe('stop server', function() {
-                before(function() {
-                    Graft.stop();
-                });
-                it('should be not initialized', function() {
-                    Graft.Middleware.Server._isInitialized.should.eql(false);
-                });
-            });
-        });
     });
-    describe('Wreqr event handlers', function() {
+
+
+    describe('After start', function() {
         before(function() {
-            Graft.commands.setHandler('command:action', function(done) {
-                done(null, 'command:action');
+            Graft.start({ port: testPort });
+        });
+        it('Should have mounted express routes', function() {
+            Graft.Middleware.Test.express.routes.should.have.property('get');
+        });
+        it('Should have the correct initOrder for test middleware', function() {
+            Graft.Middleware.Test.initOrder.should.eql(['alpha', 'beta']);
+        });
+        it('Should have set the test middleware to listening', function() {
+            Graft.Middleware.Test.listening.should.eql(true);
+        });
+
+        describe('Have working routes', function() {
+            before(utils.requestUrl(testPort, '/test/mufassa'));
+
+            it ('should return status 200', function() {
+                this.resp.should.have.status(200);
             });
 
-            Graft.reqres.setHandler('request:action', function(done) {
-                done(null, 'request:action');
-                return { 'msg' : 'request:action'};
-
+            it ('should have a body', function() {
+                should.exist(this.body);
             });
 
-            Graft.reqres.setHandler('request:promise', function(success) {
-                var dfr = new _.Deferred();
-
-                _.delay(function(success) {
-                    if (success) {
-                        dfr.resolve();
-                    } else {
-                        dfr.reject();
-                    }
-                }, 2000, success);
-                return dfr.promise();
+            it('should match the route param', function() {
+                this.body.should.eql('Hello mufassa');
             });
         });
 
-        it('should fire the correct command.', function(done) {
-            Graft.execute('command:action', function(err, arg) {
-                should.not.exist(err);
-                arg.should.eql('command:action');
-                done();
-            });
-        });
-
-        it('should fire the correct request', function(done) {
-            var result = Graft.request('request:action', function(err, arg) {
-                should.not.exist(err);
-                arg.should.eql('request:action');
-                done();
-            });
-
-            should.exist(result);
-            result.should.have.property('msg', 'request:action');
-        });
-        it('aliasHandler method should be on prototype', function() {
-            Graft.reqres.should.have.property('aliasHandler');
-            Graft.commands.should.have.property('aliasHandler');
-        });
-
-
-        describe('Aliased handlers', function() {
-            var context = { context: 'direct' };
+        describe('stop server', function() {
             before(function() {
-                Graft.reqres.setHandler('alias:task', function(component) {
-                    return component;
-                });
-
-                Graft.reqres.aliasHandler('alias:first:task', 'alias:task', 'first');
-                Graft.reqres.aliasHandler('alias:second:task', 'alias:first:task');
-
-                Graft.reqres.setHandler('alias:context', function() {
-                    return this;
-                }, context);
-
-                Graft.reqres.aliasHandler('alias:first:context', 'alias:context', 'first');
+                Graft.stop();
             });
-
-            it('direct handler fires correctly', function() {
-                var result = Graft.request('alias:task', 'direct');
-                result.should.eql('direct');
+            it('should be not initialized', function() {
+                Graft.Middleware.Server._isInitialized.should.eql(false);
             });
-
-
-            it('aliased handler fires correctly', function() {
-                var result = Graft.request('alias:first:task');
-                result.should.eql('first');
-            });
-
-            it('direct handler respects context', function() {
-                var result = Graft.request('alias:context');
-                result.should.eql(context);
-            });
-
-            it('aliased handler respects context', function() {
-                var result = Graft.request('alias:first:context');
-                result.should.eql(context);
-            });
-
-            it('should be possible to alias an alias', function() {
-                var result = Graft.request('alias:second:task');
-                result.should.eql('first');
-            });
-
-            describe('Switching out underlying handlers', function() {
-                before(function() {
-                    Graft.reqres.setHandler('alias:task', function() {
-                        return 'override';
-                    });
-                    Graft.reqres.setHandler('alias:second:task', function(arg) {
-                        return 'override:' + arg;
-                    });
-                });
-
-                it('Should fire the overridden handler directly', function() {
-                    var result = Graft.request('alias:task', 'direct');
-                    result.should.eql('override');
-                });
-
-                it('Should fire the overridden handler from the alias', function() {
-                    var result = Graft.request('alias:second:task', 'second');
-                    result.should.eql('override:second');
-                });
-
-            });
-
         });
-
-
     });
+
 });
 
