@@ -21,6 +21,7 @@ Graft.system('Template', 'templates', {
     transform: 'jade',
     extension: '.jade'
 });
+
 Graft.system('Model', 'models', {
     bundle: 'models',
     instances: '$models'
