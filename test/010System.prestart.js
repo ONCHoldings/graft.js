@@ -5,8 +5,6 @@ var sinon    = require('sinon');
 var _        = require('underscore');
 var Backbone = require('backbone');
 
-var testPort = 8908;
-
 // Initialize the Graft application object.
 var Graft = require('../server');
 
@@ -165,20 +163,53 @@ describe('Subsystem', function() {
         it('should have actually loaded that file', function() {
             Graft.DirectLoad.description.should.eql('i was loaded directly');
         });
-
-
     });
-    describe.skip('Client Visible system', function() {
+
+    describe('Client Visible system', function() {
         before(function() {
             Graft.system('ClientToo', 'client-too', {
                 bundle: 'clienttoo',
                 kind: 'client_too',
-                instances: '$client_too'
+                instances: '$client2s'
             });
 
             Graft.load(__dirname + '/fixture/');
         });
 
+        it('should have initialized the main module without a file of the same name', function() {
+            should.exist(Graft.module('ClientToo'));
+            should.exist(Graft.ClientToo);
+            Graft.ClientToo.should.not.have.property('description');
+        });
+
+        it('should have loaded up the submodule correctly', function() {
+            should.exist(Graft.module('ClientToo.SubModule'));
+            should.exist(Graft.ClientToo.SubModule);
+            Graft.ClientToo.SubModule.description.should.eql('Clients Gets This Too');
+        });
+
+        it('should have the SubModule instances', function() {
+            Graft.should.have.property('$client2s');
+            Graft.$client2s.should.have.property('SubModule');
+
+        });
+        it('should be an actual object stored there, not just the module', function() {
+            Graft.$client2s.SubModule.should.have.property('message', 'INCLUDED BY CLIENT VISIBLE SYSTEM');
+        });
+    });
+
+    describe('Client-side code bundling', function() {
+        it('has not tried to bundle the server only .js files.', function() {
+            Graft.bundles.order.should.not.include(require.resolve('./fixture/lib/server.only.js'));
+        });
+
+        it('has not tried to bundle the server bundled .js file before the server has started.', function() {
+            Graft.bundles.order.should.not.include(require.resolve('./fixture/lib/server.bundle.js'));
+        });
+
+        it('has not tried to bundle the client required .js file before the server has started.', function() {
+            Graft.bundles.order.should.not.include(require.resolve('./fixture/lib/client.too.js'));
+        });
 
     });
 });
