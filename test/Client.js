@@ -13,20 +13,14 @@ describe('Testing Bundled Routes', function() {
     before(function() {
         // Load up the REST api middleware. (optional)
         require('../middleware/Client.graft.js');
-        Graft.load(__dirname + '/fixture');
-        var locals = {
-            siteName: "I'M BATMAN",
-            title: "KAPOW"
-        };
 
+        Graft.load(__dirname + '/fixture');
+
+        var locals = { siteName: "I'M BATMAN", title: "KAPOW" };
         Graft.start({ port: testPort, locals: locals });
 
         Graft.set('views', path.resolve(__dirname + '/fixture/templates'));
-
-        Graft.get('/', function(req, res, next) {
-            res.render('layout', {});
-        });
-
+        Graft.get('/', function(req, res, next) { res.render('layout', {}); });
     });
     describe('index page', function() {
         before(utils.requestUrl(testPort, '/'));
