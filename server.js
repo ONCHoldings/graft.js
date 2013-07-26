@@ -1,8 +1,8 @@
-/**
- * Main Server-side entry point for Graft.
- */
+// Main Server-side entry point for Graft.
 var _              = require('underscore');
 var Marionette     = require('backbone.marionette');
+var path           = require('path');
+var fs             = require('fs');
 var Graft          = require('./lib/modules'); // Bootstrap module system.
 Graft.server       = true; // Hopefully this will be unecessary one day.
 global.__graftPath = __dirname + '/graft.js';
@@ -100,12 +100,27 @@ Graft.stop = function(){
     Marionette.triggerMethod.call(this, "stop");
 };
 
-Graft.reset = function() {
-    this.$models = {};
-    this.$views = {};
-    this.$routers = {};
-    this.$middleware = {};
+Graft.reqres.setHandler('config:load', function(config) {
+    var file   = path.join(process.cwd(), 'config.json');
+    var config = config || {};
 
+    if (fs.existsSync(file)) {
+        try {
+            _.extend(config, JSON.parse(fs.readFileSync(file, 'utf8')));
+        } catch(e) {
+            console.error(utils.colorize('Invalid JSON config file: ' + path.basename(file), 'red'));
+            process.exit(2);
+        }
+    }
+    return config;
+}, Graft);
+
+Graft.start = _.wrap(Graft.start.bind(Graft), function(fn, config) {
+    fn(Graft.request('config:load', config));
+});
+
+Graft.reset = function() {
     this.resetBundles();
 };
+
 module.exports = Graft;

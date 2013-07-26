@@ -17,10 +17,7 @@ require('../lib/sync');
 this.addInitializer(function(opts) {
     var opts = opts || {};
 
-    var locals = {
-        siteName : 'graft example',
-        title    : 'graft.js'
-    };
+    var locals = { siteName : 'graft example', title    : 'graft.js' };
 
     _.extend(this.locals, locals, opts.locals || {});
 

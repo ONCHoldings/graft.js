@@ -22,7 +22,6 @@ function requestUrl(port, pathname, method, body) {
         var self = this;
         var opts = {};
         opts.method = method || 'GET';
-
         opts.json = body || true;
 
         request(testUrl + port + pathname, opts, function(err, resp, body) {
