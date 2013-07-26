@@ -1,0 +1,26 @@
+/**
+ * Begin {{filename}}
+ */
+
+var Graft = require('{{graftPath}}');
+
+Graft.module("{{module.path}}", function {{module.fn}}(module, Graft, Backbone, Marionette, $, _) {
+    var debug = require('debug')('graft:{{module.path.toLowerCase()}}');
+
+    {{content}}
+
+
+    this.{{module.kind}} = this.$ref =
+    this.exports = module.exports;
+
+
+    <% if (system.instances) { %>
+    Graft.{{system.instances}}.{{module.safeName}} = this.exports;
+    <% } %>
+});
+
+module.exports = Graft.module("{{module.path}}");
+
+/**
+ * End {{filename}}
+ */
