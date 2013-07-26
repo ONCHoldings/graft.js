@@ -3,7 +3,8 @@
         "Graft" : true
     },
     "expr"    : true,
-    "unused"  : "vars",
+    "unused"  : false,
     "node"    : true,
-    "shadow"  : true
+    "shadow"  : true,
+    "trailing": true
 }
