@@ -44,7 +44,7 @@ Graft.on('mount:middleware', function(opts) {
 }, this);
 
 Graft.on('mount:static', function(opts) {
-    this.use(express.static(process.cwd() + '/assets'));
+    this.use('/assets', express.static(process.cwd() + '/assets'));
 }, this);
 
 // Start the server
