@@ -1,6 +1,3 @@
-/**
- * Core application server, that mounts all the others.
-*/
 var express  = require('express');
 var http     = require('http');
 var path     = require('path');
@@ -30,21 +27,20 @@ this.addInitializer(function(opts) {
         this.enable('trust proxy');
     }, this));
 
-    Graft.trigger('before:mount:middleware', opts);
     Graft.trigger('mount:middleware', opts);
-    Graft.trigger('after:mount:middleware', opts);
-
-    Graft.trigger('before:mount:static', opts);
     Graft.trigger('mount:static', opts);
-    Graft.trigger('after:mount:static', opts);
 });
 
 Graft.on('mount:middleware', function(opts) {
+    Graft.trigger('before:mount:middleware', opts);
     this.use(express.bodyParser());
+    Graft.trigger('after:mount:middleware', opts);
 }, this);
 
 Graft.on('mount:static', function(opts) {
+    Graft.trigger('before:mount:static', opts);
     this.use('/assets', express.static(process.cwd() + '/assets'));
+    Graft.trigger('after:mount:static', opts);
 }, this);
 
 // Start the server
