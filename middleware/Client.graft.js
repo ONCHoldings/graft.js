@@ -107,7 +107,9 @@ this.addInitializer(function(opts) {
         };
 
         this.get('/js/' + type +'.js', bmw(files, options));
-        _(files).each(_.partial(Graft.trigger, 'bundle:process', type));
+        _(files).each(function(f) {
+            Graft.trigger('bundle:process', type, f, f);
+        });
     }
 
     bfyFn.call(this, 'shared');
