@@ -3,6 +3,7 @@ var _              = require('underscore');
 var Marionette     = require('backbone.marionette');
 var path           = require('path');
 var fs             = require('fs');
+var debug          = require('debug')('graft:server');
 var Graft          = require('./lib/modules'); // Bootstrap module system.
 Graft.server       = true; // Hopefully this will be unecessary one day.
 global.__graftPath = __dirname + '/graft.js';
@@ -52,7 +53,7 @@ Graft.bundle('vendor', 'async');
 Graft.bundle('vendor', 'underscore');
 Graft.bundle('vendor', 'underscore.string');
 Graft.bundle('vendor', 'underscore.deferred');
-Graft.bundle('vendor', 'f_underscore');
+Graft.bundle('vendor', 'f_underscore/f_underscore.js');
 Graft.bundle('vendor', 'backbone');
 Graft.bundle('vendor', 'backbone.marionette');
 Graft.bundle('vendor', 'backbone.wreqr');
@@ -84,6 +85,7 @@ _.each(expressMethods, function(method) {
 }, this);
 
 Graft.addInitializer(function(opts) {
+    Graft.execute('middleware:setup', opts);
     Graft.execute('data:setup', opts);
 });
 
@@ -98,6 +100,7 @@ Graft.stop = function(){
     this._initCallbacks.reset();
 
     Marionette.triggerMethod.call(this, "stop");
+
 };
 
 Graft.reqres.setHandler('config:load', function(config) {
@@ -115,12 +118,31 @@ Graft.reqres.setHandler('config:load', function(config) {
     return config;
 }, Graft);
 
-Graft.start = _.wrap(Graft.start.bind(Graft), function(fn, config) {
-    fn(Graft.request('config:load', config));
+var readyPromises = [];
+
+Graft.commands.setHandler('wait', function(promise) {
+    readyPromises.push(promise);
+});
+
+
+Graft.start = _.wrap(Graft.start.bind(Graft), function(start, config) {
+    var config = Graft.request('config:load', config);
+
+    Graft.ready = new _.Deferred();
+
+    start(config);
+
+    return Graft.ready.promise();
+});
+
+Graft.on('start', function() {
+    _.when.apply(_, [null].concat(readyPromises))
+        .then(Graft.ready.resolve, Graft.ready.reject);
 });
 
 Graft.reset = function() {
-    this.resetBundles();
+    Graft.resetBundles();
+    Graft.systems = {};
 };
 
 module.exports = Graft;

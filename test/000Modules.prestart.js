@@ -2,6 +2,7 @@ var utils    = require('./utils');
 var should   = require('should');
 var path     = require('path');
 var _        = require('underscore');
+var pwd      = process.cwd();
 var Backbone = require('backbone');
 
 var TestBaseModel = Backbone.Model.extend({
@@ -23,6 +24,8 @@ function fileOrder(order, file1, file2) {
 }
 
 describe('Modules: Before Start', function() {
+    before(function() { process.chdir(__dirname + '/fixture'); });
+
     it('Should have initialized bundles', function() {
         Graft.should.have.property('bundles');
     });
@@ -30,8 +33,9 @@ describe('Modules: Before Start', function() {
     it('BaseModel should be equal to Backbone.Model', function() {
         Graft.BaseModel.should.eql(Backbone.Model);
     });
+
     it('Should have added server middleware to bundle', function() {
-        Graft.bundles.middleware.should.have.property('Server');
+        Graft.bundles.middleware.should.have.property('./middleware/Server.graft.js');
     });
 
     it('Should have initialized server module into marionette', function() {
@@ -88,7 +92,7 @@ describe('Modules: Before Start', function() {
         });
 
         it('Should have been added to the bundle', function() {
-            Graft.bundles.middleware.should.have.property('Test');
+            Graft.bundles.middleware.should.have.property('./middleware/Test.graft.js');
         });
 
         it('Should have been initialized into marionette', function() {
@@ -225,4 +229,5 @@ describe('Modules: Before Start', function() {
         });
 
     });
+    after(function() { process.chdir(pwd); });
 });

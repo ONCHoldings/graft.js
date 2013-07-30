@@ -3,21 +3,23 @@ var should   = require('should');
 var path     = require('path');
 var express  = require('express');
 var connect  = require('connect');
+var pwd      = process.cwd();
 var testPort = 8902;
 
 // Initialize the Graft application object.
 var Graft    = require('../server');
 
-
 describe('Testing Bundled Routes', function() {
-    before(function() {
+    this.timeout(6000);
+    before(function(done) {
+        process.chdir(__dirname + '/fixture');
         // Load up the REST api middleware. (optional)
         require('../middleware/Client.graft.js');
 
         Graft.load(__dirname + '/fixture');
 
         var locals = { siteName: "I'M BATMAN", title: "KAPOW" };
-        Graft.start({ port: testPort, locals: locals });
+        Graft.start({ port: testPort, locals: locals }).then(done);
 
         Graft.set('views', path.resolve(__dirname + '/fixture/templates'));
         Graft.get('/', function(req, res, next) { res.render('layout', {}); });
@@ -55,6 +57,21 @@ describe('Testing Bundled Routes', function() {
     });
     describe('GET /js/vendor.js', function() {
         before(utils.requestUrl(testPort, '/js/vendor.js'));
+
+        it ('should return status 200', function() {
+            this.resp.should.have.status(200);
+        });
+
+        it('response should be javascript', function() {
+            this.resp.should.have.header('content-type', 'text/javascript');
+        });
+        it ('should have a body', function() {
+            should.exist(this.body);
+        });
+    });
+
+    describe('GET /js/shared.js', function() {
+        before(utils.requestUrl(testPort, '/js/shared.js'));
 
         it ('should return status 200', function() {
             this.resp.should.have.status(200);
@@ -151,4 +168,7 @@ describe('Testing Bundled Routes', function() {
     });
 
     describe('stop server', utils.stopServer);
+    after(function() {
+        process.chdir(pwd);
+    });
 });

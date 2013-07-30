@@ -13,7 +13,6 @@ var TestBaseModel = Backbone.Model.extend({
 // Initialize the Graft application object.
 var Graft = require('../server');
 
-
 describe('Modules: After Start', function() {
     before(function() {
         Graft.start({ port: testPort });

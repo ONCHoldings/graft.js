@@ -19,8 +19,7 @@ Graft.commands.setHandler('Sync:setupTest', function(done) {
 
     Graft.trigger('reset:data');
 
-    Graft.start({ port: testPort });
-    done();
+    Graft.start({ port: testPort }).then(done);
 });
 
 describe('Backbone Sync implementation', function() {
