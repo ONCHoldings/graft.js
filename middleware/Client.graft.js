@@ -52,6 +52,7 @@ function isAbsPath(str) { return (/^\//).test(str); }
 * Keep track of all browserify bundles in the externals control array.
 */
 function bundleBrowserify(name, brwsfy) {
+    debug('b', brwsfy);
     var external = [];
     external.push(brwsfy.files);
     external.push(_(brwsfy._external).keys());

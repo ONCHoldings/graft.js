@@ -3,7 +3,6 @@ var should   = require('should');
 var path     = require('path');
 var express  = require('express');
 var connect  = require('connect');
-var pwd      = process.cwd();
 var testPort = 8902;
 
 // Initialize the Graft application object.
@@ -12,7 +11,6 @@ var Graft    = require('../server');
 describe('Testing Bundled Routes', function() {
     this.timeout(6000);
     before(function(done) {
-        process.chdir(__dirname + '/fixture');
         // Load up the REST api middleware. (optional)
         require('../middleware/Client.graft.js');
 
@@ -168,7 +166,4 @@ describe('Testing Bundled Routes', function() {
     });
 
     describe('stop server', utils.stopServer);
-    after(function() {
-        process.chdir(pwd);
-    });
 });
