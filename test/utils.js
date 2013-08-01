@@ -10,6 +10,8 @@ var debug   = require('debug')('graft:test:utils');
 var Graft   = require('../server');
 var testUrl = 'http://localhost:';
 
+var cookieJar = request.jar();
+
 function parseBody() {
     try {
         this.body = JSON.parse(this.body);
@@ -25,6 +27,8 @@ function requestUrl(port, pathname, method, body) {
         opts.method = method || 'GET';
         opts.json = body || true;
 
+        opts.jar = cookieJar;
+
         debug('requestUrl', testUrl + port + pathname);
         request(testUrl + port + pathname, opts, function(err, resp, body) {
             self.resp = resp;
@@ -35,6 +39,8 @@ function requestUrl(port, pathname, method, body) {
 }
 
 function stopServer(){
+    cookieJar = request.jar();
+
     before(function() {
         Graft.stop();
         //Graft.reset();
