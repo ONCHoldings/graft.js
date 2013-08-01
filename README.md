@@ -9,8 +9,6 @@ It tries to even out the differences between the two environments, and provide s
 
 It's closest neighbour in the world of 'frameworks' would probably be [AirBnB's Rendr](https://github.com/airbnb/rendr), except that it doesn't assume you want to render anything on the server, or even anything at all.
 
-Graft is actually directly descended from the little-known [Bones](https://github.com/developmentseed/bones) framework, written by [Development Seed](http://developmentseed.org). They are using Bones to build multi-platform desktop applications ([TileMill](http://tilemill.com/)) and even powers their map serving juggernaut of a map hosting service [MapBox](https://mapbox.com).
-
 Features
 ========
 
