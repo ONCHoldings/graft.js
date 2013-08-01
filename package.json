@@ -26,7 +26,6 @@
     "backbone.marionette": "~1.0.2",
     "backbone.wreqr": "git+ssh://git@github.com:marionettejs/backbone.wreqr.git#master",
     "browserify-middleware": "~1.13.0",
-    "socket.io": "~0.9.16",
     "request": "~2.21.0",
     "glob": "~3.2.1",
     "cookie": "~0.1.0",
