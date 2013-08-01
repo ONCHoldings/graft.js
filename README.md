@@ -1,3 +1,4 @@
+[![Build Status](https://magnum.travis-ci.com/ONCHoldings/graft.js.png?token=b72mqMfgb1GT7zp1RCu1&branch=master)](https://magnum.travis-ci.com/ONCHoldings/graft.js)
 Graft.js
 ========
 
@@ -27,93 +28,19 @@ __Explicit is better than implicit__: We try to stay away from declarative struc
 Installation
 ============
 
-__TODO__ (if/when we publish this, update here)
+	npm install --save graftjs
 
-	npm install graftjs
+Running
+=======
+
+    node server.js
     
 Usage
 =====
 
-### Server Side
+See [graft-example](https://github.com/ONCHoldings/graft-example) for a more complete example.
 
-project/server.js:  
+Run tests
+=========
 
-	var Graft = require('graftjs/server');
-    
-    // Load up the REST api middleware. (optional)
-    require('graftjs/middleware/REST.graft.js');
-    
-    // Load up the Client side application bundling (optional)
-    require('graftjs/middleware/Client.graft.js');
-    
-    // Will load up all models/themes/routers and bundle them
-    Graft.load(__dirname);
-    
-    // Register the index page to be delivered to the client.
-    Graft.get('/', function(req, res) { res.render('layout', {}); });
-    
-    // Start the Application.
-    Graft.start({ port: 3000 });
-
----
-
-### Your Application (on server and client)
-
-models/Account.graft.js:
-
-    module.exports = Backbone.Model.extend({
-        urlRoot: '/api/Account', // provided by REST middleware
-        defaults: { group: 'default' }
-    });
-
-views/Account.graft.js:
-    
-    module.exports = Backbone.Marionette.ItemView.extend({
-        className: 'account',
-    	modelEvents: { 'change': 'render' }, // render dynamically on change
-        template: require('../templates/Caller.jade') // client-side require()
-    });
-    
-templates/Account.jade:
-
-	h5= id
-      .group= group
-
----
-
-### Client Side
-
-project/client.js:
-
-	// Automatically included if found by Graft.load()
-    var Graft  = require('graftjs');
-    var Backbone = require('backbone');
-    
-    //Backbone.js client side initialization.
-    Graft.on('start', function(options) {
-    	// set up page regions
-    	this.addRegions({ 'main': '#main' });
-        
-    	// init the account model
-    	this.$state.account = new Graft.$models.Account({ id: 'adrian' });
-        
-        // Initiate the fetch of the model
-        this.$state.account.fetch();
-        
-        // Show a new view in the region.
-    	this.main.show(new Graft.$views.Account({ model: this.$state.account });
-
-		// Start pushState here, if we had a router.
-	    // Backbone.history.start({pushState: true, root: "/"});
-	}, Graft);
-    
-    // Start App
-    Graft.start();
-
-### Run tests
-
-You must configure CouchDB to work with HTTPS in order to run tests.
-See [this wiki page](http://wiki.apache.org/couchdb/How_to_enable_SSL)
-
-    cd graftjs/
-    make all
+    npm test
