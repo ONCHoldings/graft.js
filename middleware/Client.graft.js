@@ -148,7 +148,7 @@ function buildBundle(bundleName, options) {
     _(bundle).each(mapBundleExpose);
 
     function build(err, src) {
-        if (err) { return dfr.reject(err); }
+        if (err) { debug('error', err); return dfr.reject(err); }
 
         Graft.trigger('bundle:process', bundleName, b);
         dfr.resolve(src);
