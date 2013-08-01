@@ -24,7 +24,7 @@
     "f_underscore": "~0.2.1",
     "jquery-browserify": "~1.8.1",
     "backbone.marionette": "~1.0.2",
-    "backbone.wreqr": "git+ssh://git@github.com:marionettejs/backbone.wreqr.git#master",
+    "backbone.wreqr": "git://github.com/marionettejs/backbone.wreqr.git#master",
     "browserify-middleware": "~1.13.0",
     "request": "~2.21.0",
     "glob": "~3.2.1",
@@ -50,7 +50,7 @@
     "mocha": "~1.12.0",
     "Nonsense": "~0.1.2",
     "should": "~1.2.2",
-    "graft-mockdb": "git+ssh://git@github.com:ONCHoldings/graft-mockdb.git#master",
+    "graft-mockdb": "git://github.com/ONCHoldings/graft-mockdb.git#master",
     "grunt-contrib-jshint": "~0.6.0",
     "grunt": "~0.4.1",
     "sinon": "~1.7.3"
@@ -61,6 +61,6 @@
   "dist": {
     "shasum": "5122aadc9a40782e4bb2194df08eb24e94ebf224"
   },
-  "_resolved": "git+ssh://git@github.com:ONCHoldings/graft.js.git#79ec64fbaabf44329a4de1873c965e87bcdf8d96",
-  "_from": "graftjs@git+ssh://git@github.com:ONCHoldings/graft.js.git#master"
+  "_resolved": "git://github.com/ONCHoldings/graft.js.git#79ec64fbaabf44329a4de1873c965e87bcdf8d96",
+  "_from": "graftjs@git://github.com/ONCHoldings/graft.js.git#master"
 }
