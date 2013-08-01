@@ -22,9 +22,19 @@ __Keep our assumptions out of your code base__ : We try our best to avoid requir
 
 __(almost) Everything is optional__: Most of it's functionality is turned off by default, and easily enabled.
 
-__Builds off what you know__: When evaluating libraries and features to support, we try to pick more widely used and better maintained code bases.
-
 __Explicit is better than implicit__: We try to stay away from declarative structures when trying to solve imperative problems.
+
+Sub-Projects
+============
+
+package | description | build status
+---|---|---
+[graft-example](https://github.com/ONCHoldings/graft-example)|Example project|[![Build Status](https://travis-ci.org/ONCHoldings/graft-example.png)](https://travis-ci.org/ONCHoldings/graft-example)
+[graft-auth](https://github.com/ONCHoldings/graft-auth)|Pluggable authentication layer|[![Build Status](https://travis-ci.org/ONCHoldings/graft-auth.png)](https://travis-ci.org/ONCHoldings/graft-auth)
+[graft-bootstrap](https://github.com/ONCHoldings/graft-bootstrap)|Twitter bootstrap integration via LESS|[![Build Status](https://travis-ci.org/ONCHoldings/graft-bootstrap.png)](https://travis-ci.org/ONCHoldings/graft-bootstrap)
+[graft-couch](https://github.com/ONCHoldings/graft-couch)|CouchDB database adaptor|[![Build Status](https://travis-ci.org/ONCHoldings/graft-couch.png)](https://travis-ci.org/ONCHoldings/graft-couch)
+[graft-mockdb](https://github.com/ONCHoldings/graft-mockdb)|Simple data layer to mock up data access for tests|[![Build Status](https://travis-ci.org/ONCHoldings/graft-mockdb.png)](https://travis-ci.org/ONCHoldings/graft-mockdb)
+[graft-schema](https://github.com/ONCHoldings/graft-schema)|JSON Schema validation of models|[![Build Status](https://travis-ci.org/ONCHoldings/graft-schema.png)](https://travis-ci.org/ONCHoldings/graft-schema)
 
 Installation
 ============
