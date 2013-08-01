@@ -24,11 +24,12 @@ __(almost) Everything is optional__: Most of it's functionality is turned off by
 
 __Explicit is better than implicit__: We try to stay away from declarative structures when trying to solve imperative problems.
 
-Sub-Projects
-============
+Projects
+========
 
 package | description | build status
 ---|---|---
+[graft.js](https://github.com/ONCHoldings/graft.js)|Main Library|[![Build Status](https://travis-ci.org/ONCHoldings/graft.js.png)](https://travis-ci.org/ONCHoldings/graft.js)
 [graft-example](https://github.com/ONCHoldings/graft-example)|Example project|[![Build Status](https://travis-ci.org/ONCHoldings/graft-example.png)](https://travis-ci.org/ONCHoldings/graft-example)
 [graft-auth](https://github.com/ONCHoldings/graft-auth)|Pluggable authentication layer|[![Build Status](https://travis-ci.org/ONCHoldings/graft-auth.png)](https://travis-ci.org/ONCHoldings/graft-auth)
 [graft-bootstrap](https://github.com/ONCHoldings/graft-bootstrap)|Twitter bootstrap integration via LESS|[![Build Status](https://travis-ci.org/ONCHoldings/graft-bootstrap.png)](https://travis-ci.org/ONCHoldings/graft-bootstrap)
