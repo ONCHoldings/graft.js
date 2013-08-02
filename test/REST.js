@@ -34,7 +34,7 @@ Graft.commands.setHandler('REST:setupTest', function(done) {
 describe('REST ROUTES', function() {
     before(function(done) {
         // Load up the REST api middleware. (optional)
-        require('../middleware/REST.graft.js');
+        require('../io/Rest.graft.js');
         Graft.execute('REST:setupTest', done);
     });
 

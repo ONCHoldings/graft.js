@@ -16,7 +16,10 @@ Graft.system('Data', 'data', {
     kind: 'data',
     path: 'data'
 });
-
+Graft.system('IO', 'io', {
+    kind: 'io',
+    path: 'io'
+});
 Graft.system('Template', 'templates', {
     bundle: 'templates',
     transform: 'jade',
