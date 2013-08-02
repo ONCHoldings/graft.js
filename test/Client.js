@@ -11,8 +11,8 @@ var Graft    = require('../server');
 describe('Testing Bundled Routes', function() {
     this.timeout(6000);
     before(function(done) {
-        // Load up the REST api middleware. (optional)
-        require('../middleware/Client.graft.js');
+        // Load up the REST api server. (optional)
+        require('../server/Client.graft.js');
 
         Graft.load(__dirname + '/fixture');
 

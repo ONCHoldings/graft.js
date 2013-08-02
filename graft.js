@@ -25,7 +25,7 @@ _.extend(Graft, {
     '$models'     : {},
     '$views'      : {},
     '$routers'    : {},
-    '$middleware' : {}
+    '$server' : {}
 });
  
 Graft.addInitializer(function(options) {

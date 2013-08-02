@@ -9,8 +9,8 @@ Graft.server       = true; // Hopefully this will be unecessary one day.
 global.__graftPath = path.normalize(__dirname + '/../graft.js');
 
 // initialize system layout
-Graft.system('Middleware', 'middleware', {
-   bundle: 'middleware'
+Graft.system('Server', 'server', {
+   bundle: 'server'
 });
 Graft.system('Data', 'data', {
     kind: 'data',
@@ -62,14 +62,14 @@ Graft.bundle('vendor', 'backbone.marionette');
 Graft.bundle('vendor', 'backbone.wreqr');
 Graft.bundle('vendor', 'backbone.babysitter');
 
-// Load up the primary Server middleware. (required)
-require('../middleware/Server.graft.js');
+// Load up the primary Server server. (required)
+require('./Server.graft.js');
 
 // Load up the Data API
 require('../data/Data.graft.js');
 
 
-// Bind the Server middleware's express route handlers to the
+// Bind the Server server's express route handlers to the
 // Application Object.
 //
 // This allows you to just use Graft.VERB(path, fn) to register
@@ -77,7 +77,7 @@ require('../data/Data.graft.js');
 //
 // We can't just _.extend this, because the start methods
 // on our already extended modules will conflict.
-var Server = Graft.Middleware.Server;
+var Server = Graft.Server;
 var expressMethods = ['all', 'get', 'post', 'delete', 'use', 'set', 'configure'];
 
 _.each(expressMethods, function(method) {
@@ -88,7 +88,7 @@ _.each(expressMethods, function(method) {
 }, this);
 
 Graft.addInitializer(function(opts) {
-    Graft.execute('middleware:setup', opts);
+    Graft.execute('server:setup', opts);
     Graft.execute('data:setup', opts);
 });
 

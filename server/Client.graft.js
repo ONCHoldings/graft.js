@@ -10,10 +10,11 @@ var _             = require('underscore');
 var wrapTransform = require('../lib/wrap.transform');
 var _express      = express();
 this.express      = _express;
-this.server       = http.createServer(this.express);
+this._server       = http.createServer(this.express);
 
 
-_.extend(this, _express);
+_.defaults(this, _express);
+
 
 /**
 * Mounts all templates to the /js/templates.js path.
@@ -194,7 +195,7 @@ function listen(server) {
 /**
 * Set all the relevant handlers.
 */
-Graft.Middleware.on('listen', listen, this);
+Graft.Server.on('listen', listen, this);
 Graft.commands.setHandler('bundle:mount', mountBundle, this);
 Graft.on('bundle:process', bundleBrowserify , this);
 Graft.on('bundle:process:templates', bundleProcessTemplates, this);

@@ -34,25 +34,25 @@ describe('Modules: Before Start', function() {
         Graft.BaseModel.should.eql(Backbone.Model);
     });
 
-    it('Should have added server middleware to bundle', function() {
-        Graft.bundles.middleware.should.have.property('./middleware/Server.graft.js');
+    it('Should have added server server to bundle', function() {
+        Graft.bundles.server.should.have.property('./server/Server.graft.js');
     });
 
     it('Should have initialized server module into marionette', function() {
-        Graft.Middleware.should.have.property('Server');
+        Graft.should.have.property('Server');
     });
 
-    it('Should have server middleware first in order', function() {
-        var file = path.resolve(__dirname + '/../middleware/Server.graft.js');
+    it('Should have server server first in order', function() {
+        var file = path.resolve(__dirname + '/../server/Server.graft.js');
         Graft.bundles.order[0].should.equal(file);
     });
 
-    it('Should not have initialized rest middleware', function() {
-        Graft.bundles.middleware.should.not.have.property('Test');
+    it('Should not have initialized rest server', function() {
+        Graft.bundles.server.should.not.have.property('Test');
     });
 
-    it('Should not have initialized client middleware', function() {
-        Graft.bundles.middleware.should.not.have.property('Client');
+    it('Should not have initialized client server', function() {
+        Graft.bundles.server.should.not.have.property('Client');
     });
 
     it('Should not have included any models', function() {
@@ -69,65 +69,65 @@ describe('Modules: Before Start', function() {
 
     it('Should have started the shared/vendor bundles', function() {
         Graft.bundles.vendor
-        .should.have.property('async', 'async');
+            .should.have.property('async', 'async');
 
         Graft.bundles.vendor
-        .should.have.property('jquery', 'jquery-browserify');
+            .should.have.property('jquery', 'jquery-browserify');
 
         Graft.bundles.vendor
-        .should.have.property('backbone', 'backbone');
+            .should.have.property('backbone', 'backbone');
 
         Graft.bundles.shared
-        .should.have.property('graftjs', global.__graftPath);
+            .should.have.property('graftjs', global.__graftPath);
 
         Graft.bundles.shared
-        .should.have.property('./lib/mixins.js', path.resolve(__dirname + '/../lib/mixins.js'));
+            .should.have.property('./lib/mixins.js', path.resolve(__dirname + '/../lib/mixins.js'));
     });
 
 
-    describe('Including Test middleware', function() {
+    describe('Including Test server', function() {
 
         before(function() {
-            require('./fixture/middleware/Test.graft.js');
+            require('./fixture/server/Test.graft.js');
         });
 
         it('Should have been added to the bundle', function() {
-            Graft.bundles.middleware.should.have.property('./middleware/Test.graft.js');
+            Graft.bundles.server.should.have.property('./server/Test.graft.js');
         });
 
         it('Should have been initialized into marionette', function() {
-            Graft.Middleware.should.have.property('Test');
+            Graft.Server.should.have.property('Test');
         });
 
         it('Should have the listening property defaulted to false', function() {
-            Graft.Middleware.Test.listening = false;
+            Graft.Server.Test.listening = false;
         });
         it('Should not have mounted express routes yet', function() {
-            Graft.Middleware.Test.express.routes.should.not.have.property('get');
+            Graft.Server.Test.express.routes.should.not.have.property('get');
         });
 
         it('Property on module is set to alpha', function() {
-            Graft.Middleware.Test.greekLetter.should.eql('alpha');
+            Graft.Server.Test.greekLetter.should.eql('alpha');
         });
 
-        describe('Including another middleware with the same name', function() {
+        describe('Including another server with the same name', function() {
             before(function() {
-                this.Test = require('./fixture/override/middleware/Test.graft.js');
+                this.Test = require('./fixture/override/server/Test.graft.js');
             });
 
             it('Property should be set to beta', function() {
-                Graft.Middleware.Test.greekLetter.should.eql('beta');
+                Graft.Server.Test.greekLetter.should.eql('beta');
             });
 
             it('Should have the right loadOrder', function() {
-                Graft.Middleware.Test.loadOrder.should.eql(['alpha', 'beta']);
+                Graft.Server.Test.loadOrder.should.eql(['alpha', 'beta']);
             });
 
             it('Should have the bundle order correct', function() {
                 fileOrder(
                     Graft.bundles.order,
-                    '/fixture/middleware/Test.graft.js',
-                    '/fixture/override/middleware/Test.graft.js'
+                    '/fixture/server/Test.graft.js',
+                    '/fixture/override/server/Test.graft.js'
                 );
             });
         });

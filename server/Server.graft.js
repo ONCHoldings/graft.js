@@ -4,12 +4,12 @@ var path     = require('path');
 
 var _express = express();
 this.express = _express;
-this.server  = http.createServer(this.express);
-_.extend(this, _express);
+this._server  = http.createServer(this.express);
+_.defaults(this, _express);
 
 require('../lib/sync');
 /**
-* Basic middleware setup
+* Basic server setup
 */
 this.addInitializer(function(opts) {
     var opts = opts || {};
@@ -27,14 +27,14 @@ this.addInitializer(function(opts) {
         this.enable('trust proxy');
     }, this));
 
-    Graft.trigger('mount:middleware', opts);
+    Graft.trigger('mount:server', opts);
     Graft.trigger('mount:static', opts);
 });
 
-Graft.on('mount:middleware', function(opts) {
-    Graft.trigger('before:mount:middleware', opts);
+Graft.on('mount:server', function(opts) {
+    Graft.trigger('before:mount:server', opts);
     this.use(express.bodyParser());
-    Graft.trigger('after:mount:middleware', opts);
+    Graft.trigger('after:mount:server', opts);
 }, this);
 
 Graft.on('mount:static', function(opts) {
@@ -47,13 +47,12 @@ Graft.on('mount:static', function(opts) {
 this.addInitializer(function serverStart(options) {
     var options = options || {};
     var port = options.port || 12400;
-
-    this.server.listen(port);
+    this._server.listen(port);
     debug("Server started on port " + port);
-    Graft.Middleware.triggerMethod('listen', this);
+    Graft.Server.trigger('listen', this);
 });
 
 this.addFinalizer(function() {
     debug('Shut down the socket');
-    this.server.close();
+    this._server.close();
 });

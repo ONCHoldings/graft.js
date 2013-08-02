@@ -1,11 +1,11 @@
-// A simple test middleware to confirm module system works.
+// A simple test server to confirm module system works.
 var express  = require('express');
 var http     = require('http');
 
 var _express = express();
 this.express = _express;
-this.server  = http.createServer(this.express);
-_.extend(this, _express);
+this._server  = http.createServer(this.express);
+_.defaults(this, _express);
 
 this.listening = false;
 
@@ -19,7 +19,7 @@ this.addInitializer(function(opts) {
 
     this.initOrder.push(greek);
 
-    debug('Initialize Test Middleware');
+    debug('Initialize Test Server');
     this.get('/test', function(req, res) {
         res.send('Hello world');
     });
@@ -29,9 +29,8 @@ this.addInitializer(function(opts) {
     });
 });
 
-Graft.Middleware.on('listen', function(Server) {
+Graft.Server.on('listen', function(Server) {
     debug('Mounting test routes');
     this.listening = true;
     Server.use(this);
 }, this);
-

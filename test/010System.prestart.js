@@ -13,7 +13,7 @@ describe('Subsystem', function() {
         Graft.should.have.property('system');
     });
     it('Should have a populated systems hash', function() {
-        Graft.systems.should.have.property('Middleware');
+        Graft.systems.should.have.property('Server');
         Graft.systems.should.have.property('Data');
         Graft.systems.should.have.property('Model');
         Graft.systems.should.have.property('Template');
@@ -22,14 +22,14 @@ describe('Subsystem', function() {
         Graft.systems.should.have.property('Client');
     });
     it('Should have registered the systems correctly', function() {
-        Graft.systems.Middleware.should.eql({
-            "bundle": 'middleware',
+        Graft.systems.Server.should.eql({
+            "bundle": 'server',
             "transform": "wrap",
             "extension": ".graft.js",
-            "name": "Middleware",
-            "path": "middleware",
+            "name": "Server",
+            "path": "server",
             "instances": false,
-            "kind": "middleware",
+            "kind": "server",
             "directories": []
         });
     });

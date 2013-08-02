@@ -1,6 +1,6 @@
 var Graft = require('../../server');
 
-require('../../middleware/Client.graft.js');
+require('../../server/Client.graft.js');
 require('../../io/Rest.graft.js');
 
 Graft.load(__dirname);

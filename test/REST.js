@@ -23,8 +23,8 @@ Graft.commands.setHandler('REST:setupTest', function(done) {
         Graft.trigger('reset:data');
     });
 
-    if (Graft.Middleware.Client) {
-        Graft.Middleware.Client.startWithParent = false;
+    if (Graft.Server.Client) {
+        Graft.Server.Client.startWithParent = false;
     }
 
     Graft.start({ port: testPort });
@@ -33,7 +33,7 @@ Graft.commands.setHandler('REST:setupTest', function(done) {
 
 describe('REST ROUTES', function() {
     before(function(done) {
-        // Load up the REST api middleware. (optional)
+        // Load up the REST api server. (optional)
         require('../io/Rest.graft.js');
         Graft.execute('REST:setupTest', done);
     });

@@ -1,7 +1,7 @@
 var express  = require('express');
 var http     = require('http');
 
-// This middleware needs to mount routes, so
+// This server needs to mount routes, so
 // it extends the express object.
 
 var _express = express();
@@ -21,7 +21,7 @@ this.addInitializer(function(opts) {
     this.get('/api/:collection', this.readCollection);
 });
 
-Graft.Middleware.on('listen', function(Server) {
+Graft.Server.on('listen', function(Server) {
     debug('Mounting REST routes');
     Server.use(this);
 }, this);

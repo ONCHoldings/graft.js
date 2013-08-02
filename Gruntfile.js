@@ -8,7 +8,7 @@ module.exports = function(grunt) {
                 unused : 'vars',
                 shadow : true
             },
-            all: ['*.js', 'lib/*.js', 'middleware/*.js', 'views/*.js', 'models/*.js', 'routers/*.js']
+            all: ['*.js', 'lib/*.js', 'server/*.js', 'io/*.js', 'data/*.js', 'views/*.js', 'models/*.js', 'routers/*.js']
 
         }
     });

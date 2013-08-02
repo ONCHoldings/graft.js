@@ -46,7 +46,7 @@ function stopServer(){
         //Graft.reset();
     });
     it('should be not initialized', function() {
-        Graft.Middleware.Server._isInitialized.should.eql(false);
+        Graft.Server._isInitialized.should.eql(false);
     });
 }
 
