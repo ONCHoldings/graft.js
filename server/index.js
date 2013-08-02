@@ -4,9 +4,9 @@ var Marionette     = require('backbone.marionette');
 var path           = require('path');
 var fs             = require('fs');
 var debug          = require('debug')('graft:server');
-var Graft          = require('./lib/modules'); // Bootstrap module system.
+var Graft          = require('../lib/modules'); // Bootstrap module system.
 Graft.server       = true; // Hopefully this will be unecessary one day.
-global.__graftPath = __dirname + '/graft.js';
+global.__graftPath = path.normalize(__dirname + '/../graft.js');
 
 // initialize system layout
 Graft.system('Middleware', 'middleware', {
@@ -47,8 +47,8 @@ Graft.system('Client', 'client', {
 
 // Include the shared code for the client too.
 Graft.bundle('shared', 'graftjs', global.__graftPath);
-Graft.bundle('shared', './lib/mixins.js', __dirname);
-Graft.bundle('shared', './lib/augment.js', __dirname);
+Graft.bundle('shared', '../lib/mixins.js', __dirname);
+Graft.bundle('shared', '../lib/augment.js', __dirname);
 
 Graft.bundle('vendor', 'jquery', 'jquery-browserify');
 Graft.bundle('vendor', 'debug');
@@ -63,10 +63,10 @@ Graft.bundle('vendor', 'backbone.wreqr');
 Graft.bundle('vendor', 'backbone.babysitter');
 
 // Load up the primary Server middleware. (required)
-require('./middleware/Server.graft.js');
+require('../middleware/Server.graft.js');
 
 // Load up the Data API
-require('./data/Data.graft.js');
+require('../data/Data.graft.js');
 
 
 // Bind the Server middleware's express route handlers to the
