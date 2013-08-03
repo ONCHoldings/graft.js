@@ -1,5 +1,6 @@
 var utils       = require('./utils');
 var should      = require('should');
+var path        = require('path');
 var request     = require('request');
 var async       = require('async');
 var _           = require('underscore');
@@ -10,7 +11,8 @@ var testPort    = 8900;
 
 Graft.commands.setHandler('REST:setupTest', function(done) {
     // A simple test data adaptor to debug the REST api.
-    var Mock = require('graft-mockdb/server');
+    Graft.directory(path.dirname(require.resolve('graft-mockdb')));
+    var Mock = require('graft-mockdb/data/mock');
 
     Graft.load(fixturePath);
 
