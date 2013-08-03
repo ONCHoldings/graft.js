@@ -7,7 +7,7 @@ var Browserify    = require('browserify');
 var bmw           = require('browserify-middleware');
 var jadeify2      = require('jadeify2');
 var _             = require('underscore');
-var wrapTransform = require('../lib/wrap.transform');
+var wrap = require('../lib/wrap');
 var _express      = express();
 this.express      = _express;
 this._server       = http.createServer(this.express);
@@ -176,10 +176,10 @@ function mountBundle(name, src) {
 function initializeBundles(options) {
     Graft.execute('wait', buildBundles({
         'vendor': {},
-        'shared': { transform: wrapTransform.through },
-        'models': { transform: wrapTransform.through },
-        'views': { transform: wrapTransform.through },
-        'routers': { transform: wrapTransform.through },
+        'shared': { transform: wrap.through },
+        'models': { transform: wrap.through },
+        'views': { transform: wrap.through },
+        'routers': { transform: wrap.through },
         'client': { entry: true }
     }));
 }
