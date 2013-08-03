@@ -1,0 +1,13 @@
+Graft = require("{{graftPath}}")
+Graft.module "{{module.path}}", {{module.fn}} = (module, Graft, Backbone, Marionette, $, _) ->
+  debug = require("debug")("graft:{{module.path.toLowerCase()}}")
+{{content}}
+  @{{module.kind}} = @$ref = @exports = module.exports or module
+
+<% if (system.instances) { %>
+
+  Graft.{{system.instances}}.{{module.safeName}} = @exports
+<% } %>
+
+module.exports = Graft.module("{{module.path}}").exports
+

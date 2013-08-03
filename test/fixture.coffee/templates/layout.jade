@@ -1,0 +1,27 @@
+!!! 5
+html(lang='en')
+  head
+    block head
+      meta(charset='utf-8')
+      title
+        block title
+          = locals.title
+
+  body
+    header.navbar.navbar-fixed-top: div.navbar-inner: div.container
+      a.brand(href='/')= locals.siteName
+
+    div#content.container
+      div.row
+        section#sidebar.span2
+        section#main.span10
+          block content
+          p no conference selected
+
+    script(src='/js/vendor.js')
+    script(src='/js/templates.js')
+    script(src='/js/models.js')
+    script(src='/js/views.js')
+    script(src='/js/routers.js')
+    script(src='/js/shared.js')
+    script(src='/js/client.js')
