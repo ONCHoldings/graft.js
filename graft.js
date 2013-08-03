@@ -1,5 +1,5 @@
 var $        = require('jquery');
-var _        = require('./lib/mixins.js');
+var _        = require('./lib/mixins');
 
 // Set the DOM lib for Backbone.
 var Backbone = require('backbone');
@@ -10,7 +10,7 @@ var Marionette = require('backbone.marionette');
 Marionette.$   = $;
 
 // augment helper to backbone objects.
-require('./lib/augment.js');
+require('./lib/augment');
 
 // Main application initialization
 // this is global on purpose. sucks i know.

@@ -1,4 +1,4 @@
 {
     "name": "server-only",
-    "main": "ServerOnly.graft.js"
+    "main": "serveronly.js"
 }

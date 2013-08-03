@@ -12,7 +12,7 @@ describe('Testing Bundled Routes', function() {
     this.timeout(6000);
     before(function(done) {
         // Load up the REST api server. (optional)
-        require('../server/Client.graft.js');
+        require('../server/client');
 
         Graft.load(__dirname + '/fixture');
 

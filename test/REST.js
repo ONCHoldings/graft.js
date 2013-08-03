@@ -1,22 +1,22 @@
-var utils    = require('./utils');
-var should   = require('should');
-var request  = require('request');
-var async    = require('async');
-var _        = require('underscore');
-var testPort = 8900;
+var utils       = require('./utils');
+var should      = require('should');
+var request     = require('request');
+var async       = require('async');
+var _           = require('underscore');
+var Graft       = require('../server');
+var fixturePath = __dirname + '/fixture';
+var testPort    = 8900;
 
-// Initialize the Graft application object.
-var Graft    = require('../server');
 
 Graft.commands.setHandler('REST:setupTest', function(done) {
     // A simple test data adaptor to debug the REST api.
-    var Mock = require('graft-mockdb');
+    var Mock = require('graft-mockdb/server');
 
-    Graft.load(__dirname + '/fixture');
+    Graft.load(fixturePath);
 
     Graft.on('reset:data', function() {
-        Mock.testData.Account = require('./fixture/resources/Account.json');
-        Mock.testData.Group = require('./fixture/resources/Group.json');
+        Mock.testData.Account = require('./fixture/resources/account.json');
+        Mock.testData.Group = require('./fixture/resources/group.json');
     }, Mock);
 
     Mock.on('before:start', function() {
@@ -34,7 +34,7 @@ Graft.commands.setHandler('REST:setupTest', function(done) {
 describe('REST ROUTES', function() {
     before(function(done) {
         // Load up the REST api server. (optional)
-        require('../io/Rest.graft.js');
+        require('../io/rest');
         Graft.execute('REST:setupTest', done);
     });
 

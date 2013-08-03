@@ -47,8 +47,8 @@ Graft.system('Client', 'client', {
 
 // Include the shared code for the client too.
 Graft.bundle('shared', 'graftjs', global.__graftPath);
-Graft.bundle('shared', '../lib/mixins.js', __dirname);
-Graft.bundle('shared', '../lib/augment.js', __dirname);
+Graft.bundle('shared', '../lib/mixins', __dirname);
+Graft.bundle('shared', '../lib/augment', __dirname);
 
 Graft.bundle('vendor', 'jquery', 'jquery-browserify');
 Graft.bundle('vendor', 'debug');
@@ -56,7 +56,7 @@ Graft.bundle('vendor', 'async');
 Graft.bundle('vendor', 'underscore');
 Graft.bundle('vendor', 'underscore.string');
 Graft.bundle('vendor', 'underscore.deferred');
-Graft.bundle('vendor', 'f_underscore/f_underscore.js');
+Graft.bundle('vendor', 'f_underscore/f_underscore');
 Graft.bundle('vendor', 'backbone');
 Graft.bundle('vendor', 'backbone.marionette');
 Graft.bundle('vendor', 'backbone.wreqr');
@@ -68,10 +68,10 @@ Graft.bundle('vendor', 'backbone.babysitter');
 Graft.directory(path.dirname(global.__graftPath));
 
 // Load up the primary Server server. (required)
-require('./Server.graft.js');
+require('./server');
 
 // Load up the Data API
-require('../data/Data.graft.js');
+require('../data');
 
 
 // Bind the Server server's express route handlers to the

@@ -38,7 +38,7 @@ describe('Modules: Before Start', function() {
     });
 
     it('Should have added server server to bundle', function() {
-        Graft.bundles.server.should.have.property('./server/Server.graft.js');
+        Graft.bundles.server.should.have.property('./server/server.js');
     });
 
     it('Should have initialized server module into marionette', function() {
@@ -46,7 +46,7 @@ describe('Modules: Before Start', function() {
     });
 
     it('Should have server server first in order', function() {
-        var file = path.resolve(__dirname + '/../server/Server.graft.js');
+        var file = path.resolve(__dirname + '/../server/server.js');
         Graft.bundles.order[0].should.equal(file);
     });
 
@@ -84,18 +84,18 @@ describe('Modules: Before Start', function() {
             .should.have.property('graftjs', global.__graftPath);
 
         Graft.bundles.shared
-            .should.have.property('./lib/mixins.js', path.resolve(__dirname + '/../lib/mixins.js'));
+            .should.have.property('./lib/mixins', path.resolve(__dirname + '/../lib/mixins'));
     });
 
 
     describe('Including Test server', function() {
 
         before(function() {
-            require('./fixture/server/Test.graft.js');
+            require('./fixture/server/test.js');
         });
 
         it('Should have been added to the bundle', function() {
-            Graft.bundles.server.should.have.property('./server/Test.graft.js');
+            Graft.bundles.server.should.have.property('./server/test.js');
         });
 
         it('Should have been initialized into marionette', function() {
@@ -116,7 +116,7 @@ describe('Modules: Before Start', function() {
         describe('Including another server with the same name', function() {
             before(function() {
                 Graft.directory(__dirname + '/fixture/override');
-                this.Test = require('./fixture/override/server/Test.graft.js');
+                this.Test = require('./fixture/override/server/test.js');
             });
 
             it('Property should be set to beta', function() {
@@ -130,8 +130,8 @@ describe('Modules: Before Start', function() {
             it('Should have the bundle order correct', function() {
                 fileOrder(
                     Graft.bundles.order,
-                    '/fixture/server/Test.graft.js',
-                    '/fixture/override/server/Test.graft.js'
+                    '/fixture/server/test.js',
+                    '/fixture/override/server/test.js'
                 );
             });
         });
@@ -139,7 +139,7 @@ describe('Modules: Before Start', function() {
 
     describe('Including a single model (Group)', function() {
         before(function() {
-            this.Group = require('./fixture/models/Group.graft.js');
+            this.Group = require('./fixture/models/group.js');
         });
 
         it('Graft.$models have the Group property', function() {
@@ -170,7 +170,7 @@ describe('Modules: Before Start', function() {
     describe('Including a single model after changing BaseModel (Account)', function() {
         before(function() {
             Graft.BaseModel = TestBaseModel;
-            require('./fixture/models/Account.graft.js');
+            require('./fixture/models/account.js');
             this.instance = new Graft.$models.Account({ id: 123 });
             this.gInstance = new Graft.$models.Group({ id: 'group' });
         });
@@ -212,7 +212,7 @@ describe('Modules: Before Start', function() {
 
     describe('Using Graft.load() to require many modules', function() {
         before(function() {
-            Graft.load(__dirname + '/fixture');
+            Graft.load(fixturePath);
         });
         it('Should have include all the models', function() {
             Graft.Model.should.have.property('Groups');
@@ -223,8 +223,8 @@ describe('Modules: Before Start', function() {
         it('Should have the bundle order correct', function() {
             fileOrder(
                 Graft.bundles.order,
-                '/fixture/models/Group.graft.js',
-                '/fixture/models/Accounts.graft.js'
+                '/fixture/models/group.js',
+                '/fixture/models/accounts.js'
             );
         });
 
