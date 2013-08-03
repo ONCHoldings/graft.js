@@ -2,6 +2,7 @@
 var should      = require('should');
 var _           = require('underscore');
 var sinon       = require('sinon');
+var path        = require('path');
 var utils       = require('./utils');
 var Graft       = require('../server');
 var fixturePath = __dirname + '/fixture';
@@ -9,7 +10,9 @@ var testPort    = 8903;
 
 Graft.commands.setHandler('Sync:setupTest', function(done) {
     // A simple test data adaptor to debug the REST api.
-    var Mock = require('graft-mockdb/server');
+    Graft.directory(path.dirname(require.resolve('graft-mockdb')));
+    var Mock = require('graft-mockdb/data/mock');
+
 
     Graft.load(fixturePath);
 
