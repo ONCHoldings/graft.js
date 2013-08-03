@@ -1,14 +1,20 @@
-var utils    = require('./utils');
-var should   = require('should');
-var path     = require('path');
-var sinon    = require('sinon');
-var _        = require('underscore');
-var Backbone = require('backbone');
-
-// Initialize the Graft application object.
-var Graft = require('../server');
+var utils       = require('./utils');
+var should      = require('should');
+var path        = require('path');
+var sinon       = require('sinon');
+var _           = require('underscore');
+var Backbone    = require('backbone');
+var Graft       = require('../server');
+var fixturePath = __dirname + '/fixture';
 
 describe('Subsystem', function() {
+    it('should have added the process path to directories', function() {
+        Graft.directories.should.include(process.cwd());
+    });
+    it('should have added the fixture path to directories', function() {
+        Graft.directories.should.include(fixturePath);
+    });
+
     it('Should have an accessible system function', function() {
         Graft.should.have.property('system');
     });
@@ -22,16 +28,16 @@ describe('Subsystem', function() {
         Graft.systems.should.have.property('Client');
     });
     it('Should have registered the systems correctly', function() {
-        Graft.systems.Server.should.eql({
-            "bundle": 'server',
-            "transform": "wrap",
-            "extension": ".graft.js",
-            "name": "Server",
-            "path": "server",
-            "instances": false,
-            "kind": "server",
-            "directories": []
-        });
+        Graft.systems.Server.should.have.property("bundle", 'server');
+        Graft.systems.Server.should.have.property("transform", "wrap");
+        Graft.systems.Server.should.have.property("extension", null);
+        Graft.systems.Server.should.have.property("name", "Server");
+        Graft.systems.Server.should.have.property("path", "server");
+        Graft.systems.Server.should.have.property("instances", false);
+        Graft.systems.Server.should.have.property("kind", "server");
+        Graft.systems.Server.should.have.property("directories");
+        Graft.systems.Server.should.have.property("exclude");
+        Graft.systems.Server.exclude.should.eql(["index.js"]);
     });
 
     it('Test subsystems should not exist yet.', function() {
@@ -65,11 +71,11 @@ describe('Subsystem', function() {
             Graft.systems.ServerOnly.should.have.keys(
                 'bundle', 'transform', 'extension',
                 'name', 'path', 'instances', 'path',
-                'directories'
+                'directories', 'exclude', 'entries'
             );
         });
 
-        it('should have accepted the provded settings', function() {
+        it('should have accepted the provided settings', function() {
             Graft.systems.ServerOnly.should.have.property('name', 'ServerOnly');
             Graft.systems.ServerOnly.should.have.property('path', 'server-only');
             Graft.systems.ServerOnly.should.have.property('kind', 'server_only');
@@ -78,7 +84,7 @@ describe('Subsystem', function() {
             Graft.systems.ServerOnly.should.have.property('bundle', false);
             Graft.systems.ServerOnly.should.have.property('instances', false);
             Graft.systems.ServerOnly.should.have.property('transform', 'wrap');
-            Graft.systems.ServerOnly.should.have.property('extension', '.graft.js');
+            Graft.systems.ServerOnly.should.have.property('extension', null);
         });
         it('should not have resulted in any extra bundles being created', function() {
             Graft.bundles.should.have.keys(this.currentBundles);
@@ -101,7 +107,7 @@ describe('Subsystem', function() {
 
         before(function() {
             sinon.stub(Graft, "require");
-            Graft.load(__dirname + '/fixture/');
+            Graft.load(fixturePath);
             this.systemDirs = getSysDirs();
         });
 
@@ -128,7 +134,7 @@ describe('Subsystem', function() {
 
     describe('Actual Subsystem Loading', function() {
         before(function() {
-            Graft.load(__dirname + '/fixture/');
+            Graft.load(fixturePath);
         });
 
         it('should have initialized the ServerOnly module', function() {
@@ -149,15 +155,21 @@ describe('Subsystem', function() {
 
     describe('Loading a subsystem directly', function() {
         before(function() {
-            require('./fixture/direct-load');
+           this.returnValue = require('./fixture/direct-load');
         });
         it('Should have registered the subsystem', function() {
             Graft.systems.should.have.property('DirectLoad');
+        });
+        it('should have added subsystem directories automatically', function() {
+            Graft.systems.DirectLoad.directories.should.eql(
+                [fixturePath + '/direct-load']);
         });
 
         it('Should have initialized the module, from the require()', function() {
             should.exist(Graft.module('DirectLoad'));
             should.exist(Graft.DirectLoad);
+            should.exist(this.returnValue);
+            this.returnValue.should.eql('success loading direct-load');
         });
 
         it('should have actually loaded that file', function() {
@@ -173,7 +185,7 @@ describe('Subsystem', function() {
                 instances: '$client2s'
             });
 
-            Graft.load(__dirname + '/fixture/');
+            Graft.load(fixturePath);
         });
 
         it('should have initialized the main module without a file of the same name', function() {

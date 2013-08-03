@@ -1,16 +1,16 @@
-var utils    = require('./utils');
-var should   = require('should');
-var path     = require('path');
-var _        = require('underscore');
-var pwd      = process.cwd();
-var Backbone = require('backbone');
-
+var utils         = require('./utils');
+var should        = require('should');
+var path          = require('path');
+var _             = require('underscore');
+var pwd           = process.cwd();
+var Backbone      = require('backbone');
+var fixturePath   = __dirname + '/fixture';
+var Graft         = require('../server');
 var TestBaseModel = Backbone.Model.extend({
     title: 'TestBaseModel'
 });
 
 // Initialize the Graft application object.
-var Graft = require('../server');
 
 // Small helper to make sure files are loaded in correct order.
 function fileOrder(order, file1, file2) {
@@ -24,7 +24,10 @@ function fileOrder(order, file1, file2) {
 }
 
 describe('Modules: Before Start', function() {
-    before(function() { process.chdir(__dirname + '/fixture'); });
+    before(function() {
+        process.chdir(fixturePath);
+        Graft.directory(fixturePath);
+    });
 
     it('Should have initialized bundles', function() {
         Graft.should.have.property('bundles');
@@ -48,7 +51,7 @@ describe('Modules: Before Start', function() {
     });
 
     it('Should not have initialized rest server', function() {
-        Graft.bundles.server.should.not.have.property('Test');
+        Graft.bundles.server.should.not.have.property('Rest');
     });
 
     it('Should not have initialized client server', function() {
@@ -112,6 +115,7 @@ describe('Modules: Before Start', function() {
 
         describe('Including another server with the same name', function() {
             before(function() {
+                Graft.directory(__dirname + '/fixture/override');
                 this.Test = require('./fixture/override/server/Test.graft.js');
             });
 

@@ -5,4 +5,6 @@ Graft.system('DirectLoad', 'direct-load', {
     kind: 'direct_load'
 });
 
-require('./DirectLoad.graft.js');
+require('./DirectLoad');
+
+module.exports = 'success loading direct-load';

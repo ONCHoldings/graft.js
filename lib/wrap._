@@ -1,5 +1,5 @@
 /**
- * Begin Filename: {{filename}}
+ * Begin Filename: {{relFilename}}
  */
 
 var Graft = require('{{graftPath}}');
@@ -20,5 +20,5 @@ Graft.module("{{module.path}}", function {{module.fn}}(module, Graft, Backbone, 
 module.exports = Graft.module("{{module.path}}").exports;
 
 /**
- * End Filename: {{filename}}
+ * End Filename: {{relFilename}}
  */
