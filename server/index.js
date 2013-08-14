@@ -94,7 +94,7 @@ _.each(expressMethods, function(method) {
 
 Graft.addInitializer(function(opts) {
     Graft.execute('server:setup', opts);
-    Graft.execute('data:setup', opts);
+    Graft.Data.execute('setup', opts);
 });
 
 // Stop this module by running its finalizers and then stop all of

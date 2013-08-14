@@ -86,7 +86,7 @@ _.extend(this, {
         }
 
         function created(attrs) {
-            res.set('Location', Graft.request('model:url', model));
+            res.set('Location', Graft.Data.request('url', model));
             res.send(303, model.toJSON());
         }
         function createModel(attrs) {

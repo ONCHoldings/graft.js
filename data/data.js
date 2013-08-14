@@ -2,6 +2,23 @@
 * Top level Data api module.
 */
 
+this.vent       = new Backbone.Wreqr.EventAggregator();
+this.commands   = new Backbone.Wreqr.Commands();
+this.reqres     = new Backbone.Wreqr.RequestResponse();
+
+_.extend(this, {
+    // Command execution, facilitated by Backbone.Wreqr.Commands
+    execute: function(){
+        var args = Array.prototype.slice.apply(arguments);
+        this.commands.execute.apply(this.commands, args);
+    },
+    // Request/response, facilitated by Backbone.Wreqr.RequestResponse
+    request: function(){
+        var args = Array.prototype.slice.apply(arguments);
+        return this.reqres.request.apply(this.reqres, args);
+    }
+});
+
 // Default data handlers for models.
 //
 // The custom Backbone.sync implementation on the
@@ -12,28 +29,28 @@ function notImplemented() {
     return dfr.promise();
 }
 
-Graft.commands.setHandler('data:setup', notImplemented);
-Graft.reqres.setHandler('model:url', notImplemented);
-Graft.reqres.setHandler('model:name', notImplemented);
-Graft.reqres.setHandler('model:read', notImplemented);
-Graft.reqres.setHandler('model:update', notImplemented);
-Graft.reqres.setHandler('model:delete', notImplemented);
-Graft.reqres.setHandler('model:create', notImplemented);
-Graft.reqres.setHandler('collection:read', notImplemented);
+this.commands.setHandler('setup', notImplemented);
+this.reqres.setHandler('url', notImplemented);
+this.reqres.setHandler('name', notImplemented);
+this.reqres.setHandler('read', notImplemented);
+this.reqres.setHandler('update', notImplemented);
+this.reqres.setHandler('delete', notImplemented);
+this.reqres.setHandler('create', notImplemented);
+this.reqres.setHandler('query', notImplemented);
 
 
 // Mount all the rest api routes
 this.addInitializer(function(opts) {
     debug('Initialize Core Data api');
-    Graft.reqres.setHandler('model:name', this.modelName);
-    Graft.reqres.setHandler('model:load', this.loadModel);
-    Graft.reqres.setHandler('model:url', this.modelUrl);
+    this.reqres.setHandler('name', this.modelName);
+    this.reqres.setHandler('load', this.loadModel);
+    this.reqres.setHandler('url', this.modelUrl);
 });
 
 // Implementations for each of the methods
 _.extend(this, {
     modelName: function(model) {
-        debug('model:name handler');
+        debug('name handler');
         var matches = matchUrl(model);
         return matches ? matches.name : false;
     },
@@ -49,7 +66,7 @@ _.extend(this, {
 //
 // Returns false if not found.
 function matchUrl(model) {
-    var url = Graft.request('model:url', model) || false;
+    var url = Graft.Data.request('url', model) || false;
     debug('matchUrl: ' + url);
 
     var regex =  /\/api\/([^/]*)\/?([^/]*)\/?/;
