@@ -38,26 +38,47 @@ this.reqres.setHandler('delete', notImplemented);
 this.reqres.setHandler('create', notImplemented);
 this.reqres.setHandler('query', notImplemented);
 
+function mapRequest(request) {
+    return function(model){
+        var args = _(arguments).toArray();
+        var name = this.request('name', model);
+        var evt = request + ':' + name;
+
+        args.unshift(name);
+        args.unshift(this.reqres.hasHandler(evt) || request);
+        debug(args);
+
+        return this.reqres.request.apply(this.reqres, args);
+    };
+}
+
+
+_.extend(this, {
+    read: mapRequest('read'),
+    create: mapRequest('create'),
+    update: mapRequest('update'),
+    'delete': mapRequest('delete'),
+    query: mapRequest('query')
+});
+
+
 
 // Mount all the rest api routes
 this.addInitializer(function(opts) {
     debug('Initialize Core Data api');
-    this.reqres.setHandler('name', this.modelName);
-    this.reqres.setHandler('load', this.loadModel);
-    this.reqres.setHandler('url', this.modelUrl);
+    this.reqres.setHandler('name', modelName);
+    this.reqres.setHandler('url', modelUrl);
 });
 
 // Implementations for each of the methods
-_.extend(this, {
-    modelName: function(model) {
-        debug('name handler');
-        var matches = matchUrl(model);
-        return matches ? matches.name : false;
-    },
-    modelUrl: function(model) {
-        return _.result(model, 'url');
-    }
-});
+function modelName(model) {
+    var matches = matchUrl(model);
+    return matches ? matches.name : false;
+}
+
+function modelUrl(model) {
+    return _.result(model, 'url');
+}
 
 // Get the name and id from url.
 //
