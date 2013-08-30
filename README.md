@@ -24,6 +24,7 @@ __(almost) Everything is optional__: Most of it's functionality is turned off by
 
 __Explicit is better than implicit__: We try to stay away from declarative structures when trying to solve imperative problems.
 
+<a name='projects'></a>
 Projects
 ========
 
