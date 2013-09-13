@@ -38,6 +38,16 @@ describe('Testing Bundled Routes', function() {
             this.body.should.include('KAPOW');
             this.body.should.include("I'M BATMAN");
         });
+        it('should have rolled out scripts with the same nonce', function() {
+            this.body.should.include('/js/templates.js?v=');
+            this.body.should.include('/js/vendor.js?v=');
+            this.body.should.include('/js/shared.js?v=');
+            this.body.should.include('/js/models.js?v=');
+            this.body.should.include('/js/views.js?v=');
+            this.body.should.include('/js/routers.js?v=');
+            this.body.should.include('/js/client.js?v=');
+
+        });
     });
     describe('GET /js/templates.js', function() {
         before(utils.requestUrl(testPort, '/js/templates.js'));

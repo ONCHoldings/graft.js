@@ -1,4 +1,4 @@
-var $        = require('jquery');
+var $        = global.$ || require('jquery');
 var _        = require('./lib/mixins');
 
 // Set the DOM lib for Backbone.

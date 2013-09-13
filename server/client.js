@@ -15,6 +15,19 @@ this._server       = http.createServer(this.express);
 
 _.defaults(this, _express);
 
+/**
+* Set all the relevant handlers.
+*/
+Graft.Server.on('listen', listen, this);
+Graft.commands.setHandler('bundle:mount', mountBundle, this);
+Graft.on('bundle:process', bundleBrowserify , this);
+Graft.on('bundle:process:templates', bundleProcessTemplates, this);
+Graft.reqres.setHandler('bundle:externals', getExternals, this);
+Graft.reqres.setHandler('bundle:defaults', defaultBundles, this);
+this.addInitializer(bundleTemplates);
+this.addInitializer(initializeBundles);
+this.addInitializer(addToLocals);
+
 
 /**
 * Mounts all templates to the /js/templates.js path.
@@ -170,18 +183,41 @@ function mountBundle(name, src) {
     });
 }
 
+function defaultBundles(options) {
+    return {
+        'vendor'  : {},
+        'shared'  : { transform : wrapTransform.through },
+        'models'  : { transform : wrapTransform.through },
+        'views'   : { transform : wrapTransform.through },
+        'routers' : { transform : wrapTransform.through },
+        'client'  : { entry     : true }
+    };
+}
+
+// Populate the list of scripts to be iterated over in the template
+function addToLocals(options) {
+    var locals = options.locals || {};
+    var nonce = Date.now();
+    var bundles = Graft.request('bundle:defaults');
+
+    var files = ['templates'].concat(_(bundles).keys());
+
+    _.defaults(locals, {
+        includes: _(files).map(mapFn)
+    });
+
+    function mapFn(m, k) {
+    var tpl = _.template('{{prefix}}/{{script}}.js?v={{version}}');
+        return tpl({ prefix  : '/js', script  : m, version : nonce });
+    }
+}
+
 /**
 * Initialize the bundles to be served to the client
 */
 function initializeBundles(options) {
-    Graft.execute('wait', buildBundles({
-        'vendor': {},
-        'shared': { transform: wrapTransform.through },
-        'models': { transform: wrapTransform.through },
-        'views': { transform: wrapTransform.through },
-        'routers': { transform: wrapTransform.through },
-        'client': { entry: true }
-    }));
+    var bundles = Graft.request('bundle:defaults');
+    Graft.execute('wait', buildBundles(bundles));
 }
 
 /**
@@ -192,13 +228,3 @@ function listen(server) {
     server.use(this);
 }
 
-/**
-* Set all the relevant handlers.
-*/
-Graft.Server.on('listen', listen, this);
-Graft.commands.setHandler('bundle:mount', mountBundle, this);
-Graft.on('bundle:process', bundleBrowserify , this);
-Graft.on('bundle:process:templates', bundleProcessTemplates, this);
-Graft.reqres.setHandler('bundle:externals', getExternals, this);
-this.addInitializer(bundleTemplates);
-this.addInitializer(initializeBundles);
