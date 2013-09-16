@@ -51,6 +51,7 @@ Graft.on('mount:static', function(opts) {
 this.addInitializer(function serverStart(options) {
     var options = options || {};
     var port = options.port || 12400;
+    Graft.Server.trigger('before:listen', this);
     this._server.listen(port);
     debug("Server started on port " + port);
     Graft.Server.trigger('listen', this);
