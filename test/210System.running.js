@@ -3,10 +3,22 @@ var path     = require('path');
 var _        = require('underscore');
 var Graft    = require('../server');
 var utils    = require('./utils');
+var sinon       = require('sinon');
 var testPort = 8924;
 
+function setupSpies() {
+    sinon.spy(Graft, 'trigger');
+    sinon.spy(Graft.Server, 'trigger');
+}
+
+function restoreSpies() {
+    Graft.trigger.restore();
+    Graft.Server.trigger.restore();
+}
 
 describe('Systems: Running', function() {
+    before(setupSpies);
+
     before(function() {
         Graft.system('ServerOnly', 'server-only', {
             kind: 'server_only'
@@ -21,7 +33,6 @@ describe('Systems: Running', function() {
         Graft.start({ port: testPort });
     });
 
-
     it('should have all systems and submodules present', function() {
         Graft.should.have.property('DirectLoad');
         Graft.should.have.property('ServerOnly');
@@ -30,9 +41,19 @@ describe('Systems: Running', function() {
         Graft.ClientToo.should.have.property('SubModule');
     });
 
-    describe('Bundled code availability', function() {
+    it('should have called all the mount triggers', function() {
+        sinon.assert.calledWith(Graft.trigger, 'mount:server');
+        sinon.assert.calledWith(Graft.trigger, 'before:mount:server');
+        sinon.assert.calledWith(Graft.trigger, 'after:mount:server');
 
+        sinon.assert.calledWith(Graft.trigger, 'mount:static');
+        sinon.assert.calledWith(Graft.trigger, 'before:mount:static');
+        sinon.assert.calledWith(Graft.trigger, 'after:mount:static');
 
+        sinon.assert.calledWith(Graft.Server.trigger, 'listen');
+        sinon.assert.calledWith(Graft.Server.trigger, 'before:listen');
+        sinon.assert.calledWith(Graft.Server.trigger, 'after:listen');
     });
+    after(restoreSpies);
     describe('stop server', utils.stopServer);
 });

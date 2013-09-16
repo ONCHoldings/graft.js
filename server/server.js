@@ -51,11 +51,15 @@ Graft.on('mount:static', function(opts) {
 this.addInitializer(function serverStart(options) {
     var options = options || {};
     var port = options.port || 12400;
-    Graft.Server.trigger('before:listen', this);
-    this._server.listen(port);
+    Graft.Server.trigger('listen', this, options);
     debug("Server started on port " + port);
-    Graft.Server.trigger('listen', this);
 });
+
+Graft.Server.on('listen', function(server, options) {
+    Graft.Server.trigger('before:listen', server, options);
+    this._server.listen(options.port);
+    Graft.Server.trigger('after:listen', server, options);
+}, this);
 
 this.addFinalizer(function() {
     debug('Shut down the socket');
