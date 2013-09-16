@@ -7,12 +7,10 @@ var sinon       = require('sinon');
 var testPort = 8924;
 
 function setupSpies() {
-    sinon.spy(Graft, 'trigger');
     sinon.spy(Graft.Server, 'trigger');
 }
 
 function restoreSpies() {
-    Graft.trigger.restore();
     Graft.Server.trigger.restore();
 }
 
@@ -42,13 +40,13 @@ describe('Systems: Running', function() {
     });
 
     it('should have called all the mount triggers', function() {
-        sinon.assert.calledWith(Graft.trigger, 'mount:server');
-        sinon.assert.calledWith(Graft.trigger, 'before:mount:server');
-        sinon.assert.calledWith(Graft.trigger, 'after:mount:server');
+        sinon.assert.calledWith(Graft.Server.trigger, 'mount:server');
+        sinon.assert.calledWith(Graft.Server.trigger, 'before:mount:server');
+        sinon.assert.calledWith(Graft.Server.trigger, 'after:mount:server');
 
-        sinon.assert.calledWith(Graft.trigger, 'mount:static');
-        sinon.assert.calledWith(Graft.trigger, 'before:mount:static');
-        sinon.assert.calledWith(Graft.trigger, 'after:mount:static');
+        sinon.assert.calledWith(Graft.Server.trigger, 'mount:static');
+        sinon.assert.calledWith(Graft.Server.trigger, 'before:mount:static');
+        sinon.assert.calledWith(Graft.Server.trigger, 'after:mount:static');
 
         sinon.assert.calledWith(Graft.Server.trigger, 'listen');
         sinon.assert.calledWith(Graft.Server.trigger, 'before:listen');

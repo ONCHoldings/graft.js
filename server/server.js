@@ -31,20 +31,20 @@ this.addInitializer(function(opts) {
         this.enable('trust proxy');
     }, this));
 
-    Graft.trigger('mount:server', opts);
-    Graft.trigger('mount:static', opts);
+    Graft.Server.trigger('mount:server', opts);
+    Graft.Server.trigger('mount:static', opts);
 });
 
-Graft.on('mount:server', function(opts) {
-    Graft.trigger('before:mount:server', opts);
+Graft.Server.on('mount:server', function(opts) {
+    Graft.Server.trigger('before:mount:server', opts);
     this.use(express.bodyParser());
-    Graft.trigger('after:mount:server', opts);
+    Graft.Server.trigger('after:mount:server', opts);
 }, this);
 
-Graft.on('mount:static', function(opts) {
-    Graft.trigger('before:mount:static', opts);
+Graft.Server.on('mount:static', function(opts) {
+    Graft.Server.trigger('before:mount:static', opts);
     this.use('/assets', express.static(process.cwd() + '/assets'));
-    Graft.trigger('after:mount:static', opts);
+    Graft.Server.trigger('after:mount:static', opts);
 }, this);
 
 // Start the server
