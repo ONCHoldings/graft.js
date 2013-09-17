@@ -62,6 +62,7 @@ Graft.commands.setHandler('Data:setupTest', function(done) {
 });
 
 describe('Data implementation', function() {
+    this.timeout(4000);
     before(function(done) {
         Graft.execute('Data:setupTest', done);
     });
