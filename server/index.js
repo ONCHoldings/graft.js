@@ -83,14 +83,15 @@ require('../data');
 // We can't just _.extend this, because the start methods
 // on our already extended modules will conflict.
 var Server = Graft.Server;
-var expressMethods = ['all', 'get', 'post', 'delete', 'use', 'set', 'configure'];
 
-_.each(expressMethods, function(method) {
-    Graft[method] = function() {
-        var args = Array.prototype.slice.call(arguments);
-        return Server[method].apply(Server, args);
-    };
+_.each(['get', 'post', 'delete', 'put'], function(method) {
+    Graft[method] = Server.mainRouter[method].bind(Server.mainRouter);
 }, this);
+
+_.each(['use', 'set', 'configure'], function(method) {
+    Graft[method] = Server[method].bind(Server);
+}, this);
+
 
 Graft.addInitializer(function(opts) {
     Graft.execute('server:setup', opts);
