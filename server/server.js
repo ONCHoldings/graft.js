@@ -30,22 +30,26 @@ this.addInitializer(function(opts) {
     this.configure('production', _.bind(function() {
         this.enable('trust proxy');
     }, this));
-
-    Graft.Server.trigger('mount:server', opts);
-    Graft.Server.trigger('mount:static', opts);
 });
 
 Graft.Server.on('mount:server', function(opts) {
     Graft.Server.trigger('before:mount:server', opts);
-    this.use(express.bodyParser());
+    this.express.use(express.bodyParser());
     Graft.Server.trigger('after:mount:server', opts);
 }, this);
 
 Graft.Server.on('mount:static', function(opts) {
     Graft.Server.trigger('before:mount:static', opts);
-    this.use('/assets', express.static(process.cwd() + '/assets'));
+    this.express.use('/assets', express.static(process.cwd() + '/assets'));
     Graft.Server.trigger('after:mount:static', opts);
 }, this);
+
+Graft.Server.on('mount:router', function(opts) {
+    Graft.Server.trigger('before:mount:router', opts);
+    this.express.use(this.express.router);
+    Graft.Server.trigger('after:mount:router', opts);
+}, this);
+
 
 // Start the server
 this.addInitializer(function serverStart(options) {
@@ -57,7 +61,13 @@ this.addInitializer(function serverStart(options) {
 
 Graft.Server.on('listen', function(server, options) {
     Graft.Server.trigger('before:listen', server, options);
+
+    Graft.Server.trigger('mount:server', options);
+    Graft.Server.trigger('mount:static', options);
+    Graft.Server.trigger('mount:router', options);
+
     this._server.listen(options.port);
+    debug('this', this.stack);
     Graft.Server.trigger('after:listen', server, options);
 }, this);
 

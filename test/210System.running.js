@@ -48,6 +48,10 @@ describe('Systems: Running', function() {
         sinon.assert.calledWith(Graft.Server.trigger, 'before:mount:static');
         sinon.assert.calledWith(Graft.Server.trigger, 'after:mount:static');
 
+        sinon.assert.calledWith(Graft.Server.trigger, 'mount:router');
+        sinon.assert.calledWith(Graft.Server.trigger, 'before:mount:router');
+        sinon.assert.calledWith(Graft.Server.trigger, 'after:mount:router');
+
         sinon.assert.calledWith(Graft.Server.trigger, 'listen');
         sinon.assert.calledWith(Graft.Server.trigger, 'before:listen');
         sinon.assert.calledWith(Graft.Server.trigger, 'after:listen');
