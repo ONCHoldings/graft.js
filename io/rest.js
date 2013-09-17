@@ -21,7 +21,7 @@ this.addInitializer(function(opts) {
     this.get('/:collection', this.readCollection);
 });
 
-Graft.Server.on('before:listen', function(Server) {
+Graft.Server.on('listen', function(Server) {
     debug('Mounting REST routes');
     Server.use('/api', this);
 }, this);
