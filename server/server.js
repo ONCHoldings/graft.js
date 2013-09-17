@@ -7,19 +7,8 @@ this.express = _express;
 this._server  = http.createServer(this.express);
 _.defaults(this, _express);
 
-// Implement a separate router object to handle the
-// paths we will mount.
-//
-// We do this to work around the fact that express will
-// register the app.router middleware the moment any route
-// is mounted.
-//
-// this causes chaos in contrib modules that need to have
-// their routers mounted in different orders.
-this.mainRouter = new express.Router();
-console.log(this.mainRouter);
-
 require('../lib/sync');
+
 /**
 * Basic server setup
 */
@@ -56,12 +45,6 @@ Graft.Server.on('mount:static', function(opts) {
     Graft.Server.trigger('after:mount:static', opts);
 }, this);
 
-Graft.Server.on('mount:router', function(opts) {
-    Graft.Server.trigger('before:mount:router', opts);
-    this.express.use(this.mainRouter.middleware);
-    Graft.Server.trigger('after:mount:router', opts);
-}, this);
-
 
 // Start the server
 this.addInitializer(function serverStart(options) {
@@ -76,7 +59,6 @@ Graft.Server.on('listen', function(server, options) {
 
     Graft.Server.trigger('mount:server', options);
     Graft.Server.trigger('mount:static', options);
-    Graft.Server.trigger('mount:router', options);
 
     this._server.listen(options.port);
     Graft.Server.trigger('after:listen', server, options);

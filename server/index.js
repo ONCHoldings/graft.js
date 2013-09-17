@@ -70,6 +70,9 @@ Graft.directory(path.dirname(global.__graftPath));
 // Load up the primary Server server. (required)
 require('./server');
 
+// Load up the primary Router (required)
+require('./router');
+
 // Load up the Data API
 require('../data');
 
@@ -85,7 +88,7 @@ require('../data');
 var Server = Graft.Server;
 
 _.each(['get', 'post', 'delete', 'put'], function(method) {
-    Graft[method] = Server.mainRouter[method].bind(Server.mainRouter);
+    Graft[method] = Server.Router[method].bind(Server.Router);
 }, this);
 
 _.each(['use', 'set', 'configure'], function(method) {
