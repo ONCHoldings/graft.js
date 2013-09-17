@@ -46,7 +46,7 @@ Graft.Server.on('mount:static', function(opts) {
 
 Graft.Server.on('mount:router', function(opts) {
     Graft.Server.trigger('before:mount:router', opts);
-    this.express.use(this.express.router);
+    this.express.use(this.router);
     Graft.Server.trigger('after:mount:router', opts);
 }, this);
 

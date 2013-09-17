@@ -13,17 +13,17 @@ _.extend(this, _express);
 // Mount all the rest api routes
 this.addInitializer(function(opts) {
     debug('Initialize REST api');
-    this.post('/api/:model', this.createModel);
-    this.get('/api/:model/:id', this.readModel);
-    this.put('/api/:model/:id', this.updateModel);
-    this.patch('/api/:model/:id', this.updateModel);
-    this.del('/api/:model/:id', this.deleteModel);
-    this.get('/api/:collection', this.readCollection);
+    this.post('/:model', this.createModel);
+    this.get('/:model/:id', this.readModel);
+    this.put('/:model/:id', this.updateModel);
+    this.patch('/:model/:id', this.updateModel);
+    this.del('/:model/:id', this.deleteModel);
+    this.get('/:collection', this.readCollection);
 });
 
-Graft.Server.on('listen', function(Server) {
+Graft.Server.on('before:listen', function(Server) {
     debug('Mounting REST routes');
-    Server.use(this);
+    Server.use('/api', this);
 }, this);
 
 // Implementations for each of the methods
