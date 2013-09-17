@@ -35,7 +35,8 @@ this.addInitializer(function(opts) {
 
 Graft.Server.on('mount:server', function(opts) {
     Graft.Server.trigger('before:mount:server', opts);
-    this.express.use(express.bodyParser());
+    this.express.use(express.urlencoded());
+    this.express.use(express.json());
     Graft.Server.trigger('after:mount:server', opts);
 }, this);
 
