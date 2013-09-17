@@ -9,7 +9,7 @@ var testPort = 8902;
 var Graft    = require('../server');
 
 describe('Testing Bundled Routes', function() {
-    this.timeout(6000);
+    this.timeout(7000);
     before(function(done) {
         // Load up the REST api server. (optional)
         require('../server/client');
