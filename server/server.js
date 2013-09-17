@@ -54,9 +54,9 @@ Graft.Server.on('mount:router', function(opts) {
 // Start the server
 this.addInitializer(function serverStart(options) {
     var options = options || {};
-    var port = options.port || 12400;
+    options.port = options.port || 12400;
     Graft.Server.trigger('listen', this, options);
-    debug("Server started on port " + port);
+    debug("Server started on port " + options.port);
 });
 
 Graft.Server.on('listen', function(server, options) {
@@ -67,7 +67,6 @@ Graft.Server.on('listen', function(server, options) {
     Graft.Server.trigger('mount:router', options);
 
     this._server.listen(options.port);
-    debug('this', this.stack);
     Graft.Server.trigger('after:listen', server, options);
 }, this);
 
