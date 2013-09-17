@@ -58,8 +58,8 @@ this.addInitializer(function serverStart(options) {
 Graft.Server.on('listen', function(server, options) {
     Graft.Server.trigger('before:listen', server, options);
 
-    Graft.Server.trigger('mount:server', options);
     Graft.Server.trigger('mount:static', options);
+    Graft.Server.trigger('mount:server', options);
 
     this._server.listen(options.port);
     Graft.Server.trigger('after:listen', server, options);
