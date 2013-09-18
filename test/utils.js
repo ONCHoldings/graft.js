@@ -39,9 +39,9 @@ function requestUrl(port, pathname, method, body) {
 }
 
 function stopServer(){
-    cookieJar = request.jar();
 
     before(function() {
+        cookieJar = request.jar();
         Graft.stop();
         //Graft.reset();
     });
