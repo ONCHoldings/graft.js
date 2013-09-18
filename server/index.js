@@ -88,7 +88,7 @@ require('../data');
 var Server = Graft.Server;
 
 _.each(['get', 'post', 'delete', 'put'], function(method) {
-    Graft[method] = Server.Router[method].bind(Server.Router);
+    Graft[method] = Server[method].bind(Server);
 }, this);
 
 _.each(['use', 'set', 'configure'], function(method) {
