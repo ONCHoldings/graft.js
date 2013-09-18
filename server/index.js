@@ -70,9 +70,6 @@ Graft.directory(path.dirname(global.__graftPath));
 // Load up the primary Server server. (required)
 require('./server');
 
-// Load up the primary Router (required)
-require('./router');
-
 // Load up the Data API
 require('../data');
 
@@ -87,14 +84,11 @@ require('../data');
 // on our already extended modules will conflict.
 var Server = Graft.Server;
 
-_.each(['get', 'post', 'delete', 'put'], function(method) {
+var expressFns = ['get', 'post', 'delete', 'put', 'use', 'set', 'configure'];
+
+_.each(expressFns, function(method) {
     Graft[method] = Server[method].bind(Server);
 }, this);
-
-_.each(['use', 'set', 'configure'], function(method) {
-    Graft[method] = Server[method].bind(Server);
-}, this);
-
 
 Graft.addInitializer(function(opts) {
     Graft.execute('server:setup', opts);
