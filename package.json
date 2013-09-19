@@ -19,13 +19,12 @@
     "jadeify2": "0.0.3",
     "express": "~3.3.1",
     "jade": "~0.32.0",
-    "browserify": "~2.22.0",
+    "browserify": "~2.31.0",
     "underscore": "~1.5.1",
     "f_underscore": "~0.2.1",
     "jquery-browserify": "~1.8.1",
     "backbone.marionette": "~1.1.0",
     "backbone.wreqr": "git://github.com/marionettejs/backbone.wreqr.git#master",
-    "browserify-middleware": "~1.13.0",
     "request": "~2.21.0",
     "glob": "~3.2.1",
     "cookie": "~0.1.0",
@@ -36,7 +35,8 @@
     "async": "~0.2.9",
     "through": "~2.3.4",
     "backbone.babysitter": "0.0.6",
-    "underscore.deferred": "~0.4.0"
+    "underscore.deferred": "~0.4.0",
+    "browser-builtins": "~2.0.1"
   },
   "scripts": {
     "test": "mocha -R spec",

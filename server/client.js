@@ -1,10 +1,11 @@
 /**
  * Server that generates and serves the client side app.
 */
+var verboseDebug  = require('debug')('verbose:graft:client');
 var express       = require('express');
 var http          = require('http');
+var path          = require('path');
 var Browserify    = require('browserify');
-var bmw           = require('browserify-middleware');
 var jadeify2      = require('jadeify2');
 var _             = require('underscore');
 var wrapTransform = require('../lib/wrap.transform');
@@ -21,64 +22,20 @@ _.defaults(this, _express);
 Graft.Server.on('listen', listen, this);
 Graft.commands.setHandler('bundle:mount', mountBundle, this);
 Graft.on('bundle:process', bundleBrowserify , this);
-Graft.on('bundle:process:templates', bundleProcessTemplates, this);
 Graft.reqres.setHandler('bundle:externals', getExternals, this);
 Graft.reqres.setHandler('bundle:defaults', defaultBundles, this);
-this.addInitializer(bundleTemplates);
 this.addInitializer(initializeBundles);
 this.addInitializer(addToLocals);
 
-
-/**
-* Mounts all templates to the /js/templates.js path.
-*
-* Contains a dirty kludge to fix an issue in the jadeify2 transform
-*/
-function bundleTemplates(options) {
-    var templates = Graft.bundles.templates;
-
-    var transFn = _.wrap(jadeify2, function(fn, file, options) {
-        return fn(file, { client: true, filename: file, compileDebug: false });
-    });
-
-    _(templates).each(function(f) {
-        Graft.trigger('bundle:process:templates', 'templates', f);
-    });
-
-    this.get('/js/templates.js', bmw(templates, {transform: transFn, debug:false, cache: false}));
-}
-
-/**
-* Keep track of the templates in the externals control array.
-*/
-function bundleProcessTemplates(bundle, expose, files) {
-    this.external = this.external || [];
-    this.external.push(expose);
-    files && _.each(files, function(file) {
-        (file !== expose) && this.external.push(file);
-    }, this);
-}
-
-function isRelPath(str) { return (/^\.\//).test(str); }
-function isAbsPath(str) { return (/^\//).test(str); }
+this.external = [];
 
 /**
 * Keep track of all browserify bundles in the externals control array.
 */
 function bundleBrowserify(name, brwsfy) {
-    //debug('b', brwsfy);
-    var external = [];
-    external.push(brwsfy.files);
-    external.push(_(brwsfy._external).keys());
-
-    var expose = _(brwsfy._expose).chain()
-        .reject(isRelPath)
-        .reject(isAbsPath)
-        .value();
-    external.push(expose);
-
-    external = _(external).flatten();
-    this.external = _(this.external.concat(external)).unique();
+    brwsfy._pkgcache = {};
+    verboseDebug('b', brwsfy);
+    this.external.push(brwsfy);
 }
 
 /**
@@ -139,14 +96,12 @@ function buildBundles(bundles) {
 function buildBundle(bundleName, options) {
     var dfr = _.Deferred();
     var options = options || {};
-    var b = new Browserify();
+    var b = new Browserify({exposeAll: true});
     var bundle = Graft.bundles[bundleName];
 
     if (options.transform) { b.transform(options.transform); }
 
-    function eachExternal(e) {
-        b.require(e, {external: true});
-    }
+    function eachExternal(e) { b.external(e); }
     _(Graft.request('bundle:externals')).each(eachExternal);
 
 
@@ -156,6 +111,7 @@ function buildBundle(bundleName, options) {
         _.each(files, function(file) {
             if (options.entry) { return b.add(file); }
 
+            debug('require', file, expose);
             b.require(file,{ expose:  expose });
         });
     }
@@ -183,9 +139,19 @@ function mountBundle(name, src) {
     });
 }
 
+function makeRelative(file) {
+    var rel = path.relative(process.cwd(), file);
+    return (/^\./).test(rel) ? rel : './' + rel;
+}
+
+var jadeTransFn = _.wrap(jadeify2, function(fn, file, options) {
+    return fn(file, { client: true, filename: file, compileDebug: false });
+});
+
 function defaultBundles(options) {
     return {
-        'vendor'  : {},
+        'templates': { transform : jadeTransFn },
+        'vendor'  : { },
         'shared'  : { transform : wrapTransform.through },
         'models'  : { transform : wrapTransform.through },
         'views'   : { transform : wrapTransform.through },
@@ -200,7 +166,7 @@ function addToLocals(options) {
     var nonce = Date.now();
     var bundles = Graft.request('bundle:defaults');
 
-    var files = ['templates'].concat(_(bundles).keys());
+    var files = _(bundles).keys();
 
     _.defaults(locals, {
         includes: _(files).map(mapFn)
