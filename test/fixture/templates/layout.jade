@@ -18,6 +18,5 @@ html(lang='en')
           block content
           p no conference selected
 
-    if locals.includes
-      each script in locals.includes
-        script(src=script)
+    each script in locals.includes
+      script(src=script)
