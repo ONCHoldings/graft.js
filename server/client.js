@@ -23,6 +23,7 @@ Graft.Server.on('listen', listen, this);
 Graft.commands.setHandler('bundle:mount', mountBundle, this);
 Graft.on('bundle:process', bundleBrowserify , this);
 Graft.reqres.setHandler('bundle:noParse', noParse, this);
+Graft.reqres.setHandler('bundle:ignore', ignore, this);
 Graft.reqres.setHandler('bundle:externals', getExternals, this);
 Graft.reqres.setHandler('bundle:defaults', defaultBundles, this);
 this.addInitializer(initializeBundles);
@@ -50,6 +51,21 @@ function noParse(file) {
     return this._noParse;
 }
 
+/**
+* Exclude certain files from being added to bundles entirely.
+*/
+this._ignore = [];
+
+Graft.request('bundle:ignore', []);
+
+function ignore(file) {
+    if (_.isArray(file)) {
+        this._ignore = this._ignore.concat(file);
+    } else if (_.isString(file)) {
+        this._ignore.push(require.resolve(file));
+    }
+    return this._ignore;
+}
 
 /**
 * Keep track of all browserify bundles in the externals control array.
@@ -59,7 +75,6 @@ this.external = [];
 function getExternals() { return this.external || []; }
 
 function bundleBrowserify(name, brwsfy) {
-    brwsfy._pkgcache = {};
     // TODO: this should not be necessary
     brwsfy._noParse = _(brwsfy._noParse).uniq();
     debug('browserify', name, _.pick(brwsfy, '_mapped', '_external'));
@@ -123,9 +138,13 @@ function buildBundle(bundleName, options) {
     var dfr = _.Deferred();
     var options = options || {};
     var b = new Browserify({exposeAll: true});
+
     var bundle = Graft.bundles[bundleName];
 
     if (options.transform) { b.transform(options.transform); }
+
+    function eachIgnore(e) { b.ignore(e); }
+    _(Graft.request('bundle:ignore')).each(eachIgnore);
 
     function eachExternal(e) { b.external(e); }
     _(Graft.request('bundle:externals')).each(eachExternal);

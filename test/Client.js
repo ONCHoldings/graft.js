@@ -44,6 +44,23 @@ describe('Testing Bundled Routes', function() {
             noParse.should.eql(defaultList.concat(['test1', 'test2', 'test3']));
         });
     });
+
+    describe('ignore list', function() {
+        var defaultList = [];
+        it('should return the default list', function() {
+            var ignore = Graft.request('bundle:ignore');
+            ignore.should.eql(defaultList);
+        });
+        it('should accept an array to be added', function() {
+            var ignore = Graft.request('bundle:ignore', ['test1', 'test2']);
+            ignore.should.eql(defaultList.concat(['test1', 'test2']));
+        });
+        it('should accept a single file to be added', function() {
+            var ignore = Graft.request('bundle:ignore', 'graft-mockdb');
+            ignore.should.eql(defaultList.concat(['test1', 'test2', require.resolve('graft-mockdb')]));
+        });
+    });
+
     describe('index page', function() {
         before(utils.requestUrl(testPort, '/'));
 
