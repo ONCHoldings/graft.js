@@ -62,7 +62,6 @@ Graft.commands.setHandler('Data:setupTest', function(done) {
 });
 
 describe('Data implementation', function() {
-    this.timeout(4000);
     before(function(done) {
         Graft.execute('Data:setupTest', done);
     });
@@ -85,6 +84,9 @@ describe.skip('Read handlers', function() {
 
     it('should have fired the read method', function() {
         sinon.assert.called(Graft.Data.read);
+    });
+    after(function() {
+        resetSpies();
     });
 });
 
