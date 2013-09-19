@@ -62,7 +62,7 @@ function bundleBrowserify(name, brwsfy) {
     brwsfy._pkgcache = {};
     // TODO: this should not be necessary
     brwsfy._noParse = _(brwsfy._noParse).uniq();
-    verboseDebug('browserify', name, brwsfy);
+    debug('browserify', name, _.pick(brwsfy, '_mapped', '_external'));
     this.external.push(brwsfy);
 }
 
@@ -131,17 +131,23 @@ function buildBundle(bundleName, options) {
     _(Graft.request('bundle:externals')).each(eachExternal);
 
 
+    var noParse = Graft.request('bundle:noParse');
+    function eachNoParse(e) { b.noParse(e); }
+    _(noParse).each(eachNoParse);
+
+
+
     function mapBundleExpose(files, expose) {
         var files = _([files]).flatten();
 
         _.each(files, function(file) {
             if (options.entry) { return b.add(file); }
 
-            debug('require', expose, makeRelative(file));
-            var noParse = Graft.request('bundle:noParse');
+            verboseDebug('require', expose, makeRelative(file));
 
-            if (_(noParse).include(expose)) {
-                b.noParse(file);
+
+            if (_(noParse).include(expose) && (expose !== file)) {
+                Graft.request('bundle:noParse', file);
             }
             b.require(file,{ expose:  expose });
         });

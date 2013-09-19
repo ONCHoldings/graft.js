@@ -29,7 +29,7 @@ describe('Testing Bundled Routes', function() {
             'underscore.string', 'underscore.deferred',
             'f_underscore/f_underscore', 'backbone',
             'backbone.marionette', 'backbone.wreqr',
-            'backbone.babysitter'
+            'backbone.babysitter', 'jquery-browserify'
         ];
         it('should return the default list', function() {
             var noParse = Graft.request('bundle:noParse');
