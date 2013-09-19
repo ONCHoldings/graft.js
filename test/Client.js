@@ -8,7 +8,7 @@ var testPort = 8902;
 // Initialize the Graft application object.
 var Graft    = require('../server');
 
-describe.skip('Testing Bundled Routes', function() {
+describe('Testing Bundled Routes', function() {
     this.timeout(7000);
     before(function(done) {
         // Load up the REST api server. (optional)
