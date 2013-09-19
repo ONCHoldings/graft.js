@@ -62,7 +62,6 @@ Graft.bundle('vendor', 'backbone.marionette');
 Graft.bundle('vendor', 'backbone.wreqr');
 Graft.bundle('vendor', 'backbone.babysitter');
 
-
 // Important to call after bundles/systems are registered,
 // but before we include any servers and things.
 Graft.directory(path.dirname(global.__graftPath));

@@ -22,26 +22,50 @@ _.defaults(this, _express);
 Graft.Server.on('listen', listen, this);
 Graft.commands.setHandler('bundle:mount', mountBundle, this);
 Graft.on('bundle:process', bundleBrowserify , this);
+Graft.reqres.setHandler('bundle:noParse', noParse, this);
 Graft.reqres.setHandler('bundle:externals', getExternals, this);
 Graft.reqres.setHandler('bundle:defaults', defaultBundles, this);
 this.addInitializer(initializeBundles);
 this.addInitializer(addToLocals);
 
-this.external = [];
+/**
+* Exclude certain files from being parsed by browserify
+*/
+this._noParse = [];
+
+Graft.request('bundle:noParse',[
+    'jquery', 'debug', 'async', 'underscore',
+    'underscore.string', 'underscore.deferred',
+    'f_underscore/f_underscore', 'backbone',
+    'backbone.marionette', 'backbone.wreqr',
+    'backbone.babysitter'
+]);
+
+function noParse(file) {
+    if (_.isArray(file)) {
+        this._noParse = this._noParse.concat(file);
+    } else if (_.isString(file)) {
+        this._noParse.push(file);
+    }
+    return this._noParse;
+}
+
 
 /**
 * Keep track of all browserify bundles in the externals control array.
 */
+
+this.external = [];
+function getExternals() { return this.external || []; }
+
 function bundleBrowserify(name, brwsfy) {
     brwsfy._pkgcache = {};
-    verboseDebug('b', brwsfy);
+    // TODO: this should not be necessary
+    brwsfy._noParse = _(brwsfy._noParse).uniq();
+    verboseDebug('browserify', name, brwsfy);
     this.external.push(brwsfy);
 }
 
-/**
-* Get the current externals.
-*/
-function getExternals() { return this.external || []; }
 
 /**
 * Build all the bundles requested in series.
@@ -83,6 +107,8 @@ function buildBundles(bundles) {
     return builtPromise;
 }
 
+
+
 /**
 * Build an individual bundle using browserify.
 *
@@ -111,7 +137,12 @@ function buildBundle(bundleName, options) {
         _.each(files, function(file) {
             if (options.entry) { return b.add(file); }
 
-            debug('require', file, expose);
+            debug('require', expose, makeRelative(file));
+            var noParse = Graft.request('bundle:noParse');
+
+            if (_(noParse).include(expose)) {
+                b.noParse(file);
+            }
             b.require(file,{ expose:  expose });
         });
     }
@@ -145,13 +176,13 @@ function makeRelative(file) {
 }
 
 var jadeTransFn = _.wrap(jadeify2, function(fn, file, options) {
-    return fn(file, { client: true, filename: file, compileDebug: false });
+    return fn(file, { client: true, filename: makeRelative(file), compileDebug: false });
 });
 
 function defaultBundles(options) {
     return {
-        'templates': { transform : jadeTransFn },
         'vendor'  : { },
+        'templates': { transform : jadeTransFn },
         'shared'  : { transform : wrapTransform.through },
         'models'  : { transform : wrapTransform.through },
         'views'   : { transform : wrapTransform.through },

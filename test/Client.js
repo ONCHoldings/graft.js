@@ -22,6 +22,28 @@ describe('Testing Bundled Routes', function() {
         Graft.set('views', path.resolve(__dirname + '/fixture/templates'));
         Graft.get('/', function(req, res, next) { res.render('layout', {}); });
     });
+
+    describe('noParse list', function() {
+        var defaultList = [
+            'jquery', 'debug', 'async', 'underscore',
+            'underscore.string', 'underscore.deferred',
+            'f_underscore/f_underscore', 'backbone',
+            'backbone.marionette', 'backbone.wreqr',
+            'backbone.babysitter'
+        ];
+        it('should return the default list', function() {
+            var noParse = Graft.request('bundle:noParse');
+            noParse.should.eql(defaultList);
+        });
+        it('should accept an array to be added', function() {
+            var noParse = Graft.request('bundle:noParse', ['test1', 'test2']);
+            noParse.should.eql(defaultList.concat(['test1', 'test2']));
+        });
+        it('should accept a single file to be added', function() {
+            var noParse = Graft.request('bundle:noParse', 'test3');
+            noParse.should.eql(defaultList.concat(['test1', 'test2', 'test3']));
+        });
+    });
     describe('index page', function() {
         before(utils.requestUrl(testPort, '/'));
 
