@@ -1,0 +1,22 @@
+{
+  "name": "graftjs",
+  "version": "0.0.0",
+  "homepage": "https://github.com/ONCHoldings/graft.js",
+  "authors": [
+    "Adrian Rossouw <adrian@daemon.co.za>"
+  ],
+  "description": "graft bower integration",
+  "main": "graft.js",
+  "keywords": [
+    "graft"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
