@@ -208,9 +208,12 @@ var jadeTransFn = _.wrap(jadeify2, function(fn, file, options) {
     return fn(file, { client: true, filename: makeRelative(file), compileDebug: false });
 });
 
+var debowerify = require('debowerify');
+var deamdify   = require('deamdify');
+
 function defaultBundles(options) {
     return {
-        'vendor'  : { transform: ['debowerify', 'deamdify'] },
+        'vendor'  : { transform: [debowerify, deamdify] },
         'templates': { transform : jadeTransFn },
         'shared'  : { transform : wrapTransform.through },
         'models'  : { transform : wrapTransform.through },
