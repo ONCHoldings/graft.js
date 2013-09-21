@@ -141,7 +141,11 @@ function buildBundle(bundleName, options) {
 
     var bundle = Graft.bundles[bundleName];
 
-    if (options.transform) { b.transform(options.transform); }
+    if (options.transform) {
+        _([options.transform]).chain()
+            .flatten()
+            .each(b.transform.bind(b));
+    }
 
     function eachIgnore(e) { b.ignore(e); }
     _(Graft.request('bundle:ignore')).each(eachIgnore);
@@ -206,7 +210,7 @@ var jadeTransFn = _.wrap(jadeify2, function(fn, file, options) {
 
 function defaultBundles(options) {
     return {
-        'vendor'  : { },
+        'vendor'  : { transform: ['debowerify', 'deamdify'] },
         'templates': { transform : jadeTransFn },
         'shared'  : { transform : wrapTransform.through },
         'models'  : { transform : wrapTransform.through },
