@@ -61,6 +61,7 @@ Graft.bundle('vendor', 'backbone');
 Graft.bundle('vendor', 'backbone.marionette');
 Graft.bundle('vendor', 'backbone.wreqr');
 Graft.bundle('vendor', 'backbone.babysitter');
+Graft.bundle('vendor', 'backbone.syphon');
 
 // Important to call after bundles/systems are registered,
 // but before we include any servers and things.
