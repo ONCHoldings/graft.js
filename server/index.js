@@ -61,7 +61,9 @@ Graft.bundle('vendor', 'backbone');
 Graft.bundle('vendor', 'backbone.marionette');
 Graft.bundle('vendor', 'backbone.wreqr');
 Graft.bundle('vendor', 'backbone.babysitter');
-Graft.bundle('vendor', 'backbone.syphon');
+Graft.bundle('vendor', 'backbone.syphon',
+    path.dirname(global.__graftPath) +
+    '/bower_components/backbone.syphon/lib/backbone.syphon.js');
 
 // Important to call after bundles/systems are registered,
 // but before we include any servers and things.
