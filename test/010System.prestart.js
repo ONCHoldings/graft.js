@@ -95,8 +95,6 @@ describe('Subsystem', function() {
         });
     });
 
-
-
     describe('Stubbed Subsystem Loading', function() {
         function getSysDirs() {
             return _(Graft.systems).chain()
@@ -224,4 +222,65 @@ describe('Subsystem', function() {
         });
 
     });
+
+    describe('Test functions for valid files in system directories', function() {
+        it('should keep track of all the directory tests', function() {
+            should.exist(Graft.directoryTests);
+            Graft.directories.length.should.eql(Graft.directoryTests.length);
+        });
+        describe('Local source files', function() {
+            before(function() {
+                this.dirTest = Graft._makeDirectoryTest(__dirname);
+            });
+            it('should allow local source files through', function() {
+                this.dirTest(__dirname + '/test.js').should.be.true;
+            });
+            it('should not allow a file from a npm module through', function() {
+                this.dirTest(__dirname + '/node_modules/moduleName/test.js').should.not.be.true;
+                this.dirTest(__dirname + '/node_modules/moduleName/libs/test.js').should.not.be.true;
+            });
+            it('should allow files in subdirectories of our own', function() {
+                this.dirTest(__dirname + '/lib/test.js').should.be.true;
+                this.dirTest(__dirname + '/server/server.js').should.be.true;
+            });
+        });
+
+        describe('Files in dependencies', function() {
+            var pathBase = __dirname + '/node_modules/graft-test';
+            before(function() {
+                this.dirTest = Graft._makeDirectoryTest(pathBase);
+            });
+            it('should allow local source files through', function() {
+                this.dirTest(pathBase + '/test.js').should.be.true;
+            });
+            it('should not allow a file from a npm module through', function() {
+                this.dirTest(pathBase + '/node_modules/moduleName/test.js').should.not.be.true;
+                this.dirTest(pathBase + '/node_modules/moduleName/libs/test.js').should.not.be.true;
+            });
+            it('should allow files in subdirectories of our own', function() {
+                this.dirTest(pathBase + '/lib/test.js').should.be.true;
+                this.dirTest(pathBase + '/server/server.js').should.be.true;
+            });
+        });
+
+        describe('Files in trees above your own.', function() {
+            var pathBase = __dirname + '/../';
+
+            before(function() {
+                this.dirTest = Graft._makeDirectoryTest(pathBase);
+            });
+            it('should allow local source files through', function() {
+                this.dirTest(pathBase + '/test.js').should.be.true;
+            });
+            it('should not allow a file from a npm module through', function() {
+                this.dirTest(pathBase + '/node_modules/moduleName/test.js').should.not.be.true;
+                this.dirTest(pathBase + '/node_modules/moduleName/libs/test.js').should.not.be.true;
+            });
+            it('should allow files in subdirectories of our own', function() {
+                this.dirTest(pathBase + '/lib/test.js').should.be.true;
+                this.dirTest(pathBase + '/server/server.js').should.be.true;
+            });
+        });
+    });
+
 });
