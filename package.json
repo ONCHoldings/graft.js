@@ -36,7 +36,8 @@
     "through": "~2.3.4",
     "backbone.babysitter": "0.0.6",
     "underscore.deferred": "~0.4.0",
-    "browser-builtins": "~2.0.1"
+    "browser-builtins": "~2.0.1",
+    "es6ify": "~0.4.3"
   },
   "scripts": {
     "test": "mocha -R spec",
