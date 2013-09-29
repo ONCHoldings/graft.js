@@ -1,17 +1,15 @@
 var express  = require('express');
 var http     = require('http');
-
-// This server needs to mount routes, so
-// it extends the express object.
-
 var _express = express();
 this.express = _express;
 this.server  = http.createServer(this.express);
-_.extend(this, _express);
+
+_.defaults(this, _express);
+
 
 
 // Mount all the rest api routes
-this.addInitializer(function(opts) {
+this.addInitializer(opts => {
     debug('Initialize REST api');
     this.post('/:model', this.createModel);
     this.get('/:model/:id', this.readModel);
@@ -21,15 +19,14 @@ this.addInitializer(function(opts) {
     this.get('/:collection', this.readCollection);
 });
 
-Graft.Server.on('listen', function(Server) {
+Graft.Server.on('listen', Server => {
     debug('Mounting REST routes');
     Server.use('/api', this);
-}, this);
+});
 
 // Implementations for each of the methods
 _.extend(this, {
-    readModel: function(req, res, next) {
-        var send = _.bind(res.send, res);
+    readModel: (req, res, next) => {
         var hasModelAndId = req.params.model && req.params.id;
         var modelExists = !!Graft.$models[req.params.model];
 
@@ -38,17 +35,12 @@ _.extend(this, {
         var model = new Graft.$models[req.params.model]({
             id: req.params.id
         });
-
-        function fetchModel(attrs) {
-            debug('fetching model', req.params.model, req.params.id);
-            send(model.toJSON()); // it only gets the attributes;
-        }
-        function failedModel(model, resp, options) {
-            send(resp);
-        }
-        model.fetch().then(fetchModel, failedModel);
+        
+        model.fetch()
+            .done((attrs) => res.send(model.toJSON()))
+            .fail((model, resp) => res.send(resp));
     },
-    updateModel: function(req, res, next) {
+    updateModel: (req, res, next) => {
         var send          = _.bind(res.send, res);
         var hasModelAndId = req.params.model && req.params.id;
         var modelExists   = !!Graft.$models[req.params.model];
@@ -60,17 +52,17 @@ _.extend(this, {
             id: req.params.id
         });
 
-        function saved(attrs) {
-            send(201, model.toJSON());
-        }
-        function saveModel(attrs) {
-            debug('saving model', req.params.model, model.id);
-            model.save(options).then(saved, send);
+        model.fetch().then(saveModel, send);
+
+        ///////////// helpers
+        function saveModel() {
+            model.save(options)
+                .done(() => res.send(201, model.toJSON()))
+                .fail(send);
         }
 
-        model.fetch().then(saveModel, send);
     },
-    createModel: function(req, res, next) {
+    createModel: (req, res, next) => {
         var hasBody     = req.body;
         var hasModel    = req.params.model;
         var modelExists = !!Graft.$models[req.params.model];
@@ -85,6 +77,9 @@ _.extend(this, {
             delete model.id;
         }
 
+        model.fetch().then(createModel, createModel);
+
+        ///////////// helpers
         function created(attrs) {
             res.set('Location', Graft.Data.request('url', model));
             res.send(303, model.toJSON());
@@ -93,10 +88,8 @@ _.extend(this, {
             debug('creating model', req.params.model);
             model.save(req.body).then(created, send);
         }
-
-        model.fetch().then(createModel, createModel);
     },
-    deleteModel: function(req, res, next) {
+    deleteModel: (req, res, next) => {
         var send             = _.bind(res.send, res);
         var hasModelAndId = req.params.model && req.params.id;
         var modelExists   = !!Graft.$models[req.params.model];
@@ -107,17 +100,15 @@ _.extend(this, {
             id: req.params.id
         });
 
-        function deleted(attrs) {
-            send(204);
-        }
+        model.fetch().then(deleteModel, send);
 
+        ///////////// helpers
         function deleteModel(attrs) {
             debug('deleting model', req.params.model, req.params.id);
-            model.destroy().then(deleted, send);
+            model.destroy().then(() => send(204), send);
         }
-        model.fetch().then(deleteModel, send);
     },
-    readCollection: function(req, res, next) {
+    readCollection: (req, res, next)  => {
         var send             = _.bind(res.send, res);
         var cName            = _.pluralize(req.params.collection);
         var collectionExists = !!Graft.$models[cName];
@@ -133,11 +124,13 @@ _.extend(this, {
             return res.send(403, 'Not a collection');
         }
 
+        collection.fetch().then(readCollection, send);
+
+        ///////////// helpers
         // TODO: pass through options?
         function readCollection(attrs) {
             debug('read collection', cName);
             res.send(collection.toJSON());
         }
-        collection.fetch().then(readCollection, send);
     }
 });
