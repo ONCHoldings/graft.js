@@ -16,23 +16,37 @@ this._server       = http.createServer(this.express);
 
 _.defaults(this, _express);
 
+
+
 /**
-* Set all the relevant handlers.
+ * Default bundles to build with browserify
 */
-Graft.Server.on('listen', listen, this);
-Graft.commands.setHandler('bundle:mount', mountBundle, this);
-Graft.on('bundle:process', bundleBrowserify , this);
-Graft.reqres.setHandler('bundle:noParse', noParse, this);
-Graft.reqres.setHandler('bundle:ignore', ignore, this);
-Graft.reqres.setHandler('bundle:externals', getExternals, this);
-Graft.reqres.setHandler('bundle:defaults', defaultBundles, this);
-this.addInitializer(initializeBundles);
-this.addInitializer(addToLocals);
+
+// this is an ugly, yet necessary kludge.
+var jadeTransFn = _.wrap(jadeify2, (fn, file, options) => fn(file, {
+    client: true,
+    filename: makeRelative(file),
+    compileDebug: false
+}));
+
+
+Graft.reqres.setHandler('bundle:defaults', (options) => ({
+    'vendor'  : { transform: ['debowerify', 'deamdify'] },
+    'templates': { transform : jadeTransFn },
+    'shared'  : { transform : wrapTransform.through },
+    'models'  : { transform : wrapTransform.through },
+    'views'   : { transform : wrapTransform.through },
+    'routers' : { transform : wrapTransform.through },
+    'client'  : { entry     : true }
+}));
+
 
 /**
 * Exclude certain files from being parsed by browserify
 */
 this._noParse = [];
+Graft.reqres.setHandler('bundle:noParse', (file) =>
+    this._noParse.push(_(file).isArray ? ...file : file));
 
 Graft.request('bundle:noParse',[
     'jquery', 'debug', 'async', 'underscore',
@@ -42,44 +56,29 @@ Graft.request('bundle:noParse',[
     'backbone.babysitter', 'jquery-browserify'
 ]);
 
-function noParse(file) {
-    if (_.isArray(file)) {
-        this._noParse = this._noParse.concat(file);
-    } else if (_.isString(file)) {
-        this._noParse.push(file);
-    }
-    return this._noParse;
-}
-
 /**
 * Exclude certain files from being added to bundles entirely.
 */
 this._ignore = [];
+Graft.reqres.setHandler('bundle:ignore', (file) =>
+    this._ignore.push(_(file).isArray ? ...file : file));
 
 Graft.request('bundle:ignore', []);
-
-function ignore(file) {
-    if (_.isArray(file)) {
-        this._ignore = this._ignore.concat(file);
-    } else if (_.isString(file)) {
-        this._ignore.push(require.resolve(file));
-    }
-    return this._ignore;
-}
 
 /**
 * Keep track of all browserify bundles in the externals control array.
 */
 
 this.external = [];
-function getExternals() { return this.external || []; }
+Graft.reqres.setHandler('bundle:externals', () => this.externals);
 
-function bundleBrowserify(name, brwsfy) {
-    // TODO: this should not be necessary
+Graft.on('bundle:process', (name, brwsfy) => {
     brwsfy._noParse = _(brwsfy._noParse).uniq();
-    debug('browserify', name, _.pick(brwsfy, '_mapped', '_external'));
     this.external.push(brwsfy);
-}
+
+    debug('browserify', name,
+        _.pick(brwsfy, '_mapped', '_external'));
+});
 
 
 /**
@@ -102,8 +101,7 @@ function buildBundles(bundles) {
 
     return builtPromise;
 
-    // helper functions
-
+    ///////////// helpers
     function reduceBuilds(previous, bundle, name) {
         var _dfr = new _.Deferred();
 
@@ -161,8 +159,8 @@ function buildBundle(bundleName, options) {
 
     return dfr.promise();
 
-    // helper functions
 
+    ///////////// helpers
     function mapFile(file, expose) {
         if (options.entry)
             return b.add(file);
@@ -193,45 +191,31 @@ function makeRelative(file) {
     return (/^\./).test(rel) ? rel : './' + rel;
 }
 
-var jadeTransFn = _.wrap(jadeify2, (fn, file, options) => fn(file, {
-        client: true,
-        filename: makeRelative(file),
-        compileDebug: false
-    }));
-
-function defaultBundles(options) {
-    return {
-        'vendor'  : { transform: ['debowerify', 'deamdify'] },
-        'templates': { transform : jadeTransFn },
-        'shared'  : { transform : wrapTransform.through },
-        'models'  : { transform : wrapTransform.through },
-        'views'   : { transform : wrapTransform.through },
-        'routers' : { transform : wrapTransform.through },
-        'client'  : { entry     : true }
-    };
-}
-
 // Populate the list of scripts to be iterated over in the template
+this.addInitializer(addToLocals);
 function addToLocals(options) {
-    var locals = options.locals || {};
-    var nonce = Date.now();
+    var tpl     = _.template('{{prefix}}/{{script}}.js?v={{version}}');
+    var locals  = options.locals || {};
+    var nonce   = Date.now();
     var bundles = Graft.request('bundle:defaults');
+    var files   = _(bundles).keys();
 
-    var files = _(bundles).keys();
+    var includes = _(files).map((m, k) =>
+        tpl({
+            prefix  : '/js',
+            script  : m,
+            version : nonce
+        })
+    );
 
-    _.defaults(locals, {
-        includes: _(files).map(mapFn)
-    });
-
-    function mapFn(m, k) {
-    var tpl = _.template('{{prefix}}/{{script}}.js?v={{version}}');
-        return tpl({ prefix  : '/js', script  : m, version : nonce });
-    }
+    _.defaults(locals, { includes: includes });
 }
+
 
 /**
 * Initialize the bundles to be served to the client
 */
+this.addInitializer(initializeBundles);
 function initializeBundles(options) {
     var bundles = Graft.request('bundle:defaults');
     Graft.execute('wait', buildBundles(bundles));
@@ -244,4 +228,10 @@ function listen(server) {
     debug('Mounting client to server');
     server.use(this);
 }
+/**
+* Set all the relevant handlers.
+*/
+Graft.Server.on('listen', listen, this);
+Graft.commands.setHandler('bundle:mount', mountBundle, this);
+
 
