@@ -91,35 +91,32 @@ function bundleBrowserify(name, brwsfy) {
 *     an promise representing an array of promises to completed bundles.
 */
 function buildBundles(bundles) {
+    var builds = {};
     var dfr = new _.Deferred();
     var builtPromise = dfr.promise();
 
-    var builds = {};
+    _(bundles).reduce(reduceBuilds, true);
 
-    _(bundles).reduce(function (previous, bundle, name) {
+    _.when(..._(builds).toArray())
+        .then(dfr.resolve, dfr.reject);
+
+    return builtPromise;
+
+    // helper functions
+
+    function reduceBuilds(previous, bundle, name) {
         var _dfr = new _.Deferred();
 
-        function doWork() {
+        _dfr.then((...args) =>
+            Graft.execute('bundle:mount', name, ...args));
+
+        _.when(previous).then(() =>
             buildBundle(name, bundle)
-                .then(_dfr.resolve, _dfr.reject);
-        }
-
-        _dfr.then(Graft.execute.bind(Graft, 'bundle:mount', name));
-
-        if (builds[previous]) {
-            builds[previous].then(doWork);
-        } else {
-            doWork();
-        }
+                .then(_dfr.resolve, _dfr.reject));
 
         builds[name] = _dfr.promise();
-        return name;
-    }, false);
-
-    var _builds = _(builds).toArray();
-
-    _.when(..._builds).then(dfr.resolve, dfr.reject);
-    return builtPromise;
+        return builds[name];
+    }
 }
 
 
@@ -164,6 +161,8 @@ function buildBundle(bundleName, options) {
 
     return dfr.promise();
 
+    // helper functions
+
     function mapFile(file, expose) {
         if (options.entry)
             return b.add(file);
@@ -183,7 +182,7 @@ function buildBundle(bundleName, options) {
  */
 function mountBundle(name, src) {
     debug('mount', name);
-    this.get('/js/' + name + '.js', function(req, res, next) {
+    this.get('/js/' + name + '.js', (req, res, next) => {
         res.setHeader('Content-Type', 'text/javascript');
         res.send(src);
     });
@@ -194,9 +193,11 @@ function makeRelative(file) {
     return (/^\./).test(rel) ? rel : './' + rel;
 }
 
-var jadeTransFn = _.wrap(jadeify2, function(fn, file, options) {
-    return fn(file, { client: true, filename: makeRelative(file), compileDebug: false });
-});
+var jadeTransFn = _.wrap(jadeify2, (fn, file, options) => fn(file, {
+        client: true,
+        filename: makeRelative(file),
+        compileDebug: false
+    }));
 
 function defaultBundles(options) {
     return {
