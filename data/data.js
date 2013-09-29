@@ -7,16 +7,8 @@ this.commands   = new Backbone.Wreqr.Commands();
 this.reqres     = new Backbone.Wreqr.RequestResponse();
 
 _.extend(this, {
-    // Command execution, facilitated by Backbone.Wreqr.Commands
-    execute: function(){
-        var args = Array.prototype.slice.apply(arguments);
-        this.commands.execute.apply(this.commands, args);
-    },
-    // Request/response, facilitated by Backbone.Wreqr.RequestResponse
-    request: function(){
-        var args = Array.prototype.slice.apply(arguments);
-        return this.reqres.request.apply(this.reqres, args);
-    }
+    execute: (...args) => this.commands.execute(...args),
+    request: (...args) => this.reqres.request(...args)
 });
 
 // Default data handlers for models.
@@ -38,19 +30,18 @@ this.reqres.setHandler('delete', notImplemented);
 this.reqres.setHandler('create', notImplemented);
 this.reqres.setHandler('query', notImplemented);
 
-function mapRequest(request) {
-    return function(model){
-        var args = _(arguments).toArray();
+var mapRequest = (request) => {
+    return (model, ...args) => {
         var name = this.request('name', model);
-        var evt = request + ':' + name;
+        var evt  = request + ':' + name;
 
-        args.unshift(name);
-        args.unshift(this.reqres.hasHandler(evt) || request);
-        debug(args);
+        if (!this.reqres.hasHandler(evt)) {
+            evt = request;
+        }
 
-        return this.reqres.request.apply(this.reqres, args);
+        return this.reqres.request(evt, name, model, ...args);
     };
-}
+};
 
 
 _.extend(this, {
