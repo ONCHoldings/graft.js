@@ -39,7 +39,7 @@ var mapRequest = (request) => {
             evt = request;
         }
 
-        return this.reqres.request(evt, name, model, ...args);
+        return this.request(evt, name, model, ...args);
     };
 };
 
@@ -55,7 +55,7 @@ _.extend(this, {
 
 
 // Mount all the rest api routes
-this.addInitializer(function(opts) {
+this.addInitializer((opts) => {
     debug('Initialize Core Data api');
     this.reqres.setHandler('name', modelName);
     this.reqres.setHandler('url', modelUrl);
