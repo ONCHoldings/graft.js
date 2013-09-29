@@ -39,7 +39,7 @@ Graft.request('bundle:noParse',[
     'underscore.string', 'underscore.deferred',
     'f_underscore/f_underscore', 'backbone',
     'backbone.marionette', 'backbone.wreqr',
-    'backbone.babysitter'
+    'backbone.babysitter', 'jquery-browserify'
 ]);
 
 function noParse(file) {
@@ -116,9 +116,9 @@ function buildBundles(bundles) {
         return name;
     }, false);
 
-    _.when.apply(_, _(builds).toArray()).then(function() {
-        dfr.resolve(arguments);
-    });
+    var _builds = _(builds).toArray();
+
+    _.when(..._builds).then(dfr.resolve, dfr.reject);
     return builtPromise;
 }
 
@@ -135,57 +135,47 @@ function buildBundles(bundles) {
 *     promise of a compiled bundle.
 */
 function buildBundle(bundleName, options) {
-    var dfr = _.Deferred();
-    var options = options || {};
-    var b = new Browserify({exposeAll: true});
+    var b        = new Browserify({exposeAll: true});
+    var dfr      = _.Deferred();
+    var options  = options || {};
+    var bundle   = Graft.bundles[bundleName];
+    var noParse  = Graft.request('bundle:noParse');
+    var ignore   = Graft.request('bundle:ignore');
+    var external = Graft.request('bundle:externals');
+    var transfm  = options.transform && _([options.transform]).flatten();
 
-    var bundle = Graft.bundles[bundleName];
+    _(ignore).each(  e => b.ignore(e));
+    _(transfm).each( e => b.transform(e));
+    _(external).each(e => b.external(e));
+    _(noParse).each( e => b.noParse(e));
 
-    if (options.transform) {
-        _([options.transform]).chain()
+    _(bundle).each((files, expose) => {
+        _([files]).chain()
             .flatten()
-            .each(b.transform.bind(b));
-    }
+            .each(mapFile);
+    });
 
-    function eachIgnore(e) { b.ignore(e); }
-    _(Graft.request('bundle:ignore')).each(eachIgnore);
-
-    function eachExternal(e) { b.external(e); }
-    _(Graft.request('bundle:externals')).each(eachExternal);
-
-
-    var noParse = Graft.request('bundle:noParse');
-    function eachNoParse(e) { b.noParse(e); }
-    _(noParse).each(eachNoParse);
-
-
-
-    function mapBundleExpose(files, expose) {
-        var files = _([files]).flatten();
-
-        _.each(files, function(file) {
-            if (options.entry) { return b.add(file); }
-
-            verboseDebug('require', expose, makeRelative(file));
-
-
-            if (_(noParse).include(expose) && (expose !== file)) {
-                Graft.request('bundle:noParse', file);
-            }
-            b.require(file,{ expose:  expose });
-        });
-    }
-    _(bundle).each(mapBundleExpose);
-
-    function build(err, src) {
-        if (err) { debug('error', err); return dfr.reject(err); }
+    b.bundle((err, src) => {
+        if (err) { return dfr.reject(err);  }
 
         Graft.trigger('bundle:process', bundleName, b);
         dfr.resolve(src);
-    }
-    b.bundle(build);
+    });
 
     return dfr.promise();
+
+    function mapFile(file, expose) {
+        if (options.entry)
+            return b.add(file);
+
+        let inNoParse = _(noParse).include(expose);
+        let notExpose = expose !== file;
+
+        if (inNoParse && notExpose)
+            Graft.request('bundle:noParse', file);
+
+        b.require(file,{ expose:  expose });
+    }
 }
 
 /**

@@ -6,5 +6,6 @@
     "unused"  : false,
     "node"    : true,
     "shadow"  : true,
-    "trailing": true
+    "trailing": true,
+    "esnext" : true
 }

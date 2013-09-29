@@ -8,64 +8,6 @@ var Graft          = require('../lib/modules'); // Bootstrap module system.
 Graft.server       = true; // Hopefully this will be unecessary one day.
 global.__graftPath = path.normalize(__dirname + '/../graft.js');
 
-// initialize system layout
-Graft.system('Server', 'server', {
-   bundle: 'server'
-});
-Graft.system('Data', 'data', {
-    kind: 'data',
-    path: 'data'
-});
-Graft.system('IO', 'io', {
-    kind: 'io',
-    path: 'io'
-});
-Graft.system('Template', 'templates', {
-    bundle: 'templates',
-    transform: 'jade',
-    extension: '.jade'
-});
-
-Graft.system('Model', 'models', {
-    bundle: 'models',
-    instances: '$models'
-});
-
-Graft.system('View', 'views', {
-    bundle: 'views',
-    instances: '$views'
-});
-
-Graft.system('Router', 'routers', {
-    bundle: 'routers',
-    instances: '$routers'
-});
-
-Graft.system('Client', 'client', {
-    bundle: ['client', 'vendor', 'shared']
-});
-
-// Include the shared code for the client too.
-Graft.bundle('shared', 'graftjs', global.__graftPath);
-Graft.bundle('shared', '../lib/mixins', __dirname);
-Graft.bundle('shared', '../lib/augment', __dirname);
-
-Graft.bundle('vendor', 'jquery', 'jquery-browserify');
-Graft.bundle('vendor', 'debug');
-Graft.bundle('vendor', 'async');
-Graft.bundle('vendor', 'underscore');
-Graft.bundle('vendor', 'underscore.string');
-Graft.bundle('vendor', 'underscore.deferred');
-Graft.bundle('vendor', 'f_underscore/f_underscore');
-Graft.bundle('vendor', 'backbone');
-Graft.bundle('vendor', 'backbone.marionette');
-Graft.bundle('vendor', 'backbone.wreqr');
-Graft.bundle('vendor', 'backbone.babysitter');
-
-// Important to call after bundles/systems are registered,
-// but before we include any servers and things.
-Graft.directory(path.dirname(global.__graftPath));
-
 // Load up the primary Server server. (required)
 require('./server');
 
@@ -85,67 +27,59 @@ var Server = Graft.Server;
 
 var expressFns = ['get', 'post', 'delete', 'put', 'use', 'set', 'configure'];
 
-_.each(expressFns, function(method) {
-    Graft[method] = Server[method].bind(Server);
-}, this);
+_.each(expressFns, method => Graft[method] = Server[method].bind(Server));
 
-Graft.addInitializer(function(opts) {
+Graft.addInitializer(opts => {
     Graft.execute('server:setup', opts);
     Graft.Data.execute('setup', opts);
 });
 
 // Stop this module by running its finalizers and then stop all of
 // the sub-modules for this application
-Graft.stop = function(){
-    Marionette.triggerMethod.call(this, "before:stop");
-
-    // stop the sub-modules; depth-first, to make sure the
     // sub-modules are stopped / finalized before parents
-    _.each(this.submodules, function(mod){ mod.stop(); });
-    this._initCallbacks.reset();
-
-    Marionette.triggerMethod.call(this, "stop");
-
+Graft.stop = () => {
+    Graft.triggerMethod("before:stop");
+    _.each(Graft.submodules, mod => mod.stop());
+    Graft._initCallbacks.reset();
+    Graft.triggerMethod("stop");
 };
 
-Graft.reqres.setHandler('config:load', function(config) {
+Graft.reqres.setHandler('config:load', (config) => {
     var file   = path.join(process.cwd(), 'config.json');
     var config = config || {};
 
     if (fs.existsSync(file)) {
         try {
-            _.extend(config, JSON.parse(fs.readFileSync(file, 'utf8')));
+            _.extend(config, require(file));
         } catch(e) {
             console.error(utils.colorize('Invalid JSON config file: ' + path.basename(file), 'red'));
             process.exit(2);
         }
     }
     return config;
-}, Graft);
-
-var readyPromises = [];
-
-Graft.commands.setHandler('wait', function(promise) {
-    readyPromises.push(promise);
 });
 
+var _promises = [];
+var ready = Graft.ready = new _.Deferred();
 
-Graft.start = _.wrap(Graft.start.bind(Graft), function(start, config) {
+Graft.commands.setHandler('wait', promise => _promises.push(promise));
+
+Graft.start = _.wrap(Graft.start.bind(Graft), (start, config) => {
     var config = Graft.request('config:load', config);
 
-    Graft.ready = new _.Deferred();
+    ready = Graft.ready = new _.Deferred();
 
     start(config);
 
     return Graft.ready.promise();
 });
 
-Graft.on('start', function() {
-    _.when.apply(_, [null].concat(readyPromises))
-        .then(Graft.ready.resolve, Graft.ready.reject);
+Graft.on('start',() => {
+    _.when(null, ..._promises)
+        .then(ready.resolve, ready.reject);
 });
 
-Graft.reset = function() {
+Graft.reset = () => {
     Graft.resetBundles();
     Graft.systems = {};
 };
