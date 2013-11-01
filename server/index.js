@@ -83,7 +83,7 @@ require('../data');
 // on our already extended modules will conflict.
 var Server = Graft.Server;
 
-var expressFns = ['get', 'post', 'delete', 'put', 'use', 'set', 'configure'];
+var expressFns = ['get', 'post', 'delete', 'put', 'use', 'set', 'all', 'configure'];
 
 _.each(expressFns, function(method) {
     Graft[method] = Server[method].bind(Server);
