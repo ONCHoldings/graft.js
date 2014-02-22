@@ -36,7 +36,10 @@
     "through": "~2.3.4",
     "backbone.babysitter": "0.0.6",
     "underscore.deferred": "~0.4.0",
-    "browser-builtins": "~2.0.1"
+    "browser-builtins": "~2.0.1",
+    "gulp": "~3.5.2",
+    "gulp-util": "~2.2.14",
+    "gulp-template": "~0.1.1"
   },
   "scripts": {
     "test": "mocha -R spec",
