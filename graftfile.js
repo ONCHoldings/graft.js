@@ -61,4 +61,5 @@ Graft.bundle('vendor', 'backbone.babysitter');
 // but before we include any servers and things.
 Graft.directory(path.dirname(global.__graftPath));
 
+Graft.directory(path.dirname(global.__graftPath) + '/test/fixture');
 module.exports = Graft;

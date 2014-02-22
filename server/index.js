@@ -7,7 +7,6 @@ var debug          = require('debug')('graft:server');
 var Graft          = require('../graftfile'); // Bootstrap module system.
 Graft.server       = true; // Hopefully this will be unecessary one day.
 
-
 // Load up the primary Server server. (required)
 require('./server');
 
