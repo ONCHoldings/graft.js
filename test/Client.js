@@ -1,9 +1,12 @@
 var utils    = require('./utils');
+var _ = require('underscore');
 var should   = require('should');
 var path     = require('path');
 var express  = require('express');
 var connect  = require('connect');
 var testPort = 8902;
+
+process.chdir(__dirname + '/fixture/');
 
 // Initialize the Graft application object.
 var Graft    = require('../server');
@@ -14,7 +17,14 @@ describe('Testing Bundled Routes', function() {
         // Load up the REST api server. (optional)
         require('../server/client');
 
+        var next = _.after(2, done);
+
+
         Graft.load(__dirname + '/fixture');
+
+        var gulp = require('../gulpfile.js');
+        gulp.start('default');
+        console.log(gulp);
 
         var locals = { siteName: "I'M BATMAN", title: "KAPOW" };
         Graft.start({ port: testPort, locals: locals }).then(done);

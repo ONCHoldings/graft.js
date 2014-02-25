@@ -188,8 +188,7 @@ function buildBundle(bundleName, options) {
  * Mount a bundle against the client express server.
  */
 function mountBundle(name, src) {
-    debug('mount', name);
-    var readStream = __DIRNAME + '/build/js
+    var readStream = process.cwd() + '/build/js';
     this.get('/js/' + name + '.js', function(req, res, next) {
         res.setHeader('Content-Type', 'text/javascript');
         res.send(src);

@@ -129,7 +129,6 @@ function entryPoint(bundles) {
     bundle.external(bundles.model);
     bundle.external(bundles.view);
     bundle.external(bundles.router);
-
     
     bundle.bundle()
         .pipe(source('client.js'))
@@ -148,7 +147,7 @@ gulp.task('default', function(){
     bundles.view     = viewBundle(bundles);
     bundles.router   = routerBundle(bundles);
    
-    bundles.entryh   = entryPoint(bundles);
+    bundles.entry    = entryPoint(bundles);
 });
 
 function getFiles(dirs, ext) {
@@ -176,4 +175,4 @@ function loadDeps(bundle, deps) {
 }
 
 
-
+module.exports = gulp;
