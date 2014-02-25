@@ -10,102 +10,170 @@ var glob = require('glob');
 
 var Graft = require('./graftfile.js');
 var wrapTransform = require('./lib/wrap.transform');
-var jade = require('gulp-jade');
+var jadeify2 = require('jadeify2');
 var browserify = require('browserify');
 
-gulp.task('default', function(){
-    var vendorBundle = browserify({
-        exposeAll: true
-    });
+function vendorBundle() {
+    var bundle = browserify({ exposeAll: true });
 
-    loadDeps(vendorBundle, Graft.bundles.vendor);
+    loadDeps(bundle, Graft.bundles.vendor);
 
-    function loadDeps(bundle, deps) {
-        _(deps).each(reqFn);
-        function reqFn(v) { bundle.require(v); }
-    }
-
-    vendorBundle.bundle()
+    bundle.bundle()
         .pipe(source('vendor.js'))
         .pipe(gulp.dest('./build/js'));
 
+    return bundle;
+}
 
-    var modelBundle = browserify({
-        exposeAll: true,
-        transform: [wrapTransform.through]
-    });
-    modelBundle.external(vendorBundle);
+function templateBundle(bundles) {
+    var bundle = browserify({ exposeAll: true });
+    
+    bundle.transform('jadeify');
+
+    var dirs = Graft.systems.Template.directories;
+    loadDeps(bundle, getFiles(dirs, 'jade'));
+
+    bundle.bundle()
+        .pipe(source('template.js'))
+        .pipe(gulp.dest('./build/js'));
+
+    return bundle;
+
+}
+
+function shareBundle(bundles) {
+    var bundle = browserify({ exposeAll: true });
+
+
+    bundle.external(bundles.vendor);
+    bundle.external(bundles.template);
+
+    loadDeps(bundle, Graft.bundles.shared);
+
+    bundle.bundle()
+        .pipe(source('shared.js'))
+        .pipe(gulp.dest('./build/js'));
+
+    return bundle;
+}
+
+function modelBundle(bundles) {
+    var bundle = browserify({ exposeAll: true  });
+
+    bundle.transform(wrapTransform.through);
+
+    bundle.external(bundles.vendor);
+    bundle.external(bundles.template);
+    bundle.external(bundles.share);
 
     var dirs = Graft.systems.Model.directories;
-    var files = _(dirs).chain().map(getGlob).flatten().value();
 
-    loadDeps(modelBundle,files);
+    loadDeps(bundle, getFiles(dirs));
 
-    console.log(files);
-    function getGlob(d) {
-        var g = makeGlob('js')(d);
-        return glob.sync(g, {cwd: Graft.__graftPath}) ;
-    }
-
-    modelBundle.bundle()
+    bundle.bundle()
         .pipe(source('models.js'))
         .pipe(gulp.dest('./build/js'));
 
-    function loadDirs(dirs) {
-        return function(bundle) {
-            console.trace();
-            var files = _(dirs).map(getGlob);
-            console.log(files);
-        };
-        function getGlob(d) {
-            var g = makeGlob('js')(d);
-            return glob.sync(path.basename(g), { cwd: path.dirname(g) });
-        }
-    }
+    return bundle;
+}
 
-    function external(extBundle) {
-        return function(bundle) {
-            console.trace();
-            console.log(bundle);
-            bundle.external(extBundle);
-        };
-    }
-/* 
-    var sys = Graft.systems.Model;
+function viewBundle(bundles) {
+    var bundle = browserify({ exposeAll: true  });
 
-    var glob = _(sys.directories).map(makeGlob('js'));
+    bundle.transform(wrapTransform.through);
 
-    var models  = browserify();
-    models.external(vendor);
+    bundle.external(bundles.vendor);
+    bundle.external(bundles.template);
+    bundle.external(bundles.share);
+    bundle.external(bundles.model);
 
-    gulp.src(glob)
-        .pipe(transform(wrapTransform.through))
-        .pipe(models)
-        .pipe(concat('models.js'))
+    var dirs = Graft.systems.View.directories;
+
+    loadDeps(bundle, getFiles(dirs));
+
+    bundle.bundle()
+        .pipe(source('views.js'))
         .pipe(gulp.dest('./build/js'));
 
+    return bundle;
+}
 
-    var templates = 
-    var tdirs = Graft.systems.Template.directories;
-    var tglob = _(tdirs).map(makeGlob('jade'));
+function routerBundle(bundles) {
+    var bundle = browserify({ exposeAll: true  });
 
-    gulp.src(tglob)
-        .pipe(jade({ client: true }))
-        .pipe(concat('templates.js'))
+    bundle.transform(wrapTransform.through);
+
+    bundle.external(bundles.vendor);
+    bundle.external(bundles.template);
+    bundle.external(bundles.share);
+    bundle.external(bundles.model);
+    bundle.external(bundles.view);
+
+    var dirs = Graft.systems.Router.directories;
+
+    loadDeps(bundle, getFiles(dirs));
+
+    bundle.bundle()
+        .pipe(source('router.js'))
         .pipe(gulp.dest('./build/js'));
 
+    return bundle;
+}
 
-    gulp.src(glob)
-        .pipe(transform(wrapTransform.through))
-        .pipe(bundle('models'))
-        .pipe(concat('models.js'))
+function entryPoint(bundles) {
+    var bundle = browserify();
+
+    bundle.external(bundles.vendor);
+    bundle.external(bundles.template);
+    bundle.external(bundles.share);
+    bundle.external(bundles.model);
+    bundle.external(bundles.view);
+    bundle.external(bundles.router);
+
+    
+    bundle.bundle()
+        .pipe(source('client.js'))
         .pipe(gulp.dest('./build/js'));
-*/
-    function loadDeps(bundle, deps) {
-        _(deps).each(reqFn);
-        function reqFn(v) { bundle.require(v); }
+
+    return bundle;
+}
+
+
+gulp.task('default', function(){
+    var bundles      = {};
+    bundles.vendor   = vendorBundle();
+    bundles.template = templateBundle(bundles);
+    bundles.share    = shareBundle(bundles);
+    bundles.model    = modelBundle(bundles);
+    bundles.view     = viewBundle(bundles);
+    bundles.router   = routerBundle(bundles);
+   
+    bundles.entryh   = entryPoint(bundles);
+});
+
+function getFiles(dirs, ext) {
+    return _(dirs).chain()
+    .map(getGlob)
+    .flatten()
+    .value();
+    function getGlob(d) {
+        var g = makeGlob(ext || 'js')(d);
+        return glob.sync(g, {cwd: Graft.__graftPath}) ;
     }
+
     function makeGlob(extension) {
         return function(d) { return d + '/*.' + extension; };
     }
-});
+
+}
+
+function loadDeps(bundle, deps) {
+    _(deps).each(reqFn);
+    function reqFn(v, k) {
+        console.log(v, k);
+        bundle.require(v, { expose: true });
+    }
+}
+
+
+

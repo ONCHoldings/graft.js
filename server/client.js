@@ -189,6 +189,7 @@ function buildBundle(bundleName, options) {
  */
 function mountBundle(name, src) {
     debug('mount', name);
+    var readStream = __DIRNAME + '/build/js
     this.get('/js/' + name + '.js', function(req, res, next) {
         res.setHeader('Content-Type', 'text/javascript');
         res.send(src);
