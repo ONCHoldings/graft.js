@@ -6,6 +6,9 @@ var utils    = require('./utils');
 var sinon       = require('sinon');
 var testPort = 8924;
 
+process.chdir(__dirname + '/fixture/');
+
+
 function setupSpies() {
     sinon.spy(Graft.Server, 'trigger');
 }

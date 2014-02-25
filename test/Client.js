@@ -19,56 +19,16 @@ describe('Testing Bundled Routes', function() {
 
         var next = _.after(2, done);
 
-
         Graft.load(__dirname + '/fixture');
 
         var gulp = require('../gulpfile.js');
         gulp.start('default');
-        console.log(gulp);
 
         var locals = { siteName: "I'M BATMAN", title: "KAPOW" };
         Graft.start({ port: testPort, locals: locals }).then(done);
 
         Graft.set('views', path.resolve(__dirname + '/fixture/templates'));
         Graft.get('/', function(req, res, next) { res.render('layout', {}); });
-    });
-
-    describe('noParse list', function() {
-        var defaultList = [
-            'jquery', 'debug', 'async', 'underscore',
-            'underscore.string', 'underscore.deferred',
-            'f_underscore/f_underscore', 'backbone',
-            'backbone.marionette', 'backbone.wreqr',
-            'backbone.babysitter', 'jquery-browserify'
-        ];
-        it('should return the default list', function() {
-            var noParse = Graft.request('bundle:noParse');
-            noParse.should.eql(defaultList);
-        });
-        it('should accept an array to be added', function() {
-            var noParse = Graft.request('bundle:noParse', ['test1', 'test2']);
-            noParse.should.eql(defaultList.concat(['test1', 'test2']));
-        });
-        it('should accept a single file to be added', function() {
-            var noParse = Graft.request('bundle:noParse', 'test3');
-            noParse.should.eql(defaultList.concat(['test1', 'test2', 'test3']));
-        });
-    });
-
-    describe('ignore list', function() {
-        var defaultList = [];
-        it('should return the default list', function() {
-            var ignore = Graft.request('bundle:ignore');
-            ignore.should.eql(defaultList);
-        });
-        it('should accept an array to be added', function() {
-            var ignore = Graft.request('bundle:ignore', ['test1', 'test2']);
-            ignore.should.eql(defaultList.concat(['test1', 'test2']));
-        });
-        it('should accept a single file to be added', function() {
-            var ignore = Graft.request('bundle:ignore', 'graft-mockdb');
-            ignore.should.eql(defaultList.concat(['test1', 'test2', require.resolve('graft-mockdb')]));
-        });
     });
 
     describe('index page', function() {
@@ -106,7 +66,7 @@ describe('Testing Bundled Routes', function() {
         });
 
         it('response should be javascript', function() {
-            this.resp.should.have.header('content-type', 'text/javascript');
+            this.resp.should.have.header('content-type', 'application/javascript');
         });
         it ('should have a body', function() {
             should.exist(this.body);
@@ -120,7 +80,7 @@ describe('Testing Bundled Routes', function() {
         });
 
         it('response should be javascript', function() {
-            this.resp.should.have.header('content-type', 'text/javascript');
+            this.resp.should.have.header('content-type', 'application/javascript');
         });
         it ('should have a body', function() {
             should.exist(this.body);
@@ -135,7 +95,7 @@ describe('Testing Bundled Routes', function() {
         });
 
         it('response should be javascript', function() {
-            this.resp.should.have.header('content-type', 'text/javascript');
+            this.resp.should.have.header('content-type', 'application/javascript');
         });
         it ('should have a body', function() {
             should.exist(this.body);
@@ -150,7 +110,7 @@ describe('Testing Bundled Routes', function() {
         });
 
         it('response should be javascript', function() {
-            this.resp.should.have.header('content-type', 'text/javascript');
+            this.resp.should.have.header('content-type', 'application/javascript');
         });
         it ('should have a body', function() {
             should.exist(this.body);
@@ -165,7 +125,7 @@ describe('Testing Bundled Routes', function() {
         });
 
         it('response should be javascript', function() {
-            this.resp.should.have.header('content-type', 'text/javascript');
+            this.resp.should.have.header('content-type', 'application/javascript');
         });
         it ('should have a body', function() {
             should.exist(this.body);
@@ -180,7 +140,7 @@ describe('Testing Bundled Routes', function() {
         });
 
         it('response should be javascript', function() {
-            this.resp.should.have.header('content-type', 'text/javascript');
+            this.resp.should.have.header('content-type', 'application/javascript');
         });
         it ('should have a body', function() {
             should.exist(this.body);

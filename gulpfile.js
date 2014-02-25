@@ -34,7 +34,7 @@ function templateBundle(bundles) {
     loadDeps(bundle, getFiles(dirs, 'jade'));
 
     bundle.bundle()
-        .pipe(source('template.js'))
+        .pipe(source('templates.js'))
         .pipe(gulp.dest('./build/js'));
 
     return bundle;
@@ -114,7 +114,7 @@ function routerBundle(bundles) {
     loadDeps(bundle, getFiles(dirs));
 
     bundle.bundle()
-        .pipe(source('router.js'))
+        .pipe(source('routers.js'))
         .pipe(gulp.dest('./build/js'));
 
     return bundle;
@@ -130,6 +130,9 @@ function entryPoint(bundles) {
     bundle.external(bundles.view);
     bundle.external(bundles.router);
     
+    var dirs = Graft.systems.Client.directories;
+    loadDeps(bundle, getFiles(dirs));
+
     bundle.bundle()
         .pipe(source('client.js'))
         .pipe(gulp.dest('./build/js'));
@@ -169,7 +172,6 @@ function getFiles(dirs, ext) {
 function loadDeps(bundle, deps) {
     _(deps).each(reqFn);
     function reqFn(v, k) {
-        console.log(v, k);
         bundle.require(v, { expose: true });
     }
 }
